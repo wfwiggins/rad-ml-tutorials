@@ -1,0 +1,28 @@
+---
+title: "About"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: twitter
+      text: Twitter/X
+      href: https://twitter.com/walterfwiggins
+    - icon: linkedin
+      text: LinkedIn
+      href: https://linkedin.com/in/walter-wiggins-md-phd-321a2713/
+    - icon: github
+      text: Github
+      href: https://github.com/wfwiggins
+
+---
+
+I'm a neuroradiologist who likes to code. By day, I split my time between (1) taking care of patients by interpreting diagnostic imaging of the brain, head, neck, and spine, as well as doing image-guided, minimally invasive procedures; and (2) working hard to deploy and monitor AI tools for radiology.
+
+Education around AI and machine learning is vital for radiologists. While we don't need to understand everything about how these tools work, I think it helps to understand a little about how "the sausage is made" in order to use these tools effectively. Just like diagnostic imaging modalities, you should have a basic understanding of AI's uses and limitations, as well as some common ways it can fail.
+
+This blog is dedicated to interactive tutorials covering various topics in AI & ML for medical imaging and natural language processing (NLP) or text analysis.
+
+I hope you enjoy!
+
+Cheers,
+Walter
