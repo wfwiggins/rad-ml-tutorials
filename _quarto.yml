@@ -5,6 +5,7 @@ website:
   title: "Radiology ML Tutorials"
   site-url: https://radml.wfwiggins.com
   description: "Interactive tutorials for AI applications in radiology"
+  favicon: logo.png
   navbar:
     right:
       - about.qmd
