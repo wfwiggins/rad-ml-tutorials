@@ -10,6 +10,8 @@ listing:
   feed: true
 page-layout: full
 title-block-banner: true
+website:
+  favicon: logo.png
 ---
 
 # Welcome!
