@@ -10,7 +10,7 @@
 <atom:link href="https://radml.wfwiggins.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>Interactive tutorials for AI applications in radiology</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Wed, 12 Jun 2024 01:37:14 GMT</lastBuildDate>
+<lastBuildDate>Wed, 12 Jun 2024 09:57:10 GMT</lastBuildDate>
 <item>
   <title>Radiology Report Labeling with Llama.cpp</title>
   <link>https://radml.wfwiggins.com/posts/llama-cpp-radiology-report-labeling.html</link>
@@ -661,7 +661,7 @@ font-style: inherit;">id</span>: labels}</span>
 
  ]]></description>
   <guid>https://radml.wfwiggins.com/posts/llama-cpp-radiology-report-labeling.html</guid>
-  <pubDate>Wed, 12 Jun 2024 01:37:14 GMT</pubDate>
+  <pubDate>Wed, 12 Jun 2024 09:57:10 GMT</pubDate>
 </item>
 <item>
   <title>Chat with the ACR Contrast Manual</title>
@@ -1385,7 +1385,7 @@ It is important to note that these are general guidelines and the specific risk 
 
  ]]></description>
   <guid>https://radml.wfwiggins.com/posts/ACR_contrast_manual_chat.html</guid>
-  <pubDate>Wed, 12 Jun 2024 01:37:14 GMT</pubDate>
+  <pubDate>Wed, 12 Jun 2024 09:57:10 GMT</pubDate>
 </item>
 <item>
   <title>Image Classification for Beginners</title>
@@ -2435,7 +2435,7 @@ font-style: inherit;">;</span></span></code></pre></div>
 
  ]]></description>
   <guid>https://radml.wfwiggins.com/posts/Image_Classification_Tutorial.html</guid>
-  <pubDate>Wed, 12 Jun 2024 01:37:14 GMT</pubDate>
+  <pubDate>Wed, 12 Jun 2024 09:57:10 GMT</pubDate>
 </item>
 </channel>
 </rss>
