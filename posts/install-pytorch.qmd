@@ -1,0 +1,9 @@
+---
+title: "Installing Pytorch with Light-the-Torch"
+author: "Walter Wiggins"
+date: "2024-12-20"
+draft: true
+---
+
+Light-the-torch is a command line utility wrapper for `pip`, the standard Python package 
+installation package.

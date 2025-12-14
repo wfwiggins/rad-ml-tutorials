@@ -1,0 +1,25 @@
+---
+title: "Installing Python and Virtual Environments"
+author: "Walter Wiggins"
+date: "2024-02-26"
+draft: true
+---
+In this post, we'll cover a new-ish command line tool called `uv` that serves as both a Python **package manager** and
+project management tool.
+
+Python is an interpreted programming language, sometimes referred to as a scripting language. The base Python
+installation comes with a number of packages for basic operations one might want to do when coding in Python.
+One of those packages is `pip` which is a package manager. This allows you to install other packages built for
+specific tasks. For example, you may want to install `numpy` so you can do numerical computing with arrays,
+or `pandas` so you can work with tabular data, or `pytorch` so you can do deep learning.
+
+`uv` is a faster package manager that also comes with other features to assist with project management.
+One such feature is **virtual environment** management. Having a virtual environment or "env" allows you to install
+packages specific to a project. Different projects (or tutorials) may require different versions of the same
+packages, or even a different version of Python itself. Installing those packages in an env helps you avoid conflicts
+between packages/versions in your base Python installation.
+
+Another project management feature of `uv` is a tool called `git` for version control of coding projects.
+I'll write a separate post on `git` at a later date, but for now you can think of it as a way to keep track of
+changes you make in your code.
+

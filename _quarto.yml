@@ -7,6 +7,10 @@ website:
   description: "Interactive tutorials for AI applications in radiology"
   favicon: logo.png
   navbar:
+    left: 
+      - setup.qmd
+      - advanced-setup.qmd
+      - resources.qmd
     right:
       - about.qmd
       - icon: github
@@ -17,5 +21,7 @@ website:
         href: index.xml
 format:
   html:
-    theme: cosmo
+    theme: 
+      light: flatly
+      dark: darkly
     css: styles.css

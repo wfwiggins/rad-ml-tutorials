@@ -1,8 +1,8 @@
 ---
-title: "Radiology AI Tutorials"
+title: "Radiology ML Tutorials Blog"
 listing:
   contents: posts
-  sort: "date desc"
+  sort: "date asc"
   type: default
   categories: true
   sort-ui: false
@@ -13,4 +13,4 @@ title-block-banner: true
 ---
 
 # Welcome!
-Each of the posts below is an interactive tutorial. For the best experience, you should have a Google account, so you can open the notebooks in Google Colab and run/interact with the demonstrations.
+Many of the posts below are interactive tutorials. For the best experience, you should have a Google account, so you can open the notebooks in Google Colab and run/interact with the demonstrations.

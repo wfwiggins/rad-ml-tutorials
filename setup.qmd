@@ -1,0 +1,161 @@
+---
+title: "Basic Setup Guide"
+author: "Walter Wiggins"
+date: "2024-12-20"
+---
+<p>
+    This guide will step you through the process of setting up your development
+  environment for using the command line to run programs in Python. The ideal
+  operating system (OS) to use is a Unix-based system such as
+  MacOS or a Linux distribution (e.g. Ubuntu). For simplicity, I'll assume
+  you're using MacOS, as Linux users probably won't need many of these tutorials.
+</p>
+<p>
+    For users on Windows 10 or 11, your best bet is to install the Windows Subsystem
+  for Linux (WSL).
+  <blockquote>
+      I recommend selecting the Ubuntu distribution directly from the
+      Windows Store: <a href="https://tutorials.ubuntu.com/tutorial/tutorial-ubuntu-on-windows">
+      WSL Ubuntu Installation Tutorial</a>.
+  </blockquote>
+</p>
+<p>
+  WSL should afford a similar experience to MacOS, though you may end up
+  spending a little more time with Google and Stack Overflow to get certain
+  elements of the your development environment up and
+  running.
+</p>
+<h2 id="developer-tools">Installing Developer Tools</h2>
+<p>
+  Again, from here on out, we're assuming that you're using MacOS... I'll try
+  to add support for WSL as this site evolves.
+</p>
+<!-- <p>
+  The first thing you should do is install the
+  <a href="http://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/" target="_blank">Xcode Command Line Tools</a>
+  via the linked guide. This will ensure that you have the full range of
+  command line tools available to you - a necessary step before
+  <a href="/advanced-setup.html">Advanced Setup</a>.
+</p> -->
+<p>
+  The first step is to open up a terminal window. The easiest
+  way to do this is to launch the Spotlight app via the keyboard shortcut
+  <code>{CMD-SPACE}</code>, then type "terminal", followed by
+  <code>{ENTER}</code>.
+  <!-- Need to add installation of Homebrew and Xcode Command Line Tools here, then modify the Advanced Setup Guide -->
+  <blockquote>
+      If you haven't already, this is the perfect time to head over to the
+      <a href="/posts/intro_cli.html">Intro to CLI</a> post for an introduction to the
+      Command Line Interface (CLI or "shell").
+  </blockquote>
+</p>
+<p>
+  Now, the next thing we need to do is install the Command Line Tools for Xcode. This will 
+  ensure that you have the full range of command line tools available to you - a necessary 
+  step before <a href="/advanced-setup.html">Advanced Setup</a>. Enter the following command
+  into your terminal window.
+</p>
+```zsh
+sudo xcode-select --install
+```
+<h2 id="text-editors">Text Editors</h2>
+<p>
+    Every programmer has his or her preferred text editor. I use <a href="https://code.visualstudio.com/">VS Code</a>. I used to
+    use <a href="https://www.sublimetext.com/">Sublime Text</a>. I dabble in <code>vim</code> for when I want to quickly edit a config
+    file or a shell script without leaving my Terminal. I don't recommend <code>vim</code> to
+    beginners. VS Code is free and works great out of the box and is very
+    configurable/extensible. Do a little research for yourself
+    and figure out which text editor might be best for you. Just
+    pick a nice one with some simple features like syntax highlighting and it
+    will make programming/coding a lot more fun...and efficient.
+</p>
+<p>
+    If you plan to do the <a href="/advanced-setup.html">Advanced Setup</a>, this would be a good
+    time to stop and head over there before continuing with these steps.
+    If not, feel free to proceed.
+</p>
+<h2 id="conda">Option 1: Installing Python with Anaconda</h2>
+<p>
+    Though Python comes preinstalled with recent versions of MacOS, I highly
+    recommend using a package and environment manager such as Anaconda (or Miniconda) 
+    for managing Python packages and virutal environments (more on these later). You could follow
+    <a href="https://www.anaconda.com/download/#macos">this link</a> to download and
+    install Anaconda with all of it's bells and whistles. However, since we're
+    learning the command line, I recommend you go with
+    <a href="https://conda.io/miniconda.html">Miniconda</a>, a lighter-weight
+    version without the Spyder independent development environment (IDE).
+</p>
+<p>
+  The only potential downside of installing a version of `conda` is that Pytorch has recently announced that
+  they are deprecating support for `conda` packages. Meaning that if you've already been using Pytorch, there may
+  be a point in the near future that you need a different option. If you think this might be the case for you, then
+  I suggest giving `uv` a try (see <a href="#uv">Option 2</a> below).
+</p>
+<p>
+    If you go with Miniconda, enter the following commands into your terminal window from your home directory.
+    These come from the <a href="https://docs.anaconda.com/miniconda/install/">Miniconda Quick Command Line Install</a>
+    guide and are current as of 20 December 2024. I've added them here so I can explain what's happening.
+    The first command uses `mkdir` to create a subdirectory of your home folder called `miniconda`. The `-p` flag
+    ensures that no error occurs if the directory already exists and will create any "parent" directories,
+    if necessary. The second command uses `curl` to download the installation file. The `-o` option renames
+    the file to the shorter `miniconda.sh` and downloads that file to the `miniconda` directory. The third command
+    uses the `bash` shell to run the `miniconda.sh` shell script, which will install <strong>miniconda</strong>.
+    The final command cleans up the install file with the `rm` command ("remove"), since it is no longer needed.
+</p>
+```zsh
+mkdir -p ~/miniconda3
+curl https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh -o ~/miniconda3/miniconda.sh
+bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+rm ~/miniconda3/miniconda.sh
+```
+<p>
+    Follow any prompts that arise during the install process. Once this is complete, the next thing
+    you'll want to do is restart your terminal. Then test whether the install worked by entering a
+    <code>conda</code> command (e.g. <code>conda list</code>). If this produces
+    an error, then there are a couple of possibilities as to why this may not
+    have worked, most of which should be fixed after the next step.
+</p>
+<p>
+    The next step is to check your shell config file, either <code>~/.bashrc</code>
+    or <code>~/.zshrc</code>. Open this file in <code>nano</code> or your
+    favorite graphical text editor. The Miniconda install process should have
+    appended the following line to your "rc" file:
+    <code>export PATH="~/miniconda3/bin:$PATH"</code>. This command prepends the
+    path to the Miniconda functions to your system path environment variable. If
+    this is not the case, then you should add this line manually, save your changes
+    and reload your shell (open a new terminal window or source your `rc` file).
+</p>
+<h2 id="uv">Option 2: Installing Python with uv</h2>
+<p>
+   Another option for installing a managed version of Python is `uv`. The recommended way
+   to install this package is via the following command from the <a href="https://docs.astral.sh/uv/getting-started/installation/">uv Installation guide</a>, and is current as of 20 December 2024.
+</p>
+<p>
+  This command uses `curl` to download the installation shell script, then "pipes" the file
+  to the `sh` shell, which runs the script.
+</p>
+```zsh
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+<p>
+  Follow any instructions during the installation process. Once it is complete, close and reopen
+  your terminal window to "restart" your shell and then run the following command to install the
+  latest stable version of Python.
+</p>
+```zsh
+uv python install
+```
+<p>
+  If you need to install a specific version of Python for compatibility with existing code or a
+  tutorial you're following, then use the following command and change the version number to match your needs.
+</p>
+```zsh
+uv python install 3.12
+```
+<h2 id="congrats">Congrats!</h2>
+<p>
+    You've completed Basic Setup. If you haven't already, I recommend proceeding to the
+    <a href="/advanced-setup.html">Advanced Setup</a> guide...
+    or go straight to learning more about the command line, shell scripting,
+    and Python!
+</p>

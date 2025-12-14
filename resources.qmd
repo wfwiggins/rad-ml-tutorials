@@ -1,0 +1,103 @@
+---
+title: "Resources"
+---
+# List of Resources
+
+Over time, we will put together a carefully curated list of resources with a
+mind for what is most useful and efficient for time-constrained residents. We
+will try to grade the accessibility of the content as "Novice", "Beginner",
+or "Intermediate".
+
+<table>
+    <tr>
+        <th colspan="2">Our definitions of experience</th>
+    </tr>
+    <tr>
+        <td>Novice</td>
+        <td>Limited or no prior coding experience</td>
+    </tr>
+    <tr>
+        <td>Beginner</td>
+        <td>Some prior coding experience, perhaps in another language (aside
+            from Python) or unrelated to Data Science and Deep Learning</td>
+    </tr>
+    <tr>
+        <td>Intermediate</td>
+        <td>Basic familiarity with Python for Data Science and Deep Learning</td>
+    </tr>
+</table>
+
+## Novice Resources
+<ul>
+  <li><a href="https://www.kaggle.com/learn/python">Kaggle Intro to Python</a></li>
+  <ul>
+    <li>A 7-part introduction to the Python programming language, taught in the Kaggle Notebook self-contained programming environment.</li>
+  </ul>
+
+  <li><a href="https://www.kaggle.com/python-challenge-signup">Kaggle 7-day Python Challenge</a></li>
+  <ul>
+    <li>A 7-day challenge for learning the basics of Python programming in the Kaggle Notebook (formerly known as "Kernel") self-contained programming environment.</li>
+  </ul>
+
+  <li><a href="https://wiki.python.org/moin/BeginnersGuide/NonProgrammers">Python for Non-Programmers</a></li>
+  <ul>
+    <li>An extensive list of interactive tutorials and other online resources for learning the basics of programming in Python</li>
+  </ul>
+
+  <li><a href="https://pubs.rsna.org/doi/full/10.1148/rg.2017170077"><i>RadioGraphics</i> - Deep Learning: A Primer for Radiologists</a></li>
+  <ul>
+    <li>Published in 2017, this general review of deep learning covers basic terminology and concepts with examples of applications to image analysis.</li>
+  </ul>
+  
+  <li><a href="https://www.kaggle.com/wfwiggins203/hello-world-for-deep-learning-siim">Kaggle Notebook - Hello World for Deep Learning in Medical Imaging</a></li>
+  <ul>
+    <li>Self-guided tutorial for deep learning in medical imaging using Python</li>
+    <li>No coding experience required</li>
+    <li>Walkthrough of code training a model to differentiate chest and abdominal radiographs</li>
+  </ul>
+</ul>
+
+## Beginner Resources
+<ul>
+  <li><i>Python for Data Analysis</i> by Wes McKinney (<a href="https://www.amazon.com/Python-Data-Analysis-Wrangling-IPython/dp/1449319793">Amazon</a>)</li>
+  <ul>
+    <li>Beginner level book covering basic topics in data science</li>
+    <li>Employs common Python libraries: iPython, NumPy, Pandas and matplotlib</li>
+  </ul>
+
+  <li><i>Deep Learning with Python</i> by Francois Chollet (<a href="https://www.amazon.com/Deep-Learning-Python-Francois-Chollet/dp/1617294438">Amazon</a>)</li>
+  <ul>
+    <li>Beginner level book covering basic topics in deep learning and computer vision</li>
+    <li>Written by the author of the Keras framework for TensorFlow - using Keras, now known as <code>tf.keras</code></li>
+  </ul>
+
+  <li><a href="https://missing.csail.mit.edu/">The Missing Semester of Your CS Education - MIT</a></li>
+  <ul>
+    <li>A series of courses covering the basics of computing tools often used by programmers such as the command line interface (CLI or shell) and Git (version control).</li>
+  </ul>
+
+  <li><a href="https://www.youtube.com/playlist?list=PLWcb4wBNmHIVmfIHpv1mrpCzPGTNUaNHj">Python for Neuroimaging for Beginners</a> by Kevin Cho</li>
+  <ul>
+    <li>Series of 4 YouTube videos covering basic Python functions for manipulating and processing image data.</li>
+    <li>Geared toward neuroimaging, but skills are generalizable to all imaging subspecialties.</li>
+  </ul>
+</ul>
+
+## Intermediate Resources
+<ul>
+  <li><a href="https://course.fast.ai/">fast.ai Practical Deep Learning for Coders</a></li>
+  <ul>
+    <li>"Code first, theory later" series of tutorials in deep learning</li>
+    <li>Covers computer vision, natural language processing and tabular learning</li>
+    <li>Advanced course follows, delving deeper into fundamentals and theory of deep learning</li>
+  </ul>
+
+  <li><strong>UC-Irvine CS190 Course:</strong> <em>Deep Learning for Medical Imaging</em> by Dr. Peter Chang (<a href="https://github.com/peterchang77/dl_tutor/tree/master/cs190">link to GitHub repository</a>)</li>
+  <ul>
+    <li>Comprehensive introductory course with focus on medical imaging utilizing Python notebooks in Google Colab with the TensorFlow 2.0/Keras API.</li>
+    <li>Links to tutorial videos and slides included in <code>README.md</code> file.</li>
+    <li>Course notebooks can be downloaded from <code>notebooks</code> folder and uploaded to Google Colab.</li>
+  </ul>
+
+  <li>More to come...</li>
+</ul>
