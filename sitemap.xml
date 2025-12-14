@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://radml.wfwiggins.com/notebooks/ollama_colab.html</loc>
-    <lastmod>2024-06-12T10:10:42.541Z</lastmod>
+    <loc>https://radml.wfwiggins.com/resources.html</loc>
+    <lastmod>2025-12-14T12:38:36.972Z</lastmod>
+  </url>
+  <url>
+    <loc>https://radml.wfwiggins.com/advanced-setup.html</loc>
+    <lastmod>2025-12-14T12:38:35.813Z</lastmod>
   </url>
   <url>
     <loc>https://radml.wfwiggins.com/index.html</loc>
-    <lastmod>2024-06-12T10:10:41.927Z</lastmod>
+    <lastmod>2025-12-14T12:38:34.886Z</lastmod>
   </url>
   <url>
-    <loc>https://radml.wfwiggins.com/posts/ACR_contrast_manual_chat.html</loc>
-    <lastmod>2024-06-12T10:10:41.067Z</lastmod>
-  </url>
-  <url>
-    <loc>https://radml.wfwiggins.com/posts/llama-cpp-radiology-report-labeling.html</loc>
-    <lastmod>2024-06-12T10:10:40.739Z</lastmod>
-  </url>
-  <url>
-    <loc>https://radml.wfwiggins.com/posts/Image_Classification_Tutorial.html</loc>
-    <lastmod>2024-06-12T10:10:41.660Z</lastmod>
+    <loc>https://radml.wfwiggins.com/posts/intro_cli.html</loc>
+    <lastmod>2025-12-14T12:38:33.638Z</lastmod>
   </url>
   <url>
     <loc>https://radml.wfwiggins.com/about.html</loc>
-    <lastmod>2024-06-12T10:10:42.141Z</lastmod>
+    <lastmod>2025-12-14T12:38:35.245Z</lastmod>
+  </url>
+  <url>
+    <loc>https://radml.wfwiggins.com/setup.html</loc>
+    <lastmod>2025-12-14T12:38:36.459Z</lastmod>
   </url>
 </urlset>

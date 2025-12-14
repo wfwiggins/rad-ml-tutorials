@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Walter Wiggins">
+<meta name="dcterms.date" content="2024-12-20">
 
-<title>Radiology ML Tutorials - About</title>
+<title>Radiology ML Tutorials - Advanced Setup</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -34,6 +70,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
@@ -88,7 +125,7 @@ ul.task-list li input[type="checkbox"] {
  <span class="menu-text">Basic Setup Guide</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./advanced-setup.html" rel="" target="">
+    <a class="nav-link active" href="./advanced-setup.html" rel="" target="" aria-current="page">
  <span class="menu-text">Advanced Setup</span></a>
   </li>  
   <li class="nav-item">
@@ -98,7 +135,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./about.html" rel="" target="" aria-current="page">
+    <a class="nav-link" href="./about.html" rel="" target="">
  <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item compact">
@@ -130,41 +167,94 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<div class="quarto-about-jolla">
-  <img src="profile.jpg" class="about-image
-  round " style="height: 15em; width: 15em;">
- <header id="title-block-header" class="quarto-title-block default">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">About</h1>
+<h1 class="title">Advanced Setup</h1>
 </div>
+
+
+
 <div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Walter Wiggins </p>
+          </div>
   </div>
-</header><main class="content" id="quarto-document-content">
-<p>I’m a neuroradiologist who likes to code. By day, I split my time between (1) taking care of patients by interpreting diagnostic imaging of the brain, head, neck, and spine, as well as doing image-guided, minimally invasive procedures; and (2) working hard to deploy and monitor AI tools for radiology.</p>
-<p>Education around AI and machine learning is vital for radiologists. While we don’t need to understand everything about how these tools work, I think it helps to understand a little about how “the sausage is made” in order to use these tools effectively. Just like diagnostic imaging modalities, you should have a basic understanding of AI’s uses and limitations, as well as some common ways it can fail.</p>
-<p>This blog is dedicated to interactive tutorials covering various topics in AI &amp; ML for medical imaging and natural language processing (NLP) or text analysis.</p>
-<p>I hope you enjoy!</p>
-<p>Cheers, Walter</p>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 20, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<p>These are optional steps for those interested in taking advantage of some advanced tools for the CLI. I find these tools very useful, but it takes a fair amount of time to get everything installed and running. There’s also the possibility that you’ll spend a considerable amount of time tweaking things to your liking…</p>
+<p>Also, if you’re a MacOS user and haven’t yet installed the Xcode Developer Command Line Tools, return to the <a href="./setup.html#developer-tools">Basic Setup Guide</a> and do this first.</p>
+<section id="zsh-the-z-shell" class="level2">
+<h2 class="anchored" data-anchor-id="zsh-the-z-shell">Zsh: the Z shell</h2>
+<p>Zsh now comes standard on most recent versions of MacOS, but traditionally the default shell on MacOS and most Linux distributions has been <code>bash</code>. <code>zsh</code> is thus considered to be an alternative shell. It offers some really nice features like improved tab-completion (probably the most routinely useful one), syntax highlighting, and extended “globbing” - I’ll explain the last one later in a post.</p>
+<p>Let’s start by installing iTerm2, Homebrew, Oh My Zsh and Powerline fonts to make sure everything runs smoothly once we actually start to use the shell.</p>
+<ol type="1">
+<li>Install iTerm2 from the <a href="https://iterm2.com/">website</a>. iTerm2 is a more customizable terminal emulator for MacOS.</li>
+<li>Open iTerm2. You can use Spotlight <code>{CMD+SPACE}</code>, then type <code>iTerm</code>.</li>
+<li>Install <a href="https://brew.sh/">Homebrew</a> by copying and pasting the command below into your terminal. Click the link to learn more about this package manager for MacOS.</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/bin/bash</span> <span class="at">-c</span> <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="va">)</span><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="oh-my-zsh" class="level2">
+<h2 class="anchored" data-anchor-id="oh-my-zsh">Oh My Zsh</h2>
+<p>Oh My Zsh is a collection of themes for taking full advantage of Zsh and “beautifying your shell”. By installing Xcode Command Line Tools, you now have <code>git</code>, a version management command line tool that you’ll be using a lot, if you continue to use this site.</p>
+<p>We’ll install Oh-My-Zsh from Robby Russell’s GitHub <a href="https://github.com/robbyrussell/oh-my-zsh">repository</a> (or ‘repo’).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sh</span> <span class="at">-c</span> <span class="st">"</span><span class="va">$(</span><span class="ex">curl</span> <span class="at">-fsSL</span> https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh<span class="va">)</span><span class="st">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Once this is is done, you’ll be running your fancy new Zsh with Oh My Zsh. The default theme is <code>robbyrussell</code>. We’ll change that shortly, though you can certainly keep it if you like it.</p>
+</section>
+<section id="powerline-fonts" class="level2">
+<h2 class="anchored" data-anchor-id="powerline-fonts">Powerline Fonts</h2>
+<p>Many Oh My Zsh themes require a <a href="https://github.com/powerline/fonts#quick-installation">Powerline</a> font to be rendered properly in the terminal. So, naturally, we’ll install those here to keep things running smoothly as we proceed. (Note: In the code block below, the <code>#</code> indicates a comment, not a command.) Back to our new friend <code>git</code>…</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># clone the Powerline fonts repo to your machine</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://github.com/powerline/fonts.git <span class="at">--depth</span><span class="op">=</span>1</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># run the install script</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> fonts</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">./install.sh</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># clean up the files you no longer need</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ..</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-rf</span> fonts</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, head to “Preferences” in iTerm2 by pressing <code>{CMD + ,}</code>. Then go to “Profiles &gt; Text” to set the “Regular” and non-ASCII fonts to one of your newly installed Powerline fonts (I recommend SourceCodePro for starters). I also recommend switching your color palette to “Solarized”, as it plays nicely with Oh My Zsh.</p>
+</section>
+<section id="configuring-zsh-and-oh-my-zsh-with-nano" class="level2">
+<h2 class="anchored" data-anchor-id="configuring-zsh-and-oh-my-zsh-with-nano">Configuring Zsh and Oh My Zsh with Nano</h2>
+<p>Most commonly, people configure Zsh in their <code>.zshrc</code> file. Installing OMZ will prepopulate yours with some useful stuff. Running <code>ls</code> in <code>~</code> won’t show you “dotfiles” (e.g. .zshrc) by default. For that, you should run <code>ls -a</code> (or <code>la</code> - an “alias” or shortcut for the preceding command). You should see something similar to what I’ve shown below, though everyone will probably have many other files and folders that get printed to the standard output (or “stdout”) when they run this command.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">$</span> ls <span class="at">-a</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">-rw-------</span>  1 walter walter  496 Oct  6 22:36 .bash_history</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">-rw-r--r--</span>  1 walter walter  220 Oct  6 22:50 .bashrc</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">drwxr-xr-x</span> 11 walter walter 4.0K Oct  6 22:46 .oh-my-zsh</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">-rw-------</span>  1 walter walter  56K Nov 15 11:35 .zsh_history</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="ex">-rw-r--r--</span>  1 walter walter 3.8K Nov 15 11:25 .zshrc</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ... with other files mixed in</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, on to configuring Zsh in <code>.zshrc</code>. The first thing you should do is decide which text editor you want to use. Your options are a graphical text editor or one of the built-in text editors that run in the shell itself. For simplicity, we’ll go with <code>nano</code> - one of the built-in options. It’s far easier to use than <code>vi</code> or <code>vim</code> and simpler than opening a separate window every time you want to make a minor change to your config. Entering <code>nano ~/.zshrc</code> will launch <code>nano</code> with your config file in the editor. At the bottom of the window, you should see the commands available to you (FYI: <code>^G</code> is shorthand for <code>{CTRL + G}</code>). After you make changes, you will need to press <code>^O</code> (letter O, not number) to “write out” (i.e.&nbsp;save) your changes before you <code>^X</code> (exit). Also, you’ll be navigating with the keyboard as your mouse won’t work.</p>
+<p>Everything you see in your <code>.zshrc</code> has been added by OMZ. The first thing we’ll do is change the theme. Navigate to the line that says <code>ZSH_THEME="robbyrussell"</code>. We’re going to change the theme to “agnoster”, so delete “robbyrussell” and replace it with “agnoster” such that the line now looks like this <code>ZSH_THEME="agnoster"</code>. Then <code>^O</code> and <code>^X</code>. Now you’ve saved your changes, exited <code>nano</code> and are back in Zsh…but everything looks the same.</p>
+<p>To see the effects of your changes to the config, you’ll have to reload your shell. The command for this is <code>source ~/.zshrc</code>. Over time, you may find yourself tweaking your shell config regularly, adding or changing different aliases, etc. Thus, I recommend you go ahead and add the following lines to your <code>.zshrc</code> under <code># Aliases</code>. You may wish to delete the existing ones.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="bu">alias</span> zshconfig=<span class="st">"nano ~/.zshrc"</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">alias</span> reload=<span class="st">"source ~/.zshrc"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You will have to reload your shell profile with the full command before you can use your new aliases. But after you do that, you’ll be able to edit your config in <code>nano</code> simply by entering <code>zshconfig</code>, then <code>reload</code> when you’re done.</p>
+<p>If you are using the VS Code editor, you can replace the <code>nano</code> command with the <code>code</code> command.</p>
 
 
-</main> 
-  <hr class="about-sep">
-   <div class="about-links">
-  <a href="https://twitter.com/walterfwiggins" class="about-link" rel="" target="">
-    <i class="bi bi-twitter"></i>
-     <span class="about-link-text">Twitter/X</span>
-  </a>
-  <a href="https://linkedin.com/in/walter-wiggins-md-phd-321a2713/" class="about-link" rel="" target="">
-    <i class="bi bi-linkedin"></i>
-     <span class="about-link-text">LinkedIn</span>
-  </a>
-  <a href="https://github.com/wfwiggins" class="about-link" rel="" target="">
-    <i class="bi bi-github"></i>
-     <span class="about-link-text">Github</span>
-  </a>
-</div>
-</div>
- <!-- /main -->
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -300,6 +390,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   } else {
     toggleColorMode(false);
   }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
   const isCodeAnnotation = (el) => {
     for (const clz of el.classList) {
       if (clz.startsWith('code-annotation-')) {                     
