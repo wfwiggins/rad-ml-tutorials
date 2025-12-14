@@ -8,8 +8,10 @@ website:
   favicon: logo.png
   navbar:
     left: 
-      - setup.qmd
-      - advanced-setup.qmd
+      - text: "Local Dev Setup"
+        menu:
+          - setup.qmd
+          - advanced-setup.qmd
       - resources.qmd
     right:
       - about.qmd
