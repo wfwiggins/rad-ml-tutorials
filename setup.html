@@ -120,14 +120,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
-  <li class="nav-item">
-    <a class="nav-link active" href="./setup.html" rel="" target="" aria-current="page">
- <span class="menu-text">Basic Setup Guide</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-local-dev-setup" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Local Dev Setup</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-local-dev-setup">    
+        <li>
+    <a class="dropdown-item" href="./setup.html" rel="" target="">
+ <span class="dropdown-text">Basic Setup Guide</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./advanced-setup.html" rel="" target="">
- <span class="menu-text">Advanced Setup</span></a>
+        <li>
+    <a class="dropdown-item" href="./advanced-setup.html" rel="" target="">
+ <span class="dropdown-text">Advanced Setup</span></a>
   </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="./resources.html" rel="" target="">
  <span class="menu-text">Resources</span></a>
@@ -136,7 +143,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
     <a class="nav-link" href="./about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+ <span class="menu-text">Walter Wiggins, MD, PhD</span></a>
   </li>  
   <li class="nav-item compact">
     <a class="nav-link" href="https://github.com/wfwiggins" rel="" target=""><i class="bi bi-github" role="img">
@@ -192,102 +199,86 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </div>
   </div>
   
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">December 14, 2025</p>
+    </div>
+  </div>
     
   </div>
   
 
 </header>
 
-<p>
-This guide will step you through the process of setting up your development environment for using the command line to run programs in Python. The ideal operating system (OS) to use is a Unix-based system such as MacOS or a Linux distribution (e.g.&nbsp;Ubuntu). For simplicity, I’ll assume you’re using MacOS, as Linux users probably won’t need many of these tutorials.
-</p>
-<p>
-For users on Windows 10 or 11, your best bet is to install the Windows Subsystem for Linux (WSL).
-</p><blockquote class="blockquote">
-I recommend selecting the Ubuntu distribution directly from the Windows Store: <a href="https://tutorials.ubuntu.com/tutorial/tutorial-ubuntu-on-windows"> WSL Ubuntu Installation Tutorial</a>.
-</blockquote>
-<p></p>
-<p>
-WSL should afford a similar experience to MacOS, though you may end up spending a little more time with Google and Stack Overflow to get certain elements of the your development environment up and running.
-</p>
+<p>This guide will step you through the process of setting up your development environment for using the command line to run programs in Python. The ideal operating system (OS) to use is a Unix-based system such as MacOS or a Linux distribution (e.g.&nbsp;Ubuntu). For simplicity, I’ll assume you’re using MacOS, as Linux users probably won’t need many of these tutorials.</p>
+<p>For users on Windows 10 or 11, your best bet is to install the Windows Subsystem for Linux (WSL).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>I recommend selecting the Ubuntu distribution directly from the Windows Store: <a href="https://tutorials.ubuntu.com/tutorial/tutorial-ubuntu-on-windows"> WSL Ubuntu Installation Tutorial</a>.</p>
+</div>
+</div>
+<p>WSL should afford a similar experience to MacOS, though you may end up spending a little more time with Google and Stack Overflow to get certain elements of the your development environment up and running.</p>
 <h2 id="developer-tools" class="anchored">
 Installing Developer Tools
 </h2>
-<p>
-Again, from here on out, we’re assuming that you’re using MacOS… I’ll try to add support for WSL as this site evolves.
-</p>
-<!-- <p>
-  The first thing you should do is install the
-  <a href="http://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/" target="_blank">Xcode Command Line Tools</a>
-  via the linked guide. This will ensure that you have the full range of
-  command line tools available to you - a necessary step before
-  <a href="/advanced-setup.html">Advanced Setup</a>.
-</p> -->
-<p>
-The first step is to open up a terminal window. The easiest way to do this is to launch the Spotlight app via the keyboard shortcut <code>{CMD-SPACE}</code>, then type “terminal”, followed by <code>{ENTER}</code>. <!-- Need to add installation of Homebrew and Xcode Command Line Tools here, then modify the Advanced Setup Guide -->
-</p><blockquote class="blockquote">
-If you haven’t already, this is the perfect time to head over to the <a href="./posts/intro_cli.html">Intro to CLI</a> post for an introduction to the Command Line Interface (CLI or “shell”).
-</blockquote>
-<p></p>
-<p>
-Now, the next thing we need to do is install the Command Line Tools for Xcode. This will ensure that you have the full range of command line tools available to you - a necessary step before <a href="./advanced-setup.html">Advanced Setup</a>. Enter the following command into your terminal window.
-</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> xcode-select <span class="at">--install</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Again, from here on out, we’re assuming that you’re using MacOS… I’ll try to add support for WSL as this site evolves.</p>
+<p>The first step is to open up a terminal window. The easiest way to do this is to launch the Spotlight app via the keyboard shortcut <code>{CMD-SPACE}</code>, then type “terminal”, followed by <code>{ENTER}</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If you haven’t already, this is the perfect time to head over to the <a href="./posts/intro_cli.html">Intro to CLI</a> post for an introduction to the Command Line Interface (CLI or “shell”).</p>
+</div>
+</div>
+<p>Now, the next thing we need to do is install the Command Line Tools for Xcode. This will ensure that you have the full range of command line tools available to you - a necessary step before <a href="./advanced-setup.html">Advanced Setup</a>. Enter the following command into your terminal window.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">xcode-select</span> <span class="at">--install</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <h2 id="text-editors" class="anchored">
 Text Editors
 </h2>
-<p>
-Every programmer has his or her preferred text editor. I use <a href="https://code.visualstudio.com/">VS Code</a>. I used to use <a href="https://www.sublimetext.com/">Sublime Text</a>. I dabble in <code>vim</code> for when I want to quickly edit a config file or a shell script without leaving my Terminal. I don’t recommend <code>vim</code> to beginners. VS Code is free and works great out of the box and is very configurable/extensible. Do a little research for yourself and figure out which text editor might be best for you. Just pick a nice one with some simple features like syntax highlighting and it will make programming/coding a lot more fun…and efficient.
-</p>
-<p>
-If you plan to do the <a href="./advanced-setup.html">Advanced Setup</a>, this would be a good time to stop and head over there before continuing with these steps. If not, feel free to proceed.
-</p>
+<p>Every programmer has his or her preferred text editor. I use <a href="https://code.visualstudio.com/">VS Code</a>. I used to use <a href="https://www.sublimetext.com/">Sublime Text</a>. I dabble in <code>vim</code> for when I want to quickly edit a config file or a shell script without leaving my Terminal. I don’t recommend <code>vim</code> to beginners. VS Code is free and works great out of the box and is very configurable/extensible. Do a little research for yourself and figure out which text editor might be best for you. Just pick a nice one with some simple features like syntax highlighting and it will make programming/coding a lot more fun…and efficient.</p>
+<p>If you plan to do the <a href="./advanced-setup.html">Advanced Setup</a>, this would be a good time to stop and head over there before continuing with these steps.</p>
+<p>If not, feel free to proceed.</p>
 <h2 id="conda" class="anchored">
 Option 1: Installing Python with Anaconda
 </h2>
-<p>
-Though Python comes preinstalled with recent versions of MacOS, I highly recommend using a package and environment manager such as Anaconda (or Miniconda) for managing Python packages and virutal environments (more on these later). You could follow <a href="https://www.anaconda.com/download/#macos">this link</a> to download and install Anaconda with all of it’s bells and whistles. However, since we’re learning the command line, I recommend you go with <a href="https://conda.io/miniconda.html">Miniconda</a>, a lighter-weight version without the Spyder independent development environment (IDE).
-</p>
-<p>
-The only potential downside of installing a version of <code>conda</code> is that Pytorch has recently announced that they are deprecating support for <code>conda</code> packages. Meaning that if you’ve already been using Pytorch, there may be a point in the near future that you need a different option. If you think this might be the case for you, then I suggest giving <code>uv</code> a try (see <a href="#uv">Option 2</a> below).
-</p>
-<p>
-If you go with Miniconda, enter the following commands into your terminal window from your home directory. These come from the <a href="https://docs.anaconda.com/miniconda/install/">Miniconda Quick Command Line Install</a> guide and are current as of 20 December 2024. I’ve added them here so I can explain what’s happening. The first command uses <code>mkdir</code> to create a subdirectory of your home folder called <code>miniconda</code>. The <code>-p</code> flag ensures that no error occurs if the directory already exists and will create any “parent” directories, if necessary. The second command uses <code>curl</code> to download the installation file. The <code>-o</code> option renames the file to the shorter <code>miniconda.sh</code> and downloads that file to the <code>miniconda</code> directory. The third command uses the <code>bash</code> shell to run the <code>miniconda.sh</code> shell script, which will install <strong>miniconda</strong>. The final command cleans up the install file with the <code>rm</code> command (“remove”), since it is no longer needed.
-</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/miniconda3</span>
+<p>Though Python comes preinstalled with recent versions of MacOS, I highly recommend using a package and environment manager such as Anaconda (or Miniconda) for managing Python packages and virutal environments (more on these later). You could follow <a href="https://www.anaconda.com/download/#macos">this link</a> to download and install Anaconda with all of it’s bells and whistles. However, since we’re learning the command line, I recommend you go with <a href="https://conda.io/miniconda.html">Miniconda</a>, a lighter-weight version without the Spyder independent development environment (IDE).</p>
+<p>The only potential downside of installing a version of <code>conda</code> is that Pytorch has recently announced that they are deprecating support for <code>conda</code> packages. Meaning that if you’ve already been using Pytorch, there may be a point in the near future that you need a different option. If you think this might be the case for you, then I suggest giving <code>uv</code> a try (see <a href="#uv">Option 2</a> below).</p>
+<p>If you go with Miniconda, enter the following commands into your terminal window from your home directory. These come from the <a href="https://docs.anaconda.com/miniconda/install/">Miniconda Quick Command Line Install</a> guide and are current as of 20 December 2024. I’ve added them here so I can explain what’s happening. The first command uses <code>mkdir</code> to create a subdirectory of your home folder called <code>miniconda</code>. The <code>-p</code> flag ensures that no error occurs if the directory already exists and will create any “parent” directories, if necessary. The second command uses <code>curl</code> to download the installation file. The <code>-o</code> option renames the file to the shorter <code>miniconda.sh</code> and downloads that file to the <code>miniconda</code> directory. The third command uses the <code>bash</code> shell to run the <code>miniconda.sh</code> shell script, which will install <strong>miniconda</strong>. The final command cleans up the install file with the <code>rm</code> command (“remove”), since it is no longer needed.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/miniconda3</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-arm64.sh <span class="at">-o</span> ~/miniconda3/miniconda.sh</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">bash</span> ~/miniconda3/miniconda.sh <span class="at">-b</span> <span class="at">-u</span> <span class="at">-p</span> ~/miniconda3</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span> ~/miniconda3/miniconda.sh</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>
-Follow any prompts that arise during the install process. Once this is complete, the next thing you’ll want to do is restart your terminal. Then test whether the install worked by entering a <code>conda</code> command (e.g.&nbsp;<code>conda list</code>). If this produces an error, then there are a couple of possibilities as to why this may not have worked, most of which should be fixed after the next step.
-</p>
-<p>
-The next step is to check your shell config file, either <code>~/.bashrc</code> or <code>~/.zshrc</code>. Open this file in <code>nano</code> or your favorite graphical text editor. The Miniconda install process should have appended the following line to your “rc” file: <code>export PATH=“~/miniconda3/bin:$PATH”</code>. This command prepends the path to the Miniconda functions to your system path environment variable. If this is not the case, then you should add this line manually, save your changes and reload your shell (open a new terminal window or source your <code>rc</code> file).
-</p>
+<p>Follow any prompts that arise during the install process. Once this is complete, the next thing you’ll want to do is restart your terminal. Then test whether the install worked by entering a <code>conda</code> command (e.g.&nbsp;<code>conda list</code>). If this produces an error, then there are a couple of possibilities as to why this may not have worked, most of which should be fixed after the next step.</p>
+<p>The next step is to check your shell config file, either <code>~/.bashrc</code> or <code>~/.zshrc</code>. Open this file in <code>nano</code> or your favorite graphical text editor. The Miniconda install process should have appended the following line to your “rc” file: <code>export PATH=“~/miniconda3/bin:$PATH”</code>. This command prepends the path to the Miniconda functions to your system path environment variable. If this is not the case, then you should add this line manually, save your changes and reload your shell (open a new terminal window or source your <code>rc</code> file).</p>
 <h2 id="uv" class="anchored">
 Option 2: Installing Python with uv
 </h2>
-<p>
-Another option for installing a managed version of Python is <code>uv</code>. The recommended way to install this package is via the following command from the <a href="https://docs.astral.sh/uv/getting-started/installation/">uv Installation guide</a>, and is current as of 20 December 2024.
-</p>
-<p>
-This command uses <code>curl</code> to download the installation shell script, then “pipes” the file to the <code>sh</code> shell, which runs the script.
-</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-LsSf</span> https://astral.sh/uv/install.sh <span class="kw">|</span> <span class="fu">sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>
-Follow any instructions during the installation process. Once it is complete, close and reopen your terminal window to “restart” your shell and then run the following command to install the latest stable version of Python.
-</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> python install</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>
-If you need to install a specific version of Python for compatibility with existing code or a tutorial you’re following, then use the following command and change the version number to match your needs.
-</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode zsh code-with-copy"><code class="sourceCode zsh"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> python install 3.12</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Another option for installing a managed version of Python is <code>uv</code>. The recommended way to install this package is via the following command from the <a href="https://docs.astral.sh/uv/getting-started/installation/">uv Installation guide</a>, and is current as of 20 December 2024.</p>
+<p>This command uses <code>curl</code> to download the installation shell script, then “pipes” the file to the <code>sh</code> shell, which runs the script.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">-LsSf</span> https://astral.sh/uv/install.sh <span class="kw">|</span> <span class="fu">sh</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Follow any instructions during the installation process. Once it is complete, close and reopen your terminal window to “restart” your shell and then run the following command to install the latest stable version of Python.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> python install</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you need to install a specific version of Python for compatibility with existing code or a tutorial you’re following, then use the following command and change the version number to match your needs.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> python install 3.12</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <h2 id="congrats" class="anchored">
 Congrats!
 </h2>
-<p>
-You’ve completed Basic Setup. If you haven’t already, I recommend proceeding to the <a href="./advanced-setup.html">Advanced Setup</a> guide… or go straight to learning more about the command line, shell scripting, and Python!
-</p>
+<p>You’ve completed Basic Setup. If you haven’t already, I recommend proceeding to the <a href="./advanced-setup.html">Advanced Setup</a> guide… or go straight to learning more about the command line, shell scripting, and Python!</p>
 
 
 
