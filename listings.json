@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/install-python.html",
       "/posts/intro_cli.html"
     ]
   }

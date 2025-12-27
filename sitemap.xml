@@ -2,26 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://radml.wfwiggins.com/resources.html</loc>
-    <lastmod>2025-12-14T13:55:15.158Z</lastmod>
+    <lastmod>2025-12-27T12:56:11.204Z</lastmod>
   </url>
   <url>
     <loc>https://radml.wfwiggins.com/advanced-setup.html</loc>
-    <lastmod>2025-12-14T13:55:13.775Z</lastmod>
+    <lastmod>2025-12-27T12:56:09.769Z</lastmod>
   </url>
   <url>
     <loc>https://radml.wfwiggins.com/index.html</loc>
-    <lastmod>2025-12-14T13:55:12.819Z</lastmod>
+    <lastmod>2025-12-27T12:56:08.803Z</lastmod>
   </url>
   <url>
     <loc>https://radml.wfwiggins.com/posts/intro_cli.html</loc>
-    <lastmod>2025-12-14T13:55:11.602Z</lastmod>
+    <lastmod>2025-12-27T12:56:07.155Z</lastmod>
+  </url>
+  <url>
+    <loc>https://radml.wfwiggins.com/posts/install-python.html</loc>
+    <lastmod>2025-12-27T12:56:08.312Z</lastmod>
   </url>
   <url>
     <loc>https://radml.wfwiggins.com/about.html</loc>
-    <lastmod>2025-12-14T13:55:13.189Z</lastmod>
+    <lastmod>2025-12-27T12:56:09.194Z</lastmod>
   </url>
   <url>
     <loc>https://radml.wfwiggins.com/setup.html</loc>
-    <lastmod>2025-12-14T13:55:14.649Z</lastmod>
+    <lastmod>2025-12-27T12:56:10.643Z</lastmod>
   </url>
 </urlset>
