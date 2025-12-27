@@ -3,7 +3,8 @@
     "listing": "/index.html",
     "items": [
       "/posts/install-python.html",
-      "/posts/intro_cli.html"
+      "/posts/intro_cli.html",
+      "/posts/install-pytorch.html"
     ]
   }
 ]

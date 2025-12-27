@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Walter Wiggins">
-<meta name="dcterms.date" content="2024-12-20">
+<meta name="dcterms.date" content="2025-12-27">
 
-<title>Radiology ML Tutorials - Installing Pytorch with Light-the-Torch</title>
+<title>Radiology ML Tutorials - Managing Projects and Installing Pytorch with uv and light-the-torch</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -138,7 +172,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Installing Pytorch with Light-the-Torch</h1>
+      <h1 class="title">Managing Projects and Installing Pytorch with <code>uv</code> and <code>light-the-torch</code></h1>
                       </div>
   </div>
     
@@ -155,7 +189,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">December 20, 2024</p>
+        <p class="date">December 27, 2025</p>
       </div>
     </div>
     
@@ -173,9 +207,110 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>Light-the-torch is a command line utility wrapper for <code>pip</code>, the standard Python package installation package.</p>
+<p>Let’s dive into <code>uv</code> by creating a new <strong>project</strong>. Projects are a way to manage your package <strong>dependencies</strong> for a coding project. We’ll start by installing the dependencies for the first radiology-oriented <strong>natural language processing (NLP)</strong> tutorial I presented in the RSNA Deep Learning Lab at the 2021 RSNA annual meeting.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/uv-init.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Initializing a <code>uv</code> project</figcaption>
+</figure>
+</div>
+<section id="initializing-a-uv-project" class="level2">
+<h2 class="anchored" data-anchor-id="initializing-a-uv-project">Initializing a <code>uv</code> Project</h2>
+<p>In the screenshot above, I’ve run the <code>uv init</code> command to initialize a project called “rnn-tutorial”. This command creates a new directory named <code>rnn-tutorial</code>. I then change directory or <code>cd</code> into the new directory and inspect it’s contents. You’ll notice that I’ve run two separate commands to inspect the files. The first command <code>ls</code> lists the contents of the directory. By default, this command excludes <strong>dotfiles</strong>, which are files named starting with a <code>.</code>. The second command <code>la</code> is an <strong>alias</strong> to the <code>ls</code> command with the <code>-a</code> flag that lists all files in a directory, including dotfiles.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> init rnn-tutorial</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> rnn-tutorial</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-a</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Run these commands one-by-one in your terminal to follow along.</p>
+<p>The first object you see listed in the directory is a subdirectory named <code>.git</code>. This is where all the files <code>git</code> uses for version control will be stored. Any files or patterns listed in the <code>.gitignore</code> file below <code>.git</code> will not be tracked by git. <code>uv</code> generates a default template that excludes files generated by Python (the ones you don’t want to track) and virtual environments of the type <code>.venv</code>, which are not in our project directory yet but will be created shortly.</p>
+<p>After those, a <code>.python-verison</code> file is created to specify the Python version used in the project. An example Python script named <code>hello.py</code> is included. A <code>pyproject.toml</code> file is generated that uses the TOML format to list information about the project, including dependencies, in machine-readable format. Finally, a blank <code>README.md</code> file is generated in which you should use Markdown formatting to include human-readable details about your project. If you commit your project to an online repository, such as GitHub or GitLab, then the README will be displayed on the repository page.</p>
+<p>Run the <code>cat</code> command followed by the file name in your terminal to inspect the contents of any of these files.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/uv-project-boilerplate.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption"><code>uv</code> Project Boilerplate</figcaption>
+</figure>
+</div>
+</section>
+<section id="running-a-python-script" class="level2">
+<h2 class="anchored" data-anchor-id="running-a-python-script">Running a Python Script</h2>
+<p>Let’s run the example Python script <code>hello.py</code> by running the following command in your terminal.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run hello.py</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This command will use the default Python interpreter installed on your system to run the script. Since we haven’t yet created a virtual environment for this project, it will also do that and create a <code>uv.lock</code> file.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Caution
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You should <strong>NOT</strong> edit the <code>uv.lock</code> file directly. This will be managed by <code>uv</code> and contains precise dependencies for recreating your project on a different machine.</p>
+</div>
+</div>
+</section>
+<section id="installing-pytorch-and-fast.ai-with-uv-and-light-the-torch" class="level2">
+<h2 class="anchored" data-anchor-id="installing-pytorch-and-fast.ai-with-uv-and-light-the-torch">Installing PyTorch and fast.ai with <code>uv</code> and <code>light-the-torch</code></h2>
+<p><a href="https://pytorch.org/">PyTorch</a> is one of the most utilized software libraries for AI development. It also serves as the backbone for the <code>fastai</code> library. <a href="https://docs.fast.ai/">fast.ai</a> is a multi-level framework developed by Jeremy Howard, Sylvain Gugger, and the fast.ai community that allows you to start with high-level commands with strong, empirical default settings that can train a deep learning model in just a few lines of code. As you learn more about <code>fastai</code>, you can progressively go deeper into the mid-level and low-level <strong>application programming interfaces (APIs)</strong> for more precise control over model development.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The fast.ai book is freely available for download <a href="https://github.com/fastai/fastbook">via GitHub</a> and also available in print form. I highly recommend the book and the associated courses (on the fast.ai website) for those who want to learn more about AI and deep learning.</p>
+</div>
+</div>
+<p>We will first install PyTorch with a lightweight “wrapper” for <code>pip</code> called <code>light-the-torch</code> that simplifies the process of installing PyTorch and its dependencies to leverage the computing resources on your specific machine. You can read the documentation (or docs) for <code>ltt</code> here: <a href="https://pypi.org/project/light-the-torch/">ltt docs</a>.</p>
+<p>We’ll start by adding <code>ltt</code> to our project, then run <code>uv sync</code> to update our <code>venv</code> before using <code>uv run</code> to install PyTorch with <code>ltt</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add light-the-torch</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> sync</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run ltt install torch</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>At the end of the output from the last command, you should see the successful installation of a number of packages, including a version of PyTorch, e.g.&nbsp;<code>torch-2.9.1</code>. Make a note of that version, then run the following command to ensure <code>torch</code> is added as a dependency to your project.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace the version number below with the version installed on your system</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"torch&gt;=2.9.1"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And, finally, we can now add <code>fastai</code> to our project.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add fastai</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To test that both the PyTorch and fast.ai libraries are properly installed on your system, create a new file in your project folder and copy-paste the following code into it. Assuming you have the VS Code editor installed, you can run the following command to open your project folder in Code: <code>code .</code>. Then create a new file called <code>test.py</code>, paste in the code, and save the file.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="im">import</span> torch</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"PyTorch is installed: </span><span class="sc">{</span>torch<span class="sc">.</span>__version__<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"MPS available: </span><span class="sc">{</span>torch<span class="sc">.</span>backends<span class="sc">.</span>mps<span class="sc">.</span>is_available()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ModuleNotFoundError</span>:</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"PyTorch is NOT installed"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">try</span>:</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="im">import</span> fastai</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f"fastai is installed: </span><span class="sc">{</span>fastai<span class="sc">.</span>__version__<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">except</span> <span class="pp">ModuleNotFoundError</span>:</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="st">"fastai is NOT installed"</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    main()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now, go back to your terminal (or open on in Code) and run the script with <code>uv run</code>. If you don’t get any errors and the package versions print out, then everything was successful!</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Apple Metal Performance Shaders (MPS) is a backend for PyTorch available on Macs with an M-series GPU. If the check in the file above prints out “False”, then it’s likely that you have an older Mac and will only be able to utilize the CPU.</p>
+</div>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
