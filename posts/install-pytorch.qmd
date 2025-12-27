@@ -2,6 +2,10 @@
 title: "Managing Projects and Installing Pytorch with `uv` and `light-the-torch`"
 author: "Walter Wiggins"
 date: "2025-12-27"
+categories:
+    - basics
+    - setup
+    - python
 ---
 
 Let's dive into `uv` by creating a new **project**. Projects are a way to manage your package **dependencies** for a coding project. We'll start by installing the dependencies for the first radiology-oriented **natural language processing (NLP)** tutorial I presented in the RSNA Deep Learning Lab at the 2021 RSNA annual meeting.

@@ -2,6 +2,8 @@
 title: "Introduction to the Command Line Interface (CLI)"
 author: "Walter Wiggins"
 date: "2024-12-19"
+categories:
+    - basics
 ---
 Before you dig into Python and get to working on your algorithms, I
 highly recommend that you get familiar with the **command line** (variably referred

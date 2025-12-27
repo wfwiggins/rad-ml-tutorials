@@ -1,8 +1,11 @@
 ---
 title: "Installing Python with _uv_"
 author: "Walter Wiggins"
-date: "2024-02-26"
-date-modified: "2025-12-23"
+date: "2025-02-26"
+categories:
+    - basics
+    - setup
+    - python
 ---
 
 In this post, we'll cover a new-ish command line tool called `uv` that serves as both a Python **package manager** and project management tool. We'll utilize this to install Python and set up an example coding project.
