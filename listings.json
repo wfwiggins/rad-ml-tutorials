@@ -4,7 +4,8 @@
     "items": [
       "/posts/intro_cli.html",
       "/posts/install-python.html",
-      "/posts/install-pytorch.html"
+      "/posts/install-pytorch.html",
+      "/posts/RNNs_tutorial.html"
     ]
   }
 ]

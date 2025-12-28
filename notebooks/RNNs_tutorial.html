@@ -1,0 +1,1736 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Radiology ML Tutorials - RSNA 2021: Deep Learning Lab</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Radiology ML Tutorials</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-local-dev-setup" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Local Dev Setup</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-local-dev-setup">    
+        <li>
+    <a class="dropdown-item" href="../setup.html" rel="" target="">
+ <span class="dropdown-text">Basic Setup Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../advanced-setup.html" rel="" target="">
+ <span class="dropdown-text">Advanced Setup</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../resources.html" rel="" target="">
+ <span class="menu-text">Educational Resources</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html" rel="" target="">
+ <span class="menu-text">Walter Wiggins, MD, PhD</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/wfwiggins" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/walterfwiggins" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../index.xml" rel="" target=""><i class="bi bi-rss" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><strong>RSNA 2021: Deep Learning Lab</strong></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p><a href="https://colab.research.google.com/github/RSNA/AI-Deep-Learning-Lab-2023/blob/main/sessions/nlp-text-classification/RSNA21_RNNs_with_Tensorboard.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
+<section id="basics-of-information-extraction-from-radiology-reports" class="level2">
+<h2 class="anchored" data-anchor-id="basics-of-information-extraction-from-radiology-reports"><strong>Basics of Information Extraction from Radiology Reports</strong></h2>
+<p>In this demonstration, we will utilize techniques of <em>natural language processing</em> (NLP) to train a classifier, which will analyze the text of radiology reports for chest radiographs to predict whether a report is <strong>normal</strong> or <strong>abnormal</strong>.</p>
+<section id="code" class="level3">
+<h3 class="anchored" data-anchor-id="code">Code</h3>
+<p>We will utilize the <a href="https://docs.fast.ai/">fast.ai v2 library</a>, written primarily by Jeremy Howard and Sylvain Gugger (with help from many others). It is written in the <a href="https://www.python.org/">Python programming language</a> and built on top of the <a href="https://www.pytorch.org/">PyTorch deep learning library</a>.</p>
+<p>The demonstration in this notebook relies heavily on examples from the <code>fast.ai</code> book, <em>Deep Learning for Coders with fastai and PyTorch: AI Applications without a PhD</em> by Jeremy Howard and Sylvain Gugger, which was written entirely in Jupyter notebooks, which are <a href="https://github.com/fastai/fastbook">freely available for download on GitHub</a>. A print copy of the book can be purchased from Amazon.</p>
+</section>
+<section id="data" class="level3">
+<h3 class="anchored" data-anchor-id="data">Data</h3>
+<p>The data is obtained from the National Library of Medicine’s Open-i service. We utilize the radiology reports from the <a href="https://openi.nlm.nih.gov/faq#collection">Indiana University Chest X-ray Dataset</a> for this demonstration.</p>
+<blockquote class="blockquote">
+<p><em>Reference:</em> Demner-Fushman D, Kohli MD, Rosenman MB, Shooshan SE, Rodriguez L, Antani S, Thoma GR, McDonald CJ. Preparing a collection of radiology examinations for distribution and retrieval. J Am Med Inform Assoc. 2016 Mar;23(2):304-10. doi: 10.1093/jamia/ocv080. Epub 2015 Jul 1.</p>
+</blockquote>
+</section>
+<section id="developers" class="level3">
+<h3 class="anchored" data-anchor-id="developers">Developers</h3>
+<ul>
+<li>Walter F. Wiggins, MD, PhD - Duke University Hospital, Durham, NC, USA</li>
+<li>Felipe Kitamura, MD - UNIFESP, Sao Paulo, Brasil</li>
+<li>Igor Santos, MD - UNIFESP, Sao Paulo, Brasil</li>
+<li>Luciano M. Prevedello, MD, MPH - Ohio State University, Columbus, OH, USA</li>
+</ul>
+</section>
+</section>
+<section id="downloading-the-data" class="level1">
+<h1>Downloading the Data</h1>
+<p>When you run the following cell, the <a href="https://openi.nlm.nih.gov/faq#collection">NLM Open-i “Indiana University Chest X-ray Reports” dataset</a> will be downloaded.</p>
+<div class="cell" data-cellview="form" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl <span class="op">-</span>s https:<span class="op">//</span>openi.nlm.nih.gov<span class="op">/</span>imgs<span class="op">/</span>collections<span class="op">/</span>NLMCXR_reports.tgz <span class="op">|</span> tar xvz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="reformatting-the-data" class="level1">
+<h1>Reformatting the Data</h1>
+<p>Each of the reports is stored in <em>extensible markup language</em> (XML) format. In order to work with the report text data more easily, we will extract the data and put it into a <code>pandas.DataFrame</code>, which is a tabular data structure.</p>
+<p>The XML metadata contains <a href="https://www.ncbi.nlm.nih.gov/mesh/">MeSH terms</a> for each report. We will use these to create the <em>label</em> for each report in our dataset. These labels will serve as the targets for training our classifier to predict whether the report is <strong>normal</strong> or <strong>abnormal</strong>.</p>
+<div class="cell" data-cellview="form" data-outputid="488d6a30-ca87-43af-9736-b913582c47a8" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xmltodict</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.basics <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.text.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> xml_parse(f):</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(f) <span class="im">as</span> xml:</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        report_dict <span class="op">=</span> xmltodict.parse(xml.read())</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    xml.close()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> report_dict</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_label(report):</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> L(report[<span class="st">'eCitation'</span>][<span class="st">'MeSH'</span>][<span class="st">'major'</span>])</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">'normal'</span> <span class="cf">if</span> label[<span class="dv">0</span>].lower() <span class="op">==</span> <span class="st">'normal'</span> <span class="cf">else</span> <span class="st">'abnormal'</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_text(report):</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    text_dict <span class="op">=</span> {}</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'id'</span>] <span class="op">=</span> report[<span class="st">'eCitation'</span>][<span class="st">'IUXRId'</span>][<span class="st">'@id'</span>]</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> report[<span class="st">'eCitation'</span>][<span class="st">'MedlineCitation'</span>][<span class="st">'Article'</span>][<span class="st">'Abstract'</span>][<span class="st">'AbstractText'</span>]</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    findings <span class="op">=</span> text[<span class="dv">2</span>][<span class="st">'#text'</span>] <span class="cf">if</span> <span class="st">'#text'</span> <span class="kw">in</span> text[<span class="dv">2</span>] <span class="cf">else</span> <span class="st">''</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'findings'</span>] <span class="op">=</span> findings</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    impression <span class="op">=</span> text[<span class="dv">3</span>][<span class="st">'#text'</span>] <span class="cf">if</span> <span class="st">'#text'</span> <span class="kw">in</span> text[<span class="dv">3</span>] <span class="cf">else</span> <span class="st">''</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'impression'</span>] <span class="op">=</span> impression</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'full-text'</span>] <span class="op">=</span> <span class="st">' '</span>.join([findings, impression])</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> text_dict</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_report(report):</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> get_label(report)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    report_dict <span class="op">=</span> get_text(report)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    report_dict[<span class="st">'label'</span>] <span class="op">=</span> label</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> report_dict</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>fps <span class="op">=</span> L(glob.glob(<span class="st">'./ecgen-radiology/*'</span>))</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>reports <span class="op">=</span> fps.<span class="bu">map</span>(xml_parse)</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>reports_df <span class="op">=</span> pd.DataFrame(reports.<span class="bu">map</span>(process_report)).set_index(<span class="st">'id'</span>).sort_index()</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'# of reports:'</span>, reports_df.shape[<span class="dv">0</span>])</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>reports_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># of reports: 3955
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">findings</th>
+<th data-quarto-table-cell-role="th">impression</th>
+<th data-quarto-table-cell-role="th">full-text</th>
+<th data-quarto-table-cell-role="th">label</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1</td>
+<td>The cardiac silhouette and mediastinum size are within normal limits. There is no pulmonary edema. There is no focal consolidation. There are no XXXX of a pleural effusion. There is no evidence of pneumothorax.</td>
+<td>Normal chest x-XXXX.</td>
+<td>The cardiac silhouette and mediastinum size are within normal limits. There is no pulmonary edema. There is no focal consolidation. There are no XXXX of a pleural effusion. There is no evidence of pneumothorax. Normal chest x-XXXX.</td>
+<td>normal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">10</td>
+<td>The cardiomediastinal silhouette is within normal limits for size and contour. The lungs are normally inflated without evidence of focal airspace disease, pleural effusion, or pneumothorax. Stable calcified granuloma within the right upper lung. No acute bone abnormality..</td>
+<td>No acute cardiopulmonary process.</td>
+<td>The cardiomediastinal silhouette is within normal limits for size and contour. The lungs are normally inflated without evidence of focal airspace disease, pleural effusion, or pneumothorax. Stable calcified granuloma within the right upper lung. No acute bone abnormality.. No acute cardiopulmonary process.</td>
+<td>abnormal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">100</td>
+<td>Both lungs are clear and expanded. Heart and mediastinum normal.</td>
+<td>No active disease.</td>
+<td>Both lungs are clear and expanded. Heart and mediastinum normal. No active disease.</td>
+<td>normal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1000</td>
+<td>There is XXXX increased opacity within the right upper lobe with possible mass and associated area of atelectasis or focal consolidation. The cardiac silhouette is within normal limits. XXXX opacity in the left midlung overlying the posterior left 5th rib may represent focal airspace disease. No pleural effusion or pneumothorax. No acute bone abnormality.</td>
+<td>1. Increased opacity in the right upper lobe with XXXX associated atelectasis may represent focal consolidation or mass lesion with atelectasis. Recommend chest CT for further evaluation. 2. XXXX opacity overlying the left 5th rib may represent focal airspace disease.</td>
+<td>There is XXXX increased opacity within the right upper lobe with possible mass and associated area of atelectasis or focal consolidation. The cardiac silhouette is within normal limits. XXXX opacity in the left midlung overlying the posterior left 5th rib may represent focal airspace disease. No pleural effusion or pneumothorax. No acute bone abnormality. 1. Increased opacity in the right upper lobe with XXXX associated atelectasis may represent focal consolidation or mass lesion with atelectasis. Recommend chest CT for further evaluation. 2. XXXX opacity overlying the left 5th rib may rep...</td>
+<td>abnormal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1001</td>
+<td>Interstitial markings are diffusely prominent throughout both lungs. Heart size is normal. Pulmonary XXXX normal.</td>
+<td>Diffuse fibrosis. No visible focal acute disease.</td>
+<td>Interstitial markings are diffusely prominent throughout both lungs. Heart size is normal. Pulmonary XXXX normal. Diffuse fibrosis. No visible focal acute disease.</td>
+<td>abnormal</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="exploring-the-data" class="level1">
+<h1>Exploring the data</h1>
+<p>Let’s look through a little more of the data to get a feel for what we’re working with and how we might want to design the subsequent model training experiments.</p>
+<p>We’ll then take a look at how many normals and abnormals we have to work with.</p>
+<div class="cell" data-cellview="form" data-outputid="aa1dd305-8069-4c86-a341-36bd50c5c6e5" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run this cell several times to view random samples of the data</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>reports_df.sample(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">findings</th>
+<th data-quarto-table-cell-role="th">impression</th>
+<th data-quarto-table-cell-role="th">full-text</th>
+<th data-quarto-table-cell-role="th">label</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">id</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3065</td>
+<td>Lungs are XXXX without focal airspace disease. No pleural effusions or pneumothoraces. heart size is normal status post XXXX sternotomy. Degenerative changes in the thoracic spine. incidental note is XXXX of previous left rotator XXXX repair.</td>
+<td>XXXX lungs without focal consolidation.</td>
+<td>Lungs are XXXX without focal airspace disease. No pleural effusions or pneumothoraces. heart size is normal status post XXXX sternotomy. Degenerative changes in the thoracic spine. incidental note is XXXX of previous left rotator XXXX repair. XXXX lungs without focal consolidation.</td>
+<td>abnormal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2639</td>
+<td>The cardiomediastinal silhouette is within normal limits of size and appearance. The pulmonary vascularity is unremarkable. Lungs are expanded and clear of airspace disease. Negative for pneumothorax or pleural effusion. There is mild midthoracic dextroscoliosis, with the XXXX XXXX otherwise grossly intact.</td>
+<td>No acute cardiopulmonary abnormality.</td>
+<td>The cardiomediastinal silhouette is within normal limits of size and appearance. The pulmonary vascularity is unremarkable. Lungs are expanded and clear of airspace disease. Negative for pneumothorax or pleural effusion. There is mild midthoracic dextroscoliosis, with the XXXX XXXX otherwise grossly intact. No acute cardiopulmonary abnormality.</td>
+<td>abnormal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1060</td>
+<td>The cardiac contours are normal. The lungs are clear. Thoracic spondylosis. Mild dextrocurvature the spine.</td>
+<td>No acute process.</td>
+<td>The cardiac contours are normal. The lungs are clear. Thoracic spondylosis. Mild dextrocurvature the spine. No acute process.</td>
+<td>abnormal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2073</td>
+<td></td>
+<td>Heart size is normal. Lungs are clear. Tortuous aorta. Prominent first ribs. No nodules, masses, or adenopathy.</td>
+<td>Heart size is normal. Lungs are clear. Tortuous aorta. Prominent first ribs. No nodules, masses, or adenopathy.</td>
+<td>abnormal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3942</td>
+<td>Cardiac silhouette is at the upper limits of normal. Lungs are clear bilaterally. There is no pleural effusion or pneumothorax. Interval worsening of the moderate thoracolumbar dextroscoliosis with mild exaggeration of normal thoracic kyphosis.</td>
+<td>1. No acute cardiopulmonary process. 2. Interval worsening of moderate thoracolumbar dextroscoliosis. .</td>
+<td>Cardiac silhouette is at the upper limits of normal. Lungs are clear bilaterally. There is no pleural effusion or pneumothorax. Interval worsening of the moderate thoracolumbar dextroscoliosis with mild exaggeration of normal thoracic kyphosis. 1. No acute cardiopulmonary process. 2. Interval worsening of moderate thoracolumbar dextroscoliosis. .</td>
+<td>abnormal</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Here are some of the things you may have noticed about the data, as you reviewed it: - Some reports only have an Impression (i.e.&nbsp;no separate Findings section) - Many reports contain blocks of “XXXX” text. This is due to the fact that these reports were anonymized prior to releasing them as an open data set. These blocks likely represent <em>named entities</em> or dates. - As expected, there is wide variation in the length of these chest radiograph reports.</p>
+<p>Importantly, there are some reports where the “Impression” states something along the lines of “No acute cardiopulmonary abnormality” but the label is “abnormal”. It seems like this is usually due to a chronic incidental finding or artifact that is mentioned in the “Findings”, but isn’t included in the “Impression”.</p>
+<blockquote class="blockquote">
+<p>We’ll revisit this point later when we’re deciding which text from the report we want to use to train our classifier.</p>
+</blockquote>
+<p>Next, let’s count how many of each label we have.</p>
+<div class="cell" data-cellview="form" data-outputid="9d36aec1-0a46-405f-8b33-4fb7e074d1c9" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>label_counts <span class="op">=</span> reports_df.label.value_counts()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Abnormal:'</span>, label_counts[<span class="st">'abnormal'</span>])</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Normal:'</span>, label_counts[<span class="st">'normal'</span>])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>label_counts.plot.bar()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Abnormal: 2564
+Normal: 1391
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="RNNs_tutorial_files/figure-html/cell-5-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>As we see in the bar graph above, there are almost twice as many abnormal reports as there are normal reports. This will be important to remember as we partition our data into training, validation, and test sets.</p>
+<p>In fact, we’ll go ahead and split off (“hold out”) the test set right now to ensure our model is not exposed to it until the very end.</p>
+<p>We’ll set it up such that the our test set is 15% of our full data set and keep the relative percentage of labels the same as in our full dataset.</p>
+<div class="cell" data-cellview="form" data-outputid="04ee5863-2362-450a-a36a-676f0a715190" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>train_val, test_df <span class="op">=</span> train_test_split(reports_df, test_size<span class="op">=</span><span class="fl">0.15</span>, stratify<span class="op">=</span>reports_df.label.values)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Test set size:'</span>, test_df.shape[<span class="dv">0</span>])</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>test_counts <span class="op">=</span> test_df.label.value_counts()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Abnormal:'</span>, test_counts[<span class="st">'abnormal'</span>])</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Normal:'</span>, test_counts[<span class="st">'normal'</span>])</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>test_counts.plot.bar()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test set size: 594
+Abnormal: 385
+Normal: 209
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="RNNs_tutorial_files/figure-html/cell-6-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="language-modeling" class="level1">
+<h1>Language Modeling</h1>
+<p>The types of algorithms we use in NLP work with with numbers, not text. Therefore, we need a way to convert text into numbers. We also want a way for those numbers to contain a little more information about the text they represent. Here, we’ll describe the steps in preparing our text for <em>language modeling</em>.</p>
+<section id="tokenization" class="level2">
+<h2 class="anchored" data-anchor-id="tokenization">Tokenization</h2>
+<p><em>Tokenization</em> is the process by which we split text into chunks or <em>tokens</em>. An individual token could be a sentence or phrase, a word, a part of a word, or a single character. Most often, we choose to tokenize at the word or sub-word level.</p>
+<p>Each token is assigned a sequential integer value and the collection of token-integer pairs is called our <em>vocabulary</em>.</p>
+<div class="cell" data-cellview="form" data-outputid="e9e03007-fe26-42ff-c1ca-faf564bb5553" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#@title **Word Tokenization**</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>spacy <span class="op">=</span> WordTokenizer()</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> train_val.iloc[<span class="dv">0</span>][<span class="st">'full-text'</span>]</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Original text:'</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>tkns <span class="op">=</span> first(spacy([text]))</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'After word tokenization:'</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coll_repr(tkns))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Original text:
+The XXXX examination consists of frontal and lateral radiographs of the chest. The cardiac silhouette is not enlarged. There has been apparent interval increase in low density convexity at the left cardiophrenic XXXX. Calcified granuloma is again seen in the right upper lobe. There is no consolidation, pleural effusion or pneumothorax. Increased size of density in the left cardiophrenic XXXX. Primary differential considerations include increased size of prominent epicardial fat, pericardial mass, pleural mass or cardiac aneurysm. CT chest with contrast is recommended. These findings and recommendations were discussed XXXX. XXXX by Dr. XXXX XXXX telephone at XXXX p.m. XXXX/XXXX. Dr. XXXX&lt;XXXX&gt;technologist receipt of the results.
+
+After word tokenization:
+['The', 'XXXX', 'examination', 'consists', 'of', 'frontal', 'and', 'lateral', 'radiographs', 'of', 'the', 'chest', '.', 'The', 'cardiac', 'silhouette', 'is', 'not', 'enlarged', '.', 'There', 'has', 'been', 'apparent', 'interval', 'increase', 'in', 'low', 'density', 'convexity', 'at', 'the', 'left', 'cardiophrenic', 'XXXX', '.', 'Calcified', 'granuloma', 'is', 'again', 'seen', 'in', 'the', 'right', 'upper', 'lobe', '.', 'There', 'is', 'no', 'consolidation', ',', 'pleural', 'effusion', 'or', 'pneumothorax', '.', 'Increased', 'size', 'of', 'density', 'in', 'the', 'left', 'cardiophrenic', 'XXXX', '.', 'Primary', 'differential', 'considerations', 'include', 'increased', 'size', 'of', 'prominent', 'epicardial', 'fat', ',', 'pericardial', 'mass', ',', 'pleural', 'mass', 'or', 'cardiac', 'aneurysm', '.', 'CT', 'chest', 'with', 'contrast', 'is', 'recommended', '.', 'These', 'findings', 'and', 'recommendations', 'were', 'discussed', 'XXXX', '.', 'XXXX', 'by', 'Dr.', 'XXXX', 'XXXX', 'telephone', 'at', 'XXXX', 'p.m.', 'XXXX', '/', 'XXXX', '.', 'Dr.', 'XXXX', '&lt;', 'XXXX', '&gt;', 'technologist', 'receipt', 'of', 'the', 'results', '.']</code></pre>
+</div>
+</div>
+</section>
+<section id="added-features-from-fast.ai" class="level2">
+<h2 class="anchored" data-anchor-id="added-features-from-fast.ai">Added features from fast.ai</h2>
+<p>You’ll notice some odd-appearing tokens in the output from the next cell. These are special tokens that indicate certain things about the text. - <code>'xxbos'</code> indicates the beginning of the text <em>stream</em> - <code>'xxmaj'</code> indicates that the following character was capitalized before fast.ai lowered it - <code>'xxrep'</code> followed by <code>'4', 'x'</code> means that <code>'x'</code> is repeated 4 times…the <code>XXXX</code> in the reports is a product of the <em>anonymization</em> process that the team who generated the dataset used</p>
+<p>These special tokens enrich the data while reducing the vocab by eliminating redundant upper and lower case variants of individual words.</p>
+<div class="cell" data-cellview="form" data-outputid="893d97ff-b934-4e20-f50f-3a0b1449e16b" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#@title **fast.ai Tokenization**</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>tkn <span class="op">=</span> Tokenizer(spacy)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>toks <span class="op">=</span> tkn(text)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coll_repr(toks, <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(#164) ['xxbos', 'xxmaj', 'the', 'xxrep', '4', 'x', 'examination', 'consists', 'of', 'frontal', 'and', 'lateral', 'radiographs', 'of', 'the'...]</code></pre>
+</div>
+</div>
+</section>
+<section id="numericalization" class="level2">
+<h2 class="anchored" data-anchor-id="numericalization">Numericalization</h2>
+<p>After converting text to tokens, the next step is to convert each unique token to a number.</p>
+<p>For language modeling, we should do this on all of the text that we might use for training and validation. So we’ll carry this out on the combined <strong>Findings</strong> and <strong>Impression</strong> for each of our reports and tokenize the text to define our <em>vocabulary</em>. Each token in the vocabulary will be identified by a unique number.</p>
+<div class="cell" data-cellview="form" data-outputid="e22315ca-7819-451b-b03e-72a295ca7cdf" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>txts <span class="op">=</span> L(train_val[<span class="st">'full-text'</span>].to_list())</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>toks <span class="op">=</span> txts.<span class="bu">map</span>(tkn)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> Numericalize()</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>num.setup(toks)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>coll_repr(num.vocab, <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>"(#1192) ['xxunk', 'xxpad', 'xxbos', 'xxeos', 'xxfld', 'xxrep', 'xxwrep', 'xxup', 'xxmaj', '.', 'no', 'the', 'is', 'are', 'normal', ',', '4', 'x', 'of', 'and'...]"</code></pre>
+</div>
+</div>
+<p>As you can see above, we have 1,192 tokens in our vocabulary. The special tokens from <code>fast.ai</code> appear first, followed by every other token in order of decreasing frequency. By default, <code>fast.ai</code> only includes tokens that appear at least 3 times in the <em>corpus</em> (collection of texts).</p>
+<div class="cell" data-cellview="form" data-outputid="a79d4c2d-fe68-4a9f-f26a-748d262b19e8" data-execution_count="19">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nums <span class="op">=</span> num(toks[<span class="dv">0</span>][:<span class="dv">14</span>])</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(nums)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">' '</span>.join(num.vocab[i] <span class="cf">for</span> i <span class="kw">in</span> nums))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>TensorText([  2,   8,  11,   5,  16,  17, 162, 314,  18, 178,  19,  89, 261,
+             18])
+xxbos xxmaj the xxrep 4 x examination consists of frontal and lateral radiographs of</code></pre>
+</div>
+</div>
+<p>Here, we see a subset of the numericalized tokens (top) with their corresponding word tokens (bottom) from the first report in our <em>corpus</em>.</p>
+</section>
+<section id="embedding" class="level2">
+<h2 class="anchored" data-anchor-id="embedding">Embedding</h2>
+<p>While these integers map one-to-one onto our tokens, their numeric value is otherwise meaningless. To embed more information into the numeric representation of our tokens, we employ a process called <em>language modeling</em>. We can either use a pre-trained language model for this <em>embedding</em> or we can fine-tune a language model to better model our “radiology language”. This latter process is called <em>transfer learning</em>.</p>
+</section>
+<section id="language-model-transfer-learning" class="level2">
+<h2 class="anchored" data-anchor-id="language-model-transfer-learning">Language Model Transfer Learning</h2>
+<blockquote class="blockquote">
+<p>Given a string of tokenized text, a <em>language model</em> is trained to predict the next token.</p>
+</blockquote>
+<p>By default, <code>fastai.text</code> uses a language model pre-trained on the WikiText-103 corpus, which is a frequently used benchmark for NLP models, similar to ImageNet for image classification models.</p>
+<p>In their 2018 ACL paper “<a href="https://arxiv.org/abs/1801.06146">Universal Language Model Fine-Tuning for Text Classification</a>”, Jeremy Howard and Sebastian Ruder proposed the ULM-FiT approach of fine-tuning the language model on the corpus on which a second text classification model is trained. In the paper, they demonstrated state-of-the-art performance on a commonly used text classification example using this method.</p>
+<p>Here, we will fine-tune the language model on our radiology report text in two stages.</p>
+<blockquote class="blockquote">
+<p><strong>NOTE:</strong> This portion of the notebook takes between 3 and 10 minutes to run. It’s ok to skip this section for now and jump ahead to “Report Classifier Training”.</p>
+</blockquote>
+<div class="cell" data-cellview="form" data-outputid="3f1943d6-a83a-4a5a-b4e2-fdf4ff5c52f6" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dls_lm <span class="op">=</span> TextDataLoaders.from_df(train_val, valid_pct<span class="op">=</span><span class="fl">0.3</span>, seed<span class="op">=</span><span class="dv">42</span>, text_col<span class="op">=</span><span class="st">'full-text'</span>, is_lm<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>learn_lm <span class="op">=</span> language_model_learner(dls_lm, AWD_LSTM, metrics<span class="op">=</span>[accuracy, Perplexity()]).to_fp16()</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the final layers of the network</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>learn_lm.fit_one_cycle(<span class="dv">1</span>, <span class="fl">2e-2</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Part 1/2 complete.</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Unfreeze and train some more</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>learn_lm.unfreeze()</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>learn_lm.fit_one_cycle(<span class="dv">10</span>, <span class="fl">2e-3</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Part 2/2 complete.</span><span class="ch">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+    <div>
+      <progress value="105070592" class="" max="105067061" style="width:300px; height:20px; vertical-align: middle;"></progress>
+      100.00% [105070592/105067061 00:07&lt;00:00]
+    </div>
+    
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+  warnings.warn(
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+  warnings.warn(
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">perplexity</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>3.248506</td>
+<td>2.250031</td>
+<td>0.518930</td>
+<td>9.488028</td>
+<td>00:11</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Part 1/2 complete.
+
+
+Part 2/2 complete.
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">perplexity</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>2.390456</td>
+<td>2.034532</td>
+<td>0.557661</td>
+<td>7.648674</td>
+<td>00:06</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>2.200494</td>
+<td>1.797878</td>
+<td>0.598493</td>
+<td>6.036823</td>
+<td>00:07</td>
+</tr>
+<tr class="odd">
+<td>2</td>
+<td>2.014332</td>
+<td>1.621641</td>
+<td>0.635283</td>
+<td>5.061388</td>
+<td>00:07</td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td>1.854379</td>
+<td>1.533020</td>
+<td>0.656071</td>
+<td>4.632146</td>
+<td>00:07</td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td>1.731511</td>
+<td>1.481734</td>
+<td>0.665394</td>
+<td>4.400571</td>
+<td>00:07</td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>1.615797</td>
+<td>1.433703</td>
+<td>0.676441</td>
+<td>4.194201</td>
+<td>00:07</td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>1.521422</td>
+<td>1.409913</td>
+<td>0.680989</td>
+<td>4.095597</td>
+<td>00:07</td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>1.446032</td>
+<td>1.398860</td>
+<td>0.684313</td>
+<td>4.050579</td>
+<td>00:07</td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td>1.380686</td>
+<td>1.390905</td>
+<td>0.685932</td>
+<td>4.018486</td>
+<td>00:07</td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td>1.342037</td>
+<td>1.390172</td>
+<td>0.686221</td>
+<td>4.015540</td>
+<td>00:07</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>We need to save this model state in a special format in order to use it for our Embedding layer in the text classification model.</p>
+<p>We also want to use the same vocabulary that we used for the ULM-FiT procedure in our classification model.</p>
+<div class="cell" data-cellview="form" data-outputid="2774029b-79d1-4ceb-a480-af2311244017" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>torch.save(learn_lm.dls.vocab, <span class="st">'vocab.pkl'</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>learn_lm.save_encoder(<span class="st">'fine-tuned-enc'</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Saved.'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Saved.</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="report-classifier-training" class="level1">
+<h1>Report Classifier Training</h1>
+<p>In the steps that follow, we will train a second model as a text classifier, using embeddings from our fine-tuned language model. We will then test the classifier on our held-out test set to see how it performs on data it hasn’t seen yet.</p>
+<p>After running through the following cells the first time, you might experiment with setting <code>fine_tuned_lm</code> to <code>False</code> or setting <code>training_target</code> to <code>impression</code> to see how your results differ with different conditions.</p>
+<div class="cell" data-cellview="form" data-outputid="38079908-a8ea-41f3-eb2d-db2a2e2aab82" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>training_target <span class="op">=</span> <span class="st">'full-text'</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>validation_pct <span class="op">=</span> <span class="fl">0.3</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>fine_tuned_LM <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>lm_vocab <span class="op">=</span> torch.load(<span class="st">'vocab.pkl'</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>dls_cls <span class="op">=</span> TextDataLoaders.from_df(train_val, valid_pct<span class="op">=</span>validation_pct, seed<span class="op">=</span><span class="dv">42</span>, text_col<span class="op">=</span>training_target, label_col<span class="op">=</span><span class="st">'label'</span>, text_vocab<span class="op">=</span>lm_vocab)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>dls_cls.show_batch(max_n<span class="op">=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">text</th>
+<th data-quarto-table-cell-role="th">category</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>xxbos xxmaj chest xxmaj comparison : xxmaj there is a xxunk cm diameter masslike density over the lingula partial obscuration left cardiac xxrep 4 x . xxmaj there may be some ill - defined opacity in the right mid and lower lung zone . xxmaj no pleural effusion is seen . xxmaj the heart is borderline enlarged . xxmaj the aorta is dilated and tortuous . xxmaj arthritic changes of the spine are present . xxmaj pelvis and left hip xxmaj there is an xxunk and rotated fracture through the neck of the femur on the left . xxmaj no xxunk fracture is seen . xxmaj arthritic changes are present in the lower lumbar spine . xxmaj large amount of stool and xxrep 4 x obscures portions of the pelvis . xxmaj femur xxmaj the femoral images do not xxrep 4 x the area of the hip fracture . xxmaj</td>
+<td>abnormal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>xxbos xxmaj chest : 2 images . xxmaj heart size is normal . xxmaj mediastinal contours are maintained . xxmaj there is a mild pectus excavatum deformity . xxmaj the lungs are clear of focal infiltrate . xxmaj there is no evidence for pleural effusion or pneumothorax . xxmaj no convincing acute bony findings . xxmaj right shoulder : 3 images . xxmaj there has been xxrep 4 x and screw fixation of the xxunk right clavicle . xxmaj the lateral most screw is fractured . xxmaj this is age - indeterminate as no prior studies are available for comparison . xxmaj otherwise , the surgical xxrep 4 x appears intact . xxmaj the humeral head is seen within the glenoid , without evidence for dislocation . xxmaj no bony fractures are seen . xxmaj the visualized right ribs appear intact . xxmaj right clavicle : 2 images . xxmaj</td>
+<td>abnormal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>xxbos xxmaj the heart size and pulmonary vascularity appear within normal limits . xxmaj the lungs are free of focal airspace disease . xxmaj no pleural effusion or pneumothorax is seen . xxmaj osteopenia and xxrep 4 x deformities , degenerative changes and scoliosis are present in the thoracic spine . xxmaj calcified granuloma is present in the left upper lobe . xxmaj on xxrep 4 x xxunk of a xxrep 4 x scan xxrep 4 x xxrep 4 x / xxrep 4 x , several nodules were identified . a nodule is seen in the right middle lobe which corresponds with one of the nodules present on the previous xxup ct scan . 1 . xxmaj right middle lobe lung nodule . xxmaj corresponds to one of xxunk seen on the previous xxrep 4 x scan . xxmaj the other nodules seen on the chest xxup ct scan are</td>
+<td>abnormal</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="iterative-training-process" class="level2">
+<h2 class="anchored" data-anchor-id="iterative-training-process">Iterative Training Process</h2>
+<p>So that we don’t propagate too much error through the network during training, we will train the final layers first, then iteratively <em>unfreeze</em> (i.e.&nbsp;make trainable) a few preceding layers and train a little more before repeating this process.</p>
+<div class="cell" data-cellview="form" data-outputid="f6462390-0801-45df-b020-b447c6046f45" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>learn_cls <span class="op">=</span> text_classifier_learner(dls_cls, AWD_LSTM, drop_mult<span class="op">=</span><span class="fl">0.5</span>, metrics<span class="op">=</span>accuracy).to_fp16()</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> fine_tuned_LM: learn_cls.load_encoder(<span class="st">'fine-tuned-enc'</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>learn_cls.fit_one_cycle(<span class="dv">1</span>, <span class="fl">2e-2</span>)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Part 1/4 complete.</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Unfreezing and training a little more...</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>learn_cls.freeze_to(<span class="op">-</span><span class="dv">2</span>)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>learn_cls.fit_one_cycle(<span class="dv">1</span>, <span class="bu">slice</span>(<span class="fl">1e-2</span><span class="op">/</span>(<span class="fl">2.6</span><span class="op">**</span><span class="dv">4</span>),<span class="fl">1e-2</span>))</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Part 2/4 complete.</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Unfreezing and training a little more, again...</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>learn_cls.freeze_to(<span class="op">-</span><span class="dv">3</span>)</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>learn_cls.fit_one_cycle(<span class="dv">1</span>, <span class="bu">slice</span>(<span class="fl">5e-3</span><span class="op">/</span>(<span class="fl">2.6</span><span class="op">**</span><span class="dv">4</span>),<span class="fl">5e-3</span>))</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Part 3/4 complete.</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Now let's unfreeze the whole model and finish training.</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>learn_cls.unfreeze()</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>learn_cls.fit_one_cycle(<span class="dv">1</span>, <span class="bu">slice</span>(<span class="fl">1e-3</span><span class="op">/</span>(<span class="fl">2.6</span><span class="op">**</span><span class="dv">4</span>),<span class="fl">1e-3</span>))</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Part 4/4 complete."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+  warnings.warn(
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+  warnings.warn(
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+  warnings.warn(
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+  warnings.warn(
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.529172</td>
+<td>0.356571</td>
+<td>0.908730</td>
+<td>00:14</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Part 1/4 complete.
+
+
+Part 2/4 complete.
+
+
+Part 3/4 complete.
+
+
+Part 4/4 complete.</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.477978</td>
+<td>0.264227</td>
+<td>0.933532</td>
+<td>00:05</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.376465</td>
+<td>0.180261</td>
+<td>0.948413</td>
+<td>00:06</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.290897</td>
+<td>0.145934</td>
+<td>0.955357</td>
+<td>00:08</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell" data-cellview="form" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Export fine-tuned classifier model</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>learn_cls.export(<span class="st">'full-text'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="tensorboard" class="level2">
+<h2 class="anchored" data-anchor-id="tensorboard">Tensorboard</h2>
+<p>Run the following cell, then hit the refresh button in the top right menu of the Tensorboard iframe that appears.</p>
+<p>Next, look along the left hand menu for <code>T-SNE</code>. Click it and let it run for ~1,000 iterations. Then hit the “stop” button.</p>
+<p>Now, explore the embedding space to see how radiological terms cluster in the embedding space of a language model fine-tuned on CXR reports.</p>
+<div class="cell" data-cellview="form" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load tensorboard extension and packages</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext tensorboard</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.tensorboard <span class="im">import</span> SummaryWriter</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> load_learner(<span class="st">"full-text"</span>)</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> learn.model[<span class="dv">0</span>]</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">hasattr</span>(m, <span class="st">"module"</span>):  <span class="co"># DataParallel/DDP</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> m.module</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="co"># AWD_LSTM encoder weights (token embedding matrix)</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> m.encoder.weight.detach().cpu()          <span class="co"># shape: [vocab_sz, emb_dim]  [oai_citation:1‡cedrickchee.gitbook.io](https://cedrickchee.gitbook.io/knowledge/courses/fast.ai/deep-learning-part-2-cutting-edge-deep-learning-for-coders/2018-edition/lesson-10-transfer-learning-nlp?utm_source=chatgpt.com)</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> F.normalize(W, dim<span class="op">=</span><span class="dv">1</span>)                       <span class="co"># optional</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> <span class="bu">list</span>(learn.dls.vocab[<span class="dv">0</span>])                <span class="co"># len == vocab_sz</span></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>log_dir <span class="op">=</span> <span class="st">"runs/embeddings_awdlstm"</span></span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>writer <span class="op">=</span> SummaryWriter(log_dir)</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>writer.add_embedding(W, metadata<span class="op">=</span>vocab, tag<span class="op">=</span><span class="st">"word_embeddings"</span>)</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>writer.close()</span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>tensorboard <span class="op">--</span>logdir runs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The tensorboard extension is already loaded. To reload it, use:
+  %reload_ext tensorboard</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+      <iframe id="tensorboard-frame-5ff39c04bf7e4662" width="100%" height="800" frameborder="0">
+      </iframe>
+      <script>
+        (function() {
+          const frame = document.getElementById("tensorboard-frame-5ff39c04bf7e4662");
+          const url = new URL("/", window.location);
+          const port = 6006;
+          if (port) {
+            url.port = port;
+          }
+          frame.src = url;
+        })();
+      </script>
+    
+</div>
+</div>
+</section>
+<section id="testing-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="testing-the-model">Testing the model</h2>
+<p>Now that our model is trained, let’s test it on our held-out test dataset.</p>
+<p>We will run our report classification model on the held-out test dataset. A report will be generated with the following information: - <strong>precision</strong>: a.k.a. positive predictive value = true_positives / all_predicted_positives - <strong>recall</strong>: a.k.a. sensitivity = true_positives / all_actual_positives - <strong>f1-score</strong>: the harmonic mean of precision and recall - <strong>accuracy</strong>: number_correct / number_reports</p>
+<blockquote class="blockquote">
+<p><em>Note:</em> Support = number of reports used to derive the result in that row</p>
+</blockquote>
+<div class="cell" data-cellview="form" data-outputid="f7bd8ab9-ffd4-4ffc-f468-c3a68e51305f" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>test_items <span class="op">=</span> test_df[[training_target, <span class="st">'label'</span>]].copy()</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>test_items.columns <span class="op">=</span> [<span class="st">'text'</span>, <span class="st">'label'</span>]</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>dl_test <span class="op">=</span> learn_cls.dls.test_dl(test_items, with_labels<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>interp <span class="op">=</span> ClassificationInterpretation.from_learner(learn_cls, dl<span class="op">=</span>dl_test)</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>interp.print_classification_report()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+  warnings.warn(
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
+  warnings.warn(
+/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
+  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>              precision    recall  f1-score   support
+
+    abnormal       0.95      0.95      0.95       385
+      normal       0.91      0.91      0.91       209
+
+    accuracy                           0.94       594
+   macro avg       0.93      0.93      0.93       594
+weighted avg       0.94      0.94      0.94       594
+</code></pre>
+</div>
+</div>
+</section>
+<section id="the-confusion-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="the-confusion-matrix">The confusion matrix</h2>
+<p>The <em>confusion matrix</em> is a graphical representation of how the model performed. In our case, it is a 2x2 table comparing model predictions to the actual label for each class (i.e.&nbsp;“normal” and “abnormal”).</p>
+<div class="cell" data-cellview="form" data-outputid="9ae5005d-53aa-49c9-f834-71c261657971" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>interp.plot_confusion_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="RNNs_tutorial_files/figure-html/cell-18-output-3.png" class="img-fluid"></p>
+</div>
+</div>
+</section>
+<section id="analyzing-the-failures-or-top-losses" class="level2">
+<h2 class="anchored" data-anchor-id="analyzing-the-failures-or-top-losses">Analyzing the failures or “top losses”</h2>
+<p>The <em>loss function</em> gives us a numerical value telling us how far off the model’s prediction is from the actual class. The higher the loss, the more confused our model is.</p>
+<p>Analyzing the top losses can help you understand why your model fails when it fails. Here, we plot the top 3 losses for our test dataset.</p>
+<div class="cell" data-cellview="form" data-outputid="00e93ecb-bde5-4731-fdf6-283c9fa4f4d5" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>interp.plot_top_losses(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">input</th>
+<th data-quarto-table-cell-role="th">target</th>
+<th data-quarto-table-cell-role="th">predicted</th>
+<th data-quarto-table-cell-role="th">probability</th>
+<th data-quarto-table-cell-role="th">loss</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>xxbos xxmaj the xxrep 4 x examination consists of frontal and lateral radiographs of the chest . xxmaj the cardiomediastinal contours are within normal limits . xxmaj pulmonary vascularity is within normal limits . xxmaj no focal consolidation , pleural effusion , or pneumothorax identified . xxmaj deformity of the right clavicle related to remote xxrep 4 x is again seen . xxmaj visualized upper abdomen grossly unremarkable . xxmaj no evidence of acute cardiopulmonary process .</td>
+<td>normal</td>
+<td>abnormal</td>
+<td>0.9513528347015381</td>
+<td>3.1263229846954346</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>xxbos xxmaj the heart size and pulmonary vascularity appear within normal limits . xxmaj lungs are free of focal airspace disease . xxmaj no pleural effusion or pneumothorax is seen . xxmaj no discrete nodules or adenopathy are noted . xxmaj degenerative changes are present in the spine . xxmaj no evidence of active disease .</td>
+<td>normal</td>
+<td>abnormal</td>
+<td>0.9558783769607544</td>
+<td>3.1208062171936035</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>xxbos xxmaj heart xxrep 4 x , mediastinum , xxrep 4 x , bony structures and lung xxrep 4 x are unremarkable . xxmaj no radiographic evidence of acute cardiopulmonary disease</td>
+<td>abnormal</td>
+<td>normal</td>
+<td>0.9561212062835693</td>
+<td>3.0231621265411377</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="bonus-language-model-text-generation" class="level1">
+<h1><strong>BONUS:</strong> Language Model Text Generation</h1>
+<p>Just for fun, let’s see how well our language model does at generating text.</p>
+<p>Enter ~3-5 words in the <code>text</code> string to give our language model something to work with, then edit other options and run the cell.</p>
+<p>Setting <code>ULMFiT</code> to <code>False</code> will generate predictions without our fine-tuned model.</p>
+<div class="cell" data-cellview="form" data-outputid="2341dcd3-29cf-4485-f115-5ddf0a5f2ebe" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">'Normal heart size'</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>words_per_sentence <span class="op">=</span> <span class="dv">18</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>num_sentences <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>ULMFiT <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Generating predictions...'</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ULMFiT:</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> [learn_lm.predict(text, words_per_sentence, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sentences)]</span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    learn_lm_new <span class="op">=</span> language_model_learner(dls_lm, AWD_LSTM)</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> [learn_lm_new.predict(text, words_per_sentence, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sentences)]</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, pred <span class="kw">in</span> <span class="bu">enumerate</span>(preds): <span class="bu">print</span>(<span class="ss">f'Sentence </span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>pred<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Generating predictions...
+
+Sentence 1: Normal heart size and mediastinal contours . No focal airspace consolidation , pleural effusion or pneumothorax . Mild degenerative
+Sentence 2: Normal heart size . Left base patchy alveolar infiltrate , no definite pleural effusion seen . No typical findings</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+
+</div>
+</div>
+<p>Looks like our generated text is pretty realistic! Try it again without the pre-trained model and you’ll really see how the ULM-FiT approach contributes to a better text classification model.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

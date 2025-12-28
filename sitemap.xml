@@ -2,34 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://radml.wfwiggins.com/resources.html</loc>
-    <lastmod>2025-12-27T15:56:34.791Z</lastmod>
-  </url>
-  <url>
-    <loc>https://radml.wfwiggins.com/advanced-setup.html</loc>
-    <lastmod>2025-12-27T15:56:33.432Z</lastmod>
-  </url>
-  <url>
-    <loc>https://radml.wfwiggins.com/index.html</loc>
-    <lastmod>2025-12-27T15:56:32.452Z</lastmod>
-  </url>
-  <url>
-    <loc>https://radml.wfwiggins.com/posts/install-pytorch.html</loc>
-    <lastmod>2025-12-27T15:56:31.054Z</lastmod>
-  </url>
-  <url>
-    <loc>https://radml.wfwiggins.com/posts/intro_cli.html</loc>
-    <lastmod>2025-12-27T15:56:30.197Z</lastmod>
-  </url>
-  <url>
-    <loc>https://radml.wfwiggins.com/posts/install-python.html</loc>
-    <lastmod>2025-12-27T15:56:31.837Z</lastmod>
-  </url>
-  <url>
-    <loc>https://radml.wfwiggins.com/about.html</loc>
-    <lastmod>2025-12-27T15:56:32.869Z</lastmod>
+    <lastmod>2025-12-28T13:46:48.112Z</lastmod>
   </url>
   <url>
     <loc>https://radml.wfwiggins.com/setup.html</loc>
-    <lastmod>2025-12-27T15:56:34.261Z</lastmod>
+    <lastmod>2025-12-28T13:46:46.060Z</lastmod>
+  </url>
+  <url>
+    <loc>https://radml.wfwiggins.com/about.html</loc>
+    <lastmod>2025-12-28T13:46:44.637Z</lastmod>
+  </url>
+  <url>
+    <loc>https://radml.wfwiggins.com/posts/RNNs_tutorial.html</loc>
+    <lastmod>2025-12-28T13:46:43.641Z</lastmod>
+  </url>
+  <url>
+    <loc>https://radml.wfwiggins.com/posts/install-pytorch.html</loc>
+    <lastmod>2025-12-28T13:46:40.975Z</lastmod>
+  </url>
+  <url>
+    <loc>https://radml.wfwiggins.com/posts/intro_cli.html</loc>
+    <lastmod>2025-12-28T13:46:40.095Z</lastmod>
+  </url>
+  <url>
+    <loc>https://radml.wfwiggins.com/posts/install-python.html</loc>
+    <lastmod>2025-12-28T13:46:41.729Z</lastmod>
+  </url>
+  <url>
+    <loc>https://radml.wfwiggins.com/index.html</loc>
+    <lastmod>2025-12-28T13:46:44.267Z</lastmod>
+  </url>
+  <url>
+    <loc>https://radml.wfwiggins.com/advanced-setup.html</loc>
+    <lastmod>2025-12-28T13:46:45.194Z</lastmod>
+  </url>
+  <url>
+    <loc>https://radml.wfwiggins.com/notebooks/RNNs_tutorial.html</loc>
+    <lastmod>2025-12-28T13:46:47.578Z</lastmod>
   </url>
 </urlset>
