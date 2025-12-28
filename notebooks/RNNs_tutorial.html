@@ -6,8 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Walter Wiggins">
+<meta name="dcterms.date" content="2025-12-28">
 
-<title>Radiology ML Tutorials - RSNA 2021: Deep Learning Lab</title>
+<title>Radiology ML Tutorials - RNNs Tutorial from RSNA 2021 Deep Learning Lab</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -104,7 +106,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link rel="stylesheet" href="../styles.css">
 </head>
 
-<body class="nav-fixed fullcontent">
+<body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -173,20 +175,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#rsna-2021-deep-learning-lab" id="toc-rsna-2021-deep-learning-lab" class="nav-link active" data-scroll-target="#rsna-2021-deep-learning-lab"><strong>RSNA 2021: Deep Learning Lab</strong></a>
+  <ul class="collapse">
+  <li><a href="#basics-of-information-extraction-from-radiology-reports" id="toc-basics-of-information-extraction-from-radiology-reports" class="nav-link" data-scroll-target="#basics-of-information-extraction-from-radiology-reports"><strong>Basics of Information Extraction from Radiology Reports</strong></a>
+  <ul class="collapse">
+  <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#developers" id="toc-developers" class="nav-link" data-scroll-target="#developers">Developers</a></li>
+  </ul></li>
+  <li><a href="#interactive-participation" id="toc-interactive-participation" class="nav-link" data-scroll-target="#interactive-participation">Interactive Participation</a></li>
+  </ul></li>
+  <li><a href="#downloading-the-data" id="toc-downloading-the-data" class="nav-link" data-scroll-target="#downloading-the-data">Downloading the Data</a></li>
+  <li><a href="#reformatting-the-data" id="toc-reformatting-the-data" class="nav-link" data-scroll-target="#reformatting-the-data">Reformatting the Data</a></li>
+  <li><a href="#exploring-the-data" id="toc-exploring-the-data" class="nav-link" data-scroll-target="#exploring-the-data">Exploring the data</a></li>
+  <li><a href="#language-modeling" id="toc-language-modeling" class="nav-link" data-scroll-target="#language-modeling">Language Modeling</a>
+  <ul class="collapse">
+  <li><a href="#tokenization" id="toc-tokenization" class="nav-link" data-scroll-target="#tokenization">Tokenization</a></li>
+  <li><a href="#added-features-from-fast.ai" id="toc-added-features-from-fast.ai" class="nav-link" data-scroll-target="#added-features-from-fast.ai">Added features from fast.ai</a></li>
+  <li><a href="#numericalization" id="toc-numericalization" class="nav-link" data-scroll-target="#numericalization">Numericalization</a></li>
+  <li><a href="#embedding" id="toc-embedding" class="nav-link" data-scroll-target="#embedding">Embedding</a></li>
+  <li><a href="#language-model-transfer-learning" id="toc-language-model-transfer-learning" class="nav-link" data-scroll-target="#language-model-transfer-learning">Language Model Transfer Learning</a></li>
+  </ul></li>
+  <li><a href="#report-classifier-training" id="toc-report-classifier-training" class="nav-link" data-scroll-target="#report-classifier-training">Report Classifier Training</a>
+  <ul class="collapse">
+  <li><a href="#iterative-training-process" id="toc-iterative-training-process" class="nav-link" data-scroll-target="#iterative-training-process">Iterative Training Process</a></li>
+  <li><a href="#tensorboard" id="toc-tensorboard" class="nav-link" data-scroll-target="#tensorboard">Tensorboard</a></li>
+  <li><a href="#testing-the-model" id="toc-testing-the-model" class="nav-link" data-scroll-target="#testing-the-model">Testing the model</a></li>
+  <li><a href="#the-confusion-matrix" id="toc-the-confusion-matrix" class="nav-link" data-scroll-target="#the-confusion-matrix">The confusion matrix</a></li>
+  <li><a href="#analyzing-the-failures-or-top-losses" id="toc-analyzing-the-failures-or-top-losses" class="nav-link" data-scroll-target="#analyzing-the-failures-or-top-losses">Analyzing the failures or “top losses”</a></li>
+  </ul></li>
+  <li><a href="#bonus-language-model-text-generation" id="toc-bonus-language-model-text-generation" class="nav-link" data-scroll-target="#bonus-language-model-text-generation"><strong>BONUS:</strong> Language Model Text Generation</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><strong>RSNA 2021: Deep Learning Lab</strong></h1>
+<h1 class="title">RNNs Tutorial from RSNA 2021 Deep Learning Lab</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Walter Wiggins </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 28, 2025</p>
+    </div>
+  </div>
   
     
   </div>
@@ -194,7 +245,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p><a href="https://colab.research.google.com/github/RSNA/AI-Deep-Learning-Lab-2023/blob/main/sessions/nlp-text-classification/RSNA21_RNNs_with_Tensorboard.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
+<section id="rsna-2021-deep-learning-lab" class="level1">
+<h1><strong>RSNA 2021: Deep Learning Lab</strong></h1>
 <section id="basics-of-information-extraction-from-radiology-reports" class="level2">
 <h2 class="anchored" data-anchor-id="basics-of-information-extraction-from-radiology-reports"><strong>Basics of Information Extraction from Radiology Reports</strong></h2>
 <p>In this demonstration, we will utilize techniques of <em>natural language processing</em> (NLP) to train a classifier, which will analyze the text of radiology reports for chest radiographs to predict whether a report is <strong>normal</strong> or <strong>abnormal</strong>.</p>
@@ -220,66 +272,84 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 </section>
 </section>
+<section id="interactive-participation" class="level2">
+<h2 class="anchored" data-anchor-id="interactive-participation">Interactive Participation</h2>
+<p>This notebook is designed for interactive participation.</p>
+<p>If you are running this notebook on your own machine, you may download the notebook with this link: <a href="../notebooks/RNNs_tutorial.html" download="RNNs_tutorial.ipynb">Download notebook</a>.</p>
+<p>Please refer to the previous posts on <a href="../posts/install-python.html">installing Python</a> and <a href="../posts/install-pytorch.html">installing PyTorch and fast.ai</a> with <code>uv</code> to ensure your environment is set up properly. You’ll also need to run the following commands to add two additional packages to your <code>uv</code> project.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add xmltodict</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add tensorboard</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can run the code cells in order, and modify parameters as desired to see how they affect the results.</p>
+<p>If you are using Google Colab, please use the link below to open a compatible version in Colab. You can save a copy of the notebook to your own Google Drive by selecting “File” -&gt; “Save a copy in Drive”.</p>
+<p><a href="https://colab.research.google.com/github/RSNA/AI-Deep-Learning-Lab-2023/blob/main/sessions/nlp-text-classification/RSNA21_RNNs_with_Tensorboard.ipynb">Open in Colab</a></p>
+</section>
+</section>
 <section id="downloading-the-data" class="level1">
 <h1>Downloading the Data</h1>
 <p>When you run the following cell, the <a href="https://openi.nlm.nih.gov/faq#collection">NLM Open-i “Indiana University Chest X-ray Reports” dataset</a> will be downloaded.</p>
-<div class="cell" data-cellview="form" data-execution_count="2">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl <span class="op">-</span>s https:<span class="op">//</span>openi.nlm.nih.gov<span class="op">/</span>imgs<span class="op">/</span>collections<span class="op">/</span>NLMCXR_reports.tgz <span class="op">|</span> tar xvz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-execution_count="1">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl <span class="op">-</span>s https:<span class="op">//</span>openi.nlm.nih.gov<span class="op">/</span>imgs<span class="op">/</span>collections<span class="op">/</span>NLMCXR_reports.tgz <span class="op">|</span> tar xvz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="reformatting-the-data" class="level1">
 <h1>Reformatting the Data</h1>
 <p>Each of the reports is stored in <em>extensible markup language</em> (XML) format. In order to work with the report text data more easily, we will extract the data and put it into a <code>pandas.DataFrame</code>, which is a tabular data structure.</p>
 <p>The XML metadata contains <a href="https://www.ncbi.nlm.nih.gov/mesh/">MeSH terms</a> for each report. We will use these to create the <em>label</em> for each report in our dataset. These labels will serve as the targets for training our classifier to predict whether the report is <strong>normal</strong> or <strong>abnormal</strong>.</p>
-<div class="cell" data-cellview="form" data-outputid="488d6a30-ca87-43af-9736-b913582c47a8" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xmltodict</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.basics <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.text.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> xml_parse(f):</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(f) <span class="im">as</span> xml:</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        report_dict <span class="op">=</span> xmltodict.parse(xml.read())</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    xml.close()</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> report_dict</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_label(report):</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> L(report[<span class="st">'eCitation'</span>][<span class="st">'MeSH'</span>][<span class="st">'major'</span>])</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">'normal'</span> <span class="cf">if</span> label[<span class="dv">0</span>].lower() <span class="op">==</span> <span class="st">'normal'</span> <span class="cf">else</span> <span class="st">'abnormal'</span></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_text(report):</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    text_dict <span class="op">=</span> {}</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'id'</span>] <span class="op">=</span> report[<span class="st">'eCitation'</span>][<span class="st">'IUXRId'</span>][<span class="st">'@id'</span>]</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> report[<span class="st">'eCitation'</span>][<span class="st">'MedlineCitation'</span>][<span class="st">'Article'</span>][<span class="st">'Abstract'</span>][<span class="st">'AbstractText'</span>]</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    findings <span class="op">=</span> text[<span class="dv">2</span>][<span class="st">'#text'</span>] <span class="cf">if</span> <span class="st">'#text'</span> <span class="kw">in</span> text[<span class="dv">2</span>] <span class="cf">else</span> <span class="st">''</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'findings'</span>] <span class="op">=</span> findings</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    impression <span class="op">=</span> text[<span class="dv">3</span>][<span class="st">'#text'</span>] <span class="cf">if</span> <span class="st">'#text'</span> <span class="kw">in</span> text[<span class="dv">3</span>] <span class="cf">else</span> <span class="st">''</span></span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'impression'</span>] <span class="op">=</span> impression</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'full-text'</span>] <span class="op">=</span> <span class="st">' '</span>.join([findings, impression])</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> text_dict</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_report(report):</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> get_label(report)</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    report_dict <span class="op">=</span> get_text(report)</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    report_dict[<span class="st">'label'</span>] <span class="op">=</span> label</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> report_dict</span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>fps <span class="op">=</span> L(glob.glob(<span class="st">'./ecgen-radiology/*'</span>))</span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>reports <span class="op">=</span> fps.<span class="bu">map</span>(xml_parse)</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>reports_df <span class="op">=</span> pd.DataFrame(reports.<span class="bu">map</span>(process_report)).set_index(<span class="st">'id'</span>).sort_index()</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'# of reports:'</span>, reports_df.shape[<span class="dv">0</span>])</span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>reports_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-outputid="488d6a30-ca87-43af-9736-b913582c47a8" data-execution_count="2">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xmltodict</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.basics <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastai.text.<span class="bu">all</span> <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> xml_parse(f):</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(f) <span class="im">as</span> xml:</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        report_dict <span class="op">=</span> xmltodict.parse(xml.read())</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    xml.close()</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> report_dict</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_label(report):</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> L(report[<span class="st">'eCitation'</span>][<span class="st">'MeSH'</span>][<span class="st">'major'</span>])</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">'normal'</span> <span class="cf">if</span> label[<span class="dv">0</span>].lower() <span class="op">==</span> <span class="st">'normal'</span> <span class="cf">else</span> <span class="st">'abnormal'</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_text(report):</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    text_dict <span class="op">=</span> {}</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'id'</span>] <span class="op">=</span> report[<span class="st">'eCitation'</span>][<span class="st">'IUXRId'</span>][<span class="st">'@id'</span>]</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> report[<span class="st">'eCitation'</span>][<span class="st">'MedlineCitation'</span>][<span class="st">'Article'</span>][<span class="st">'Abstract'</span>][<span class="st">'AbstractText'</span>]</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    findings <span class="op">=</span> text[<span class="dv">2</span>][<span class="st">'#text'</span>] <span class="cf">if</span> <span class="st">'#text'</span> <span class="kw">in</span> text[<span class="dv">2</span>] <span class="cf">else</span> <span class="st">''</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'findings'</span>] <span class="op">=</span> findings</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    impression <span class="op">=</span> text[<span class="dv">3</span>][<span class="st">'#text'</span>] <span class="cf">if</span> <span class="st">'#text'</span> <span class="kw">in</span> text[<span class="dv">3</span>] <span class="cf">else</span> <span class="st">''</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'impression'</span>] <span class="op">=</span> impression</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'full-text'</span>] <span class="op">=</span> <span class="st">' '</span>.join([findings, impression])</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> text_dict</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_report(report):</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> get_label(report)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    report_dict <span class="op">=</span> get_text(report)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    report_dict[<span class="st">'label'</span>] <span class="op">=</span> label</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> report_dict</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>fps <span class="op">=</span> L(glob.glob(<span class="st">'./ecgen-radiology/*'</span>))</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>reports <span class="op">=</span> fps.<span class="bu">map</span>(xml_parse)</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>reports_df <span class="op">=</span> pd.DataFrame(reports.<span class="bu">map</span>(process_report)).set_index(<span class="st">'id'</span>).sort_index()</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'# of reports:'</span>, reports_df.shape[<span class="dv">0</span>])</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>reports_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code># of reports: 3955
 </code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
 
@@ -347,11 +417,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Exploring the data</h1>
 <p>Let’s look through a little more of the data to get a feel for what we’re working with and how we might want to design the subsequent model training experiments.</p>
 <p>We’ll then take a look at how many normals and abnormals we have to work with.</p>
-<div class="cell" data-cellview="form" data-outputid="aa1dd305-8069-4c86-a341-36bd50c5c6e5" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run this cell several times to view random samples of the data</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>reports_df.sample(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell" data-cellview="form" data-outputid="aa1dd305-8069-4c86-a341-36bd50c5c6e5" data-execution_count="3">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run this cell several times to view random samples of the data</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>reports_df.sample(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
 
@@ -374,39 +447,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">3065</td>
-<td>Lungs are XXXX without focal airspace disease. No pleural effusions or pneumothoraces. heart size is normal status post XXXX sternotomy. Degenerative changes in the thoracic spine. incidental note is XXXX of previous left rotator XXXX repair.</td>
-<td>XXXX lungs without focal consolidation.</td>
-<td>Lungs are XXXX without focal airspace disease. No pleural effusions or pneumothoraces. heart size is normal status post XXXX sternotomy. Degenerative changes in the thoracic spine. incidental note is XXXX of previous left rotator XXXX repair. XXXX lungs without focal consolidation.</td>
+<td data-quarto-table-cell-role="th">1388</td>
+<td>The cardiomediastinal silhouette is normal in size and contour. No focal consolidation, pneumothorax or large pleural effusion. Normal XXXX. XXXX cholecystectomy.</td>
+<td>Low lung volumes, otherwise clear.</td>
+<td>The cardiomediastinal silhouette is normal in size and contour. No focal consolidation, pneumothorax or large pleural effusion. Normal XXXX. XXXX cholecystectomy. Low lung volumes, otherwise clear.</td>
 <td>abnormal</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">2639</td>
-<td>The cardiomediastinal silhouette is within normal limits of size and appearance. The pulmonary vascularity is unremarkable. Lungs are expanded and clear of airspace disease. Negative for pneumothorax or pleural effusion. There is mild midthoracic dextroscoliosis, with the XXXX XXXX otherwise grossly intact.</td>
-<td>No acute cardiopulmonary abnormality.</td>
-<td>The cardiomediastinal silhouette is within normal limits of size and appearance. The pulmonary vascularity is unremarkable. Lungs are expanded and clear of airspace disease. Negative for pneumothorax or pleural effusion. There is mild midthoracic dextroscoliosis, with the XXXX XXXX otherwise grossly intact. No acute cardiopulmonary abnormality.</td>
+<td data-quarto-table-cell-role="th">2503</td>
+<td>The lungs are clear. There is no pleural effusion or pneumothorax. The heart is not significantly enlarged. There are atherosclerotic changes of the aorta. Arthritic changes of the skeletal structures are noted.</td>
+<td>No acute pulmonary disease.</td>
+<td>The lungs are clear. There is no pleural effusion or pneumothorax. The heart is not significantly enlarged. There are atherosclerotic changes of the aorta. Arthritic changes of the skeletal structures are noted. No acute pulmonary disease.</td>
 <td>abnormal</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">1060</td>
-<td>The cardiac contours are normal. The lungs are clear. Thoracic spondylosis. Mild dextrocurvature the spine.</td>
-<td>No acute process.</td>
-<td>The cardiac contours are normal. The lungs are clear. Thoracic spondylosis. Mild dextrocurvature the spine. No acute process.</td>
+<td data-quarto-table-cell-role="th">3404</td>
+<td>The heart is normal in size. The mediastinum is stable. There are postsurgical changes of the left breast. The lungs are clear.</td>
+<td>No acute disease.</td>
+<td>The heart is normal in size. The mediastinum is stable. There are postsurgical changes of the left breast. The lungs are clear. No acute disease.</td>
 <td>abnormal</td>
 </tr>
 <tr class="even">
-<td data-quarto-table-cell-role="th">2073</td>
-<td></td>
-<td>Heart size is normal. Lungs are clear. Tortuous aorta. Prominent first ribs. No nodules, masses, or adenopathy.</td>
-<td>Heart size is normal. Lungs are clear. Tortuous aorta. Prominent first ribs. No nodules, masses, or adenopathy.</td>
+<td data-quarto-table-cell-role="th">1694</td>
+<td>The lungs are clear. The heart and pulmonary XXXX appear normal. The pleural spaces are clear. There is XXXX minimal sclerotic change overlying the midthoracic spine the lateral view. Unclear whether this is a pulmonary finding or skeletal finding. Bone scan would be helpful to evaluate for potential metastatic disease. The mediastinal contours are normal.</td>
+<td>1. Vague increased sclerotic focus overlying the posterior spine on lateral XXXX, XXXX from prior study. Although this may be artifact or a pulmonary density, a XXXX sclerotic focus within the thoracic XXXX cannot be excluded. Bone scan would be helpful to evaluate for metastatic disease to the bone.</td>
+<td>The lungs are clear. The heart and pulmonary XXXX appear normal. The pleural spaces are clear. There is XXXX minimal sclerotic change overlying the midthoracic spine the lateral view. Unclear whether this is a pulmonary finding or skeletal finding. Bone scan would be helpful to evaluate for potential metastatic disease. The mediastinal contours are normal. 1. Vague increased sclerotic focus overlying the posterior spine on lateral XXXX, XXXX from prior study. Although this may be artifact or a pulmonary density, a XXXX sclerotic focus within the thoracic XXXX cannot be excluded. Bone scan ...</td>
 <td>abnormal</td>
 </tr>
 <tr class="odd">
-<td data-quarto-table-cell-role="th">3942</td>
-<td>Cardiac silhouette is at the upper limits of normal. Lungs are clear bilaterally. There is no pleural effusion or pneumothorax. Interval worsening of the moderate thoracolumbar dextroscoliosis with mild exaggeration of normal thoracic kyphosis.</td>
-<td>1. No acute cardiopulmonary process. 2. Interval worsening of moderate thoracolumbar dextroscoliosis. .</td>
-<td>Cardiac silhouette is at the upper limits of normal. Lungs are clear bilaterally. There is no pleural effusion or pneumothorax. Interval worsening of the moderate thoracolumbar dextroscoliosis with mild exaggeration of normal thoracic kyphosis. 1. No acute cardiopulmonary process. 2. Interval worsening of moderate thoracolumbar dextroscoliosis. .</td>
-<td>abnormal</td>
+<td data-quarto-table-cell-role="th">213</td>
+<td>Lungs are clear. No pleural effusions or pneumothoraces. Heart and mediastinum of normal size and contour. Degenerative changes in the thoracic spine.</td>
+<td>Clear lungs.</td>
+<td>Lungs are clear. No pleural effusions or pneumothoraces. Heart and mediastinum of normal size and contour. Degenerative changes in the thoracic spine. Clear lungs.</td>
+<td>normal</td>
 </tr>
 </tbody>
 </table>
@@ -420,12 +493,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We’ll revisit this point later when we’re deciding which text from the report we want to use to train our classifier.</p>
 </blockquote>
 <p>Next, let’s count how many of each label we have.</p>
-<div class="cell" data-cellview="form" data-outputid="9d36aec1-0a46-405f-8b33-4fb7e074d1c9" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>label_counts <span class="op">=</span> reports_df.label.value_counts()</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Abnormal:'</span>, label_counts[<span class="st">'abnormal'</span>])</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Normal:'</span>, label_counts[<span class="st">'normal'</span>])</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>label_counts.plot.bar()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-outputid="9d36aec1-0a46-405f-8b33-4fb7e074d1c9" data-execution_count="4">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>label_counts <span class="op">=</span> reports_df.label.value_counts()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Abnormal:'</span>, label_counts[<span class="st">'abnormal'</span>])</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Normal:'</span>, label_counts[<span class="st">'normal'</span>])</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>label_counts.plot.bar()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Abnormal: 2564
 Normal: 1391
@@ -438,18 +514,21 @@ Normal: 1391
 <p>As we see in the bar graph above, there are almost twice as many abnormal reports as there are normal reports. This will be important to remember as we partition our data into training, validation, and test sets.</p>
 <p>In fact, we’ll go ahead and split off (“hold out”) the test set right now to ensure our model is not exposed to it until the very end.</p>
 <p>We’ll set it up such that the our test set is 15% of our full data set and keep the relative percentage of labels the same as in our full dataset.</p>
-<div class="cell" data-cellview="form" data-outputid="04ee5863-2362-450a-a36a-676f0a715190" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>train_val, test_df <span class="op">=</span> train_test_split(reports_df, test_size<span class="op">=</span><span class="fl">0.15</span>, stratify<span class="op">=</span>reports_df.label.values)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Test set size:'</span>, test_df.shape[<span class="dv">0</span>])</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>test_counts <span class="op">=</span> test_df.label.value_counts()</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Abnormal:'</span>, test_counts[<span class="st">'abnormal'</span>])</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Normal:'</span>, test_counts[<span class="st">'normal'</span>])</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>test_counts.plot.bar()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-outputid="04ee5863-2362-450a-a36a-676f0a715190" data-execution_count="5">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">42</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>train_val, test_df <span class="op">=</span> train_test_split(reports_df, test_size<span class="op">=</span><span class="fl">0.15</span>, stratify<span class="op">=</span>reports_df.label.values)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Test set size:'</span>, test_df.shape[<span class="dv">0</span>])</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>test_counts <span class="op">=</span> test_df.label.value_counts()</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Abnormal:'</span>, test_counts[<span class="st">'abnormal'</span>])</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Normal:'</span>, test_counts[<span class="st">'normal'</span>])</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>test_counts.plot.bar()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test set size: 594
 Abnormal: 385
@@ -468,17 +547,20 @@ Normal: 209
 <h2 class="anchored" data-anchor-id="tokenization">Tokenization</h2>
 <p><em>Tokenization</em> is the process by which we split text into chunks or <em>tokens</em>. An individual token could be a sentence or phrase, a word, a part of a word, or a single character. Most often, we choose to tokenize at the word or sub-word level.</p>
 <p>Each token is assigned a sequential integer value and the collection of token-integer pairs is called our <em>vocabulary</em>.</p>
-<div class="cell" data-cellview="form" data-outputid="e9e03007-fe26-42ff-c1ca-faf564bb5553" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co">#@title **Word Tokenization**</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>spacy <span class="op">=</span> WordTokenizer()</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> train_val.iloc[<span class="dv">0</span>][<span class="st">'full-text'</span>]</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Original text:'</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>tkns <span class="op">=</span> first(spacy([text]))</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'After word tokenization:'</span>)</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coll_repr(tkns))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-outputid="e9e03007-fe26-42ff-c1ca-faf564bb5553" data-execution_count="6">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">#@title **Word Tokenization**</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>spacy <span class="op">=</span> WordTokenizer()</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> train_val.iloc[<span class="dv">0</span>][<span class="st">'full-text'</span>]</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Original text:'</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>tkns <span class="op">=</span> first(spacy([text]))</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'After word tokenization:'</span>)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coll_repr(tkns))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Original text:
 The XXXX examination consists of frontal and lateral radiographs of the chest. The cardiac silhouette is not enlarged. There has been apparent interval increase in low density convexity at the left cardiophrenic XXXX. Calcified granuloma is again seen in the right upper lobe. There is no consolidation, pleural effusion or pneumothorax. Increased size of density in the left cardiophrenic XXXX. Primary differential considerations include increased size of prominent epicardial fat, pericardial mass, pleural mass or cardiac aneurysm. CT chest with contrast is recommended. These findings and recommendations were discussed XXXX. XXXX by Dr. XXXX XXXX telephone at XXXX p.m. XXXX/XXXX. Dr. XXXX&lt;XXXX&gt;technologist receipt of the results.
@@ -492,12 +574,15 @@ After word tokenization:
 <h2 class="anchored" data-anchor-id="added-features-from-fast.ai">Added features from fast.ai</h2>
 <p>You’ll notice some odd-appearing tokens in the output from the next cell. These are special tokens that indicate certain things about the text. - <code>'xxbos'</code> indicates the beginning of the text <em>stream</em> - <code>'xxmaj'</code> indicates that the following character was capitalized before fast.ai lowered it - <code>'xxrep'</code> followed by <code>'4', 'x'</code> means that <code>'x'</code> is repeated 4 times…the <code>XXXX</code> in the reports is a product of the <em>anonymization</em> process that the team who generated the dataset used</p>
 <p>These special tokens enrich the data while reducing the vocab by eliminating redundant upper and lower case variants of individual words.</p>
-<div class="cell" data-cellview="form" data-outputid="893d97ff-b934-4e20-f50f-3a0b1449e16b" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co">#@title **fast.ai Tokenization**</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>tkn <span class="op">=</span> Tokenizer(spacy)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>toks <span class="op">=</span> tkn(text)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coll_repr(toks, <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-outputid="893d97ff-b934-4e20-f50f-3a0b1449e16b" data-execution_count="7">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#@title **fast.ai Tokenization**</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>tkn <span class="op">=</span> Tokenizer(spacy)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>toks <span class="op">=</span> tkn(text)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(coll_repr(toks, <span class="dv">15</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>(#164) ['xxbos', 'xxmaj', 'the', 'xxrep', '4', 'x', 'examination', 'consists', 'of', 'frontal', 'and', 'lateral', 'radiographs', 'of', 'the'...]</code></pre>
 </div>
@@ -507,21 +592,27 @@ After word tokenization:
 <h2 class="anchored" data-anchor-id="numericalization">Numericalization</h2>
 <p>After converting text to tokens, the next step is to convert each unique token to a number.</p>
 <p>For language modeling, we should do this on all of the text that we might use for training and validation. So we’ll carry this out on the combined <strong>Findings</strong> and <strong>Impression</strong> for each of our reports and tokenize the text to define our <em>vocabulary</em>. Each token in the vocabulary will be identified by a unique number.</p>
-<div class="cell" data-cellview="form" data-outputid="e22315ca-7819-451b-b03e-72a295ca7cdf" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>txts <span class="op">=</span> L(train_val[<span class="st">'full-text'</span>].to_list())</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>toks <span class="op">=</span> txts.<span class="bu">map</span>(tkn)</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> Numericalize()</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>num.setup(toks)</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>coll_repr(num.vocab, <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="cell" data-cellview="form" data-outputid="e22315ca-7819-451b-b03e-72a295ca7cdf" data-execution_count="8">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>txts <span class="op">=</span> L(train_val[<span class="st">'full-text'</span>].to_list())</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>toks <span class="op">=</span> txts.<span class="bu">map</span>(tkn)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> Numericalize()</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>num.setup(toks)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>coll_repr(num.vocab, <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>"(#1192) ['xxunk', 'xxpad', 'xxbos', 'xxeos', 'xxfld', 'xxrep', 'xxwrep', 'xxup', 'xxmaj', '.', 'no', 'the', 'is', 'are', 'normal', ',', '4', 'x', 'of', 'and'...]"</code></pre>
 </div>
 </div>
 <p>As you can see above, we have 1,192 tokens in our vocabulary. The special tokens from <code>fast.ai</code> appear first, followed by every other token in order of decreasing frequency. By default, <code>fast.ai</code> only includes tokens that appear at least 3 times in the <em>corpus</em> (collection of texts).</p>
-<div class="cell" data-cellview="form" data-outputid="a79d4c2d-fe68-4a9f-f26a-748d262b19e8" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>nums <span class="op">=</span> num(toks[<span class="dv">0</span>][:<span class="dv">14</span>])</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(nums)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">' '</span>.join(num.vocab[i] <span class="cf">for</span> i <span class="kw">in</span> nums))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-outputid="a79d4c2d-fe68-4a9f-f26a-748d262b19e8" data-execution_count="9">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>nums <span class="op">=</span> num(toks[<span class="dv">0</span>][:<span class="dv">14</span>])</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(nums)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">' '</span>.join(num.vocab[i] <span class="cf">for</span> i <span class="kw">in</span> nums))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>TensorText([  2,   8,  11,   5,  16,  17, 162, 314,  18, 178,  19,  89, 261,
              18])
@@ -542,21 +633,34 @@ xxbos xxmaj the xxrep 4 x examination consists of frontal and lateral radiograph
 <p>By default, <code>fastai.text</code> uses a language model pre-trained on the WikiText-103 corpus, which is a frequently used benchmark for NLP models, similar to ImageNet for image classification models.</p>
 <p>In their 2018 ACL paper “<a href="https://arxiv.org/abs/1801.06146">Universal Language Model Fine-Tuning for Text Classification</a>”, Jeremy Howard and Sebastian Ruder proposed the ULM-FiT approach of fine-tuning the language model on the corpus on which a second text classification model is trained. In the paper, they demonstrated state-of-the-art performance on a commonly used text classification example using this method.</p>
 <p>Here, we will fine-tune the language model on our radiology report text in two stages.</p>
-<blockquote class="blockquote">
-<p><strong>NOTE:</strong> This portion of the notebook takes between 3 and 10 minutes to run. It’s ok to skip this section for now and jump ahead to “Report Classifier Training”.</p>
-</blockquote>
-<div class="cell" data-cellview="form" data-outputid="3f1943d6-a83a-4a5a-b4e2-fdf4ff5c52f6" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dls_lm <span class="op">=</span> TextDataLoaders.from_df(train_val, valid_pct<span class="op">=</span><span class="fl">0.3</span>, seed<span class="op">=</span><span class="dv">42</span>, text_col<span class="op">=</span><span class="st">'full-text'</span>, is_lm<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>learn_lm <span class="op">=</span> language_model_learner(dls_lm, AWD_LSTM, metrics<span class="op">=</span>[accuracy, Perplexity()]).to_fp16()</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the final layers of the network</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>learn_lm.fit_one_cycle(<span class="dv">1</span>, <span class="fl">2e-2</span>)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Part 1/2 complete.</span><span class="ch">\n</span><span class="st">"</span>)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Unfreeze and train some more</span></span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>learn_lm.unfreeze()</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>learn_lm.fit_one_cycle(<span class="dv">10</span>, <span class="fl">2e-3</span>)</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Part 2/2 complete.</span><span class="ch">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This portion of the notebook takes between 3 and 10 minutes to run.</p>
+</div>
+</div>
+<div class="cell" data-cellview="form" data-outputid="3f1943d6-a83a-4a5a-b4e2-fdf4ff5c52f6" data-execution_count="10">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dls_lm <span class="op">=</span> TextDataLoaders.from_df(train_val, valid_pct<span class="op">=</span><span class="fl">0.3</span>, seed<span class="op">=</span><span class="dv">42</span>, text_col<span class="op">=</span><span class="st">'full-text'</span>, is_lm<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>learn_lm <span class="op">=</span> language_model_learner(dls_lm, AWD_LSTM, metrics<span class="op">=</span>[accuracy, Perplexity()]).to_fp16()</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Train the final layers of the network</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>learn_lm.fit_one_cycle(<span class="dv">1</span>, <span class="fl">2e-2</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Part 1/2 complete.</span><span class="ch">\n</span><span class="st">"</span>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Unfreeze and train some more</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>learn_lm.unfreeze()</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>learn_lm.fit_one_cycle(<span class="dv">10</span>, <span class="fl">2e-3</span>)</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Part 2/2 complete.</span><span class="ch">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 
 <style>
@@ -577,42 +681,6 @@ xxbos xxmaj the xxrep 4 x examination consists of frontal and lateral radiograph
 </div>
 <div class="cell-output cell-output-display">
 
-</div>
-<div class="cell-output cell-output-display">
-
-<style>
-    /* Turns off some styling */
-    progress {
-        /* gets rid of default border in Firefox and Opera. */
-        border: none;
-        /* Needs to be in here for Safari polyfill so background images work as expected. */
-        background-size: auto;
-    }
-    progress:not([value]), progress:not([value])::-webkit-progress-bar {
-        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
-    }
-    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-        background: #F44336;
-    }
-</style>
-</div>
-<div class="cell-output cell-output-display">
-
-    <div>
-      <progress value="105070592" class="" max="105067061" style="width:300px; height:20px; vertical-align: middle;"></progress>
-      100.00% [105070592/105067061 00:07&lt;00:00]
-    </div>
-    
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
-  warnings.warn(
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
-  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
-  warnings.warn(
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
-  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 
@@ -647,11 +715,11 @@ xxbos xxmaj the xxrep 4 x examination consists of frontal and lateral radiograph
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>3.248506</td>
-<td>2.250031</td>
-<td>0.518930</td>
-<td>9.488028</td>
-<td>00:11</td>
+<td>3.243420</td>
+<td>2.253190</td>
+<td>0.521906</td>
+<td>9.518048</td>
+<td>00:06</td>
 </tr>
 </tbody>
 </table>
@@ -697,82 +765,82 @@ Part 2/2 complete.
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>2.390456</td>
-<td>2.034532</td>
-<td>0.557661</td>
-<td>7.648674</td>
+<td>2.383461</td>
+<td>2.023076</td>
+<td>0.560477</td>
+<td>7.561547</td>
 <td>00:06</td>
 </tr>
 <tr class="even">
 <td>1</td>
-<td>2.200494</td>
-<td>1.797878</td>
-<td>0.598493</td>
-<td>6.036823</td>
+<td>2.197973</td>
+<td>1.785538</td>
+<td>0.604102</td>
+<td>5.962786</td>
 <td>00:07</td>
 </tr>
 <tr class="odd">
 <td>2</td>
-<td>2.014332</td>
-<td>1.621641</td>
-<td>0.635283</td>
-<td>5.061388</td>
-<td>00:07</td>
+<td>2.016547</td>
+<td>1.625365</td>
+<td>0.632902</td>
+<td>5.080271</td>
+<td>00:06</td>
 </tr>
 <tr class="even">
 <td>3</td>
-<td>1.854379</td>
-<td>1.533020</td>
-<td>0.656071</td>
-<td>4.632146</td>
-<td>00:07</td>
+<td>1.852749</td>
+<td>1.529698</td>
+<td>0.654709</td>
+<td>4.616784</td>
+<td>00:06</td>
 </tr>
 <tr class="odd">
 <td>4</td>
-<td>1.731511</td>
-<td>1.481734</td>
-<td>0.665394</td>
-<td>4.400571</td>
-<td>00:07</td>
+<td>1.727462</td>
+<td>1.485514</td>
+<td>0.664200</td>
+<td>4.417233</td>
+<td>00:06</td>
 </tr>
 <tr class="even">
 <td>5</td>
-<td>1.615797</td>
-<td>1.433703</td>
-<td>0.676441</td>
-<td>4.194201</td>
-<td>00:07</td>
+<td>1.613133</td>
+<td>1.435348</td>
+<td>0.674501</td>
+<td>4.201105</td>
+<td>00:06</td>
 </tr>
 <tr class="odd">
 <td>6</td>
-<td>1.521422</td>
-<td>1.409913</td>
-<td>0.680989</td>
-<td>4.095597</td>
-<td>00:07</td>
+<td>1.520230</td>
+<td>1.406741</td>
+<td>0.680834</td>
+<td>4.082631</td>
+<td>00:06</td>
 </tr>
 <tr class="even">
 <td>7</td>
-<td>1.446032</td>
-<td>1.398860</td>
-<td>0.684313</td>
-<td>4.050579</td>
-<td>00:07</td>
+<td>1.441349</td>
+<td>1.394186</td>
+<td>0.684216</td>
+<td>4.031690</td>
+<td>00:06</td>
 </tr>
 <tr class="odd">
 <td>8</td>
-<td>1.380686</td>
-<td>1.390905</td>
-<td>0.685932</td>
-<td>4.018486</td>
-<td>00:07</td>
+<td>1.376257</td>
+<td>1.386329</td>
+<td>0.686632</td>
+<td>4.000140</td>
+<td>00:06</td>
 </tr>
 <tr class="even">
 <td>9</td>
-<td>1.342037</td>
-<td>1.390172</td>
-<td>0.686221</td>
-<td>4.015540</td>
+<td>1.340578</td>
+<td>1.385572</td>
+<td>0.687009</td>
+<td>3.997111</td>
 <td>00:07</td>
 </tr>
 </tbody>
@@ -781,10 +849,13 @@ Part 2/2 complete.
 </div>
 <p>We need to save this model state in a special format in order to use it for our Embedding layer in the text classification model.</p>
 <p>We also want to use the same vocabulary that we used for the ULM-FiT procedure in our classification model.</p>
-<div class="cell" data-cellview="form" data-outputid="2774029b-79d1-4ceb-a480-af2311244017" data-execution_count="21">
+<div class="cell" data-cellview="form" data-outputid="2774029b-79d1-4ceb-a480-af2311244017" data-execution_count="11">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>torch.save(learn_lm.dls.vocab, <span class="st">'vocab.pkl'</span>)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>learn_lm.save_encoder(<span class="st">'fine-tuned-enc'</span>)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Saved.'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Saved.</code></pre>
 </div>
@@ -795,7 +866,9 @@ Part 2/2 complete.
 <h1>Report Classifier Training</h1>
 <p>In the steps that follow, we will train a second model as a text classifier, using embeddings from our fine-tuned language model. We will then test the classifier on our held-out test set to see how it performs on data it hasn’t seen yet.</p>
 <p>After running through the following cells the first time, you might experiment with setting <code>fine_tuned_lm</code> to <code>False</code> or setting <code>training_target</code> to <code>impression</code> to see how your results differ with different conditions.</p>
-<div class="cell" data-cellview="form" data-outputid="38079908-a8ea-41f3-eb2d-db2a2e2aab82" data-execution_count="22">
+<div class="cell" data-cellview="form" data-outputid="38079908-a8ea-41f3-eb2d-db2a2e2aab82" data-execution_count="12">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>training_target <span class="op">=</span> <span class="st">'full-text'</span></span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>validation_pct <span class="op">=</span> <span class="fl">0.3</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>fine_tuned_LM <span class="op">=</span> <span class="va">True</span></span>
@@ -803,6 +876,7 @@ Part 2/2 complete.
 <span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>lm_vocab <span class="op">=</span> torch.load(<span class="st">'vocab.pkl'</span>)</span>
 <span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>dls_cls <span class="op">=</span> TextDataLoaders.from_df(train_val, valid_pct<span class="op">=</span>validation_pct, seed<span class="op">=</span><span class="dv">42</span>, text_col<span class="op">=</span>training_target, label_col<span class="op">=</span><span class="st">'label'</span>, text_vocab<span class="op">=</span>lm_vocab)</span>
 <span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>dls_cls.show_batch(max_n<span class="op">=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 
 <style>
@@ -856,7 +930,9 @@ Part 2/2 complete.
 <section id="iterative-training-process" class="level2">
 <h2 class="anchored" data-anchor-id="iterative-training-process">Iterative Training Process</h2>
 <p>So that we don’t propagate too much error through the network during training, we will train the final layers first, then iteratively <em>unfreeze</em> (i.e.&nbsp;make trainable) a few preceding layers and train a little more before repeating this process.</p>
-<div class="cell" data-cellview="form" data-outputid="f6462390-0801-45df-b020-b447c6046f45" data-execution_count="23">
+<div class="cell" data-cellview="form" data-outputid="f6462390-0801-45df-b020-b447c6046f45" data-execution_count="13">
+<details>
+<summary>Code</summary>
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>learn_cls <span class="op">=</span> text_classifier_learner(dls_cls, AWD_LSTM, drop_mult<span class="op">=</span><span class="fl">0.5</span>, metrics<span class="op">=</span>accuracy).to_fp16()</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> fine_tuned_LM: learn_cls.load_encoder(<span class="st">'fine-tuned-enc'</span>)</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>learn_cls.fit_one_cycle(<span class="dv">1</span>, <span class="fl">2e-2</span>)</span>
@@ -876,24 +952,7 @@ Part 2/2 complete.
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>learn_cls.unfreeze()</span>
 <span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>learn_cls.fit_one_cycle(<span class="dv">1</span>, <span class="bu">slice</span>(<span class="fl">1e-3</span><span class="op">/</span>(<span class="fl">2.6</span><span class="op">**</span><span class="dv">4</span>),<span class="fl">1e-3</span>))</span>
 <span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"</span><span class="ch">\n</span><span class="st">Part 4/4 complete."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
-  warnings.warn(
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
-  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
-  warnings.warn(
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
-  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
-  warnings.warn(
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
-  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
-  warnings.warn(
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
-  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()</code></pre>
-</div>
+</details>
 <div class="cell-output cell-output-display">
 
 <style>
@@ -926,10 +985,10 @@ Part 2/2 complete.
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.529172</td>
-<td>0.356571</td>
-<td>0.908730</td>
-<td>00:14</td>
+<td>0.529666</td>
+<td>0.375562</td>
+<td>0.922619</td>
+<td>00:05</td>
 </tr>
 </tbody>
 </table>
@@ -979,9 +1038,49 @@ Part 4/4 complete.</code></pre>
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.477978</td>
-<td>0.264227</td>
-<td>0.933532</td>
+<td>0.487774</td>
+<td>0.255552</td>
+<td>0.939484</td>
+<td>00:04</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output cell-output-display">
+
+<style>
+    /* Turns off some styling */
+    progress {
+        /* gets rid of default border in Firefox and Opera. */
+        border: none;
+        /* Needs to be in here for Safari polyfill so background images work as expected. */
+        background-size: auto;
+    }
+    progress:not([value]), progress:not([value])::-webkit-progress-bar {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
+    }
+    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
+        background: #F44336;
+    }
+</style>
+</div>
+<div class="cell-output cell-output-display">
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">epoch</th>
+<th data-quarto-table-cell-role="th">train_loss</th>
+<th data-quarto-table-cell-role="th">valid_loss</th>
+<th data-quarto-table-cell-role="th">accuracy</th>
+<th data-quarto-table-cell-role="th">time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0.380615</td>
+<td>0.170027</td>
+<td>0.948413</td>
 <td>00:05</td>
 </tr>
 </tbody>
@@ -1019,59 +1118,22 @@ Part 4/4 complete.</code></pre>
 <tbody>
 <tr class="odd">
 <td>0</td>
-<td>0.376465</td>
-<td>0.180261</td>
-<td>0.948413</td>
-<td>00:06</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="cell-output cell-output-display">
-
-<style>
-    /* Turns off some styling */
-    progress {
-        /* gets rid of default border in Firefox and Opera. */
-        border: none;
-        /* Needs to be in here for Safari polyfill so background images work as expected. */
-        background-size: auto;
-    }
-    progress:not([value]), progress:not([value])::-webkit-progress-bar {
-        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px);
-    }
-    .progress-bar-interrupted, .progress-bar-interrupted::-webkit-progress-bar {
-        background: #F44336;
-    }
-</style>
-</div>
-<div class="cell-output cell-output-display">
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th">epoch</th>
-<th data-quarto-table-cell-role="th">train_loss</th>
-<th data-quarto-table-cell-role="th">valid_loss</th>
-<th data-quarto-table-cell-role="th">accuracy</th>
-<th data-quarto-table-cell-role="th">time</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>0</td>
-<td>0.290897</td>
-<td>0.145934</td>
+<td>0.297941</td>
+<td>0.143385</td>
 <td>0.955357</td>
-<td>00:08</td>
+<td>00:07</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
-<div class="cell" data-cellview="form" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Export fine-tuned classifier model</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>learn_cls.export(<span class="st">'full-text'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-execution_count="14">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Export fine-tuned classifier model</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>learn_cls.export(<span class="st">'full-text'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 </section>
 <section id="tensorboard" class="level2">
@@ -1079,43 +1141,45 @@ Part 4/4 complete.</code></pre>
 <p>Run the following cell, then hit the refresh button in the top right menu of the Tensorboard iframe that appears.</p>
 <p>Next, look along the left hand menu for <code>T-SNE</code>. Click it and let it run for ~1,000 iterations. Then hit the “stop” button.</p>
 <p>Now, explore the embedding space to see how radiological terms cluster in the embedding space of a language model fine-tuned on CXR reports.</p>
-<div class="cell" data-cellview="form" data-execution_count="33">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load tensorboard extension and packages</span></span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext tensorboard</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.tensorboard <span class="im">import</span> SummaryWriter</span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> load_learner(<span class="st">"full-text"</span>)</span>
-<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> learn.model[<span class="dv">0</span>]</span>
-<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">hasattr</span>(m, <span class="st">"module"</span>):  <span class="co"># DataParallel/DDP</span></span>
-<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> m.module</span>
-<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a><span class="co"># AWD_LSTM encoder weights (token embedding matrix)</span></span>
-<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> m.encoder.weight.detach().cpu()          <span class="co"># shape: [vocab_sz, emb_dim]  [oai_citation:1‡cedrickchee.gitbook.io](https://cedrickchee.gitbook.io/knowledge/courses/fast.ai/deep-learning-part-2-cutting-edge-deep-learning-for-coders/2018-edition/lesson-10-transfer-learning-nlp?utm_source=chatgpt.com)</span></span>
-<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> F.normalize(W, dim<span class="op">=</span><span class="dv">1</span>)                       <span class="co"># optional</span></span>
-<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> <span class="bu">list</span>(learn.dls.vocab[<span class="dv">0</span>])                <span class="co"># len == vocab_sz</span></span>
-<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>log_dir <span class="op">=</span> <span class="st">"runs/embeddings_awdlstm"</span></span>
-<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>writer <span class="op">=</span> SummaryWriter(log_dir)</span>
-<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>writer.add_embedding(W, metadata<span class="op">=</span>vocab, tag<span class="op">=</span><span class="st">"word_embeddings"</span>)</span>
-<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>writer.close()</span>
-<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>tensorboard <span class="op">--</span>logdir runs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-execution_count="15">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load tensorboard extension and packages</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext tensorboard</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.tensorboard <span class="im">import</span> SummaryWriter</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> load_learner(<span class="st">"full-text"</span>)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> learn.model[<span class="dv">0</span>]</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">hasattr</span>(m, <span class="st">"module"</span>):  <span class="co"># DataParallel/DDP</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> m.module</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co"># AWD_LSTM encoder weights (token embedding matrix)</span></span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> m.encoder.weight.detach().cpu()          <span class="co"># shape: [vocab_sz, emb_dim]  [oai_citation:1‡cedrickchee.gitbook.io](https://cedrickchee.gitbook.io/knowledge/courses/fast.ai/deep-learning-part-2-cutting-edge-deep-learning-for-coders/2018-edition/lesson-10-transfer-learning-nlp?utm_source=chatgpt.com)</span></span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> F.normalize(W, dim<span class="op">=</span><span class="dv">1</span>)                       <span class="co"># optional</span></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> <span class="bu">list</span>(learn.dls.vocab[<span class="dv">0</span>])                <span class="co"># len == vocab_sz</span></span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>log_dir <span class="op">=</span> <span class="st">"runs/embeddings_awdlstm"</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>writer <span class="op">=</span> SummaryWriter(log_dir)</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>writer.add_embedding(W, metadata<span class="op">=</span>vocab, tag<span class="op">=</span><span class="st">"word_embeddings"</span>)</span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>writer.close()</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>tensorboard <span class="op">--</span>logdir runs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
-<pre><code>The tensorboard extension is already loaded. To reload it, use:
-  %reload_ext tensorboard</code></pre>
+<pre><code>warning: Embedding dir exists, did you set global_step for add_embedding()?</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 
-      <iframe id="tensorboard-frame-5ff39c04bf7e4662" width="100%" height="800" frameborder="0">
+      <iframe id="tensorboard-frame-dd90e5da680f217e" width="100%" height="800" frameborder="0">
       </iframe>
       <script>
         (function() {
-          const frame = document.getElementById("tensorboard-frame-5ff39c04bf7e4662");
+          const frame = document.getElementById("tensorboard-frame-dd90e5da680f217e");
           const url = new URL("/", window.location);
           const port = 6006;
           if (port) {
@@ -1135,22 +1199,15 @@ Part 4/4 complete.</code></pre>
 <blockquote class="blockquote">
 <p><em>Note:</em> Support = number of reports used to derive the result in that row</p>
 </blockquote>
-<div class="cell" data-cellview="form" data-outputid="f7bd8ab9-ffd4-4ffc-f468-c3a68e51305f" data-execution_count="34">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>test_items <span class="op">=</span> test_df[[training_target, <span class="st">'label'</span>]].copy()</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>test_items.columns <span class="op">=</span> [<span class="st">'text'</span>, <span class="st">'label'</span>]</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>dl_test <span class="op">=</span> learn_cls.dls.test_dl(test_items, with_labels<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>interp <span class="op">=</span> ClassificationInterpretation.from_learner(learn_cls, dl<span class="op">=</span>dl_test)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>interp.print_classification_report()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
-  warnings.warn(
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
-  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/torch/amp/autocast_mode.py:270: UserWarning: User provided device_type of 'cuda', but CUDA is not available. Disabling
-  warnings.warn(
-/Users/walter/projects/rnn-tutorial/.venv/lib/python3.11/site-packages/fastai/callback/fp16.py:47: UserWarning: torch.cuda.amp.GradScaler is enabled, but CUDA is not available.  Disabling.
-  self.autocast,self.learn.scaler,self.scales = autocast('cuda', dtype=dtype),GradScaler('cuda', **self.kwargs),L()</code></pre>
-</div>
+<div class="cell" data-cellview="form" data-outputid="f7bd8ab9-ffd4-4ffc-f468-c3a68e51305f" data-execution_count="16">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>test_items <span class="op">=</span> test_df[[training_target, <span class="st">'label'</span>]].copy()</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>test_items.columns <span class="op">=</span> [<span class="st">'text'</span>, <span class="st">'label'</span>]</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>dl_test <span class="op">=</span> learn_cls.dls.test_dl(test_items, with_labels<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>interp <span class="op">=</span> ClassificationInterpretation.from_learner(learn_cls, dl<span class="op">=</span>dl_test)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>interp.print_classification_report()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 
 <style>
@@ -1196,12 +1253,12 @@ Part 4/4 complete.</code></pre>
 <div class="cell-output cell-output-stdout">
 <pre><code>              precision    recall  f1-score   support
 
-    abnormal       0.95      0.95      0.95       385
-      normal       0.91      0.91      0.91       209
+    abnormal       0.97      0.95      0.96       385
+      normal       0.91      0.95      0.93       209
 
-    accuracy                           0.94       594
-   macro avg       0.93      0.93      0.93       594
-weighted avg       0.94      0.94      0.94       594
+    accuracy                           0.95       594
+   macro avg       0.94      0.95      0.95       594
+weighted avg       0.95      0.95      0.95       594
 </code></pre>
 </div>
 </div>
@@ -1209,8 +1266,11 @@ weighted avg       0.94      0.94      0.94       594
 <section id="the-confusion-matrix" class="level2">
 <h2 class="anchored" data-anchor-id="the-confusion-matrix">The confusion matrix</h2>
 <p>The <em>confusion matrix</em> is a graphical representation of how the model performed. In our case, it is a 2x2 table comparing model predictions to the actual label for each class (i.e.&nbsp;“normal” and “abnormal”).</p>
-<div class="cell" data-cellview="form" data-outputid="9ae5005d-53aa-49c9-f834-71c261657971" data-execution_count="35">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>interp.plot_confusion_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-outputid="9ae5005d-53aa-49c9-f834-71c261657971" data-execution_count="17">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>interp.plot_confusion_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 
 <style>
@@ -1241,8 +1301,11 @@ weighted avg       0.94      0.94      0.94       594
 <h2 class="anchored" data-anchor-id="analyzing-the-failures-or-top-losses">Analyzing the failures or “top losses”</h2>
 <p>The <em>loss function</em> gives us a numerical value telling us how far off the model’s prediction is from the actual class. The higher the loss, the more confused our model is.</p>
 <p>Analyzing the top losses can help you understand why your model fails when it fails. Here, we plot the top 3 losses for our test dataset.</p>
-<div class="cell" data-cellview="form" data-outputid="00e93ecb-bde5-4731-fdf6-283c9fa4f4d5" data-execution_count="36">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>interp.plot_top_losses(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-outputid="00e93ecb-bde5-4731-fdf6-283c9fa4f4d5" data-execution_count="18">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>interp.plot_top_losses(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-display">
 
 <style>
@@ -1279,27 +1342,27 @@ weighted avg       0.94      0.94      0.94       594
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
-<td>xxbos xxmaj the xxrep 4 x examination consists of frontal and lateral radiographs of the chest . xxmaj the cardiomediastinal contours are within normal limits . xxmaj pulmonary vascularity is within normal limits . xxmaj no focal consolidation , pleural effusion , or pneumothorax identified . xxmaj deformity of the right clavicle related to remote xxrep 4 x is again seen . xxmaj visualized upper abdomen grossly unremarkable . xxmaj no evidence of acute cardiopulmonary process .</td>
+<td>xxbos xxmaj the heart , pulmonary xxrep 4 x and mediastinum are within normal limits . xxmaj there is no pleural effusion or pneumothorax . xxmaj there is no focal air space opacity to suggest a pneumonia . xxmaj there is no pulmonary nodule identified . xxmaj there is a left humerus prosthesis xxunk demonstrated . xxmaj no acute cardiopulmonary disease . xxmaj no evidence for metastatic disease by radiographic evaluation .</td>
 <td>normal</td>
 <td>abnormal</td>
-<td>0.9513528347015381</td>
-<td>3.1263229846954346</td>
+<td>0.9536540508270264</td>
+<td>3.5140838623046875</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>xxbos xxmaj the heart size and pulmonary vascularity appear within normal limits . xxmaj lungs are free of focal airspace disease . xxmaj no pleural effusion or pneumothorax is seen . xxmaj no discrete nodules or adenopathy are noted . xxmaj degenerative changes are present in the spine . xxmaj no evidence of active disease .</td>
 <td>normal</td>
 <td>abnormal</td>
-<td>0.9558783769607544</td>
-<td>3.1208062171936035</td>
+<td>0.9602826833724976</td>
+<td>3.225968599319458</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
 <td>xxbos xxmaj heart xxrep 4 x , mediastinum , xxrep 4 x , bony structures and lung xxrep 4 x are unremarkable . xxmaj no radiographic evidence of acute cardiopulmonary disease</td>
 <td>abnormal</td>
 <td>normal</td>
-<td>0.9561212062835693</td>
-<td>3.0231621265411377</td>
+<td>0.9702249765396118</td>
+<td>3.071622133255005</td>
 </tr>
 </tbody>
 </table>
@@ -1312,25 +1375,28 @@ weighted avg       0.94      0.94      0.94       594
 <p>Just for fun, let’s see how well our language model does at generating text.</p>
 <p>Enter ~3-5 words in the <code>text</code> string to give our language model something to work with, then edit other options and run the cell.</p>
 <p>Setting <code>ULMFiT</code> to <code>False</code> will generate predictions without our fine-tuned model.</p>
-<div class="cell" data-cellview="form" data-outputid="2341dcd3-29cf-4485-f115-5ddf0a5f2ebe" data-execution_count="37">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">'Normal heart size'</span></span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>words_per_sentence <span class="op">=</span> <span class="dv">18</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>num_sentences <span class="op">=</span> <span class="dv">2</span></span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>ULMFiT <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Generating predictions...'</span>)</span>
-<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ULMFiT:</span>
-<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> [learn_lm.predict(text, words_per_sentence, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sentences)]</span>
-<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>    learn_lm_new <span class="op">=</span> language_model_learner(dls_lm, AWD_LSTM)</span>
-<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> [learn_lm_new.predict(text, words_per_sentence, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sentences)]</span>
-<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, pred <span class="kw">in</span> <span class="bu">enumerate</span>(preds): <span class="bu">print</span>(<span class="ss">f'Sentence </span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>pred<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-cellview="form" data-outputid="2341dcd3-29cf-4485-f115-5ddf0a5f2ebe" data-execution_count="19">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">'Normal heart size'</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>words_per_sentence <span class="op">=</span> <span class="dv">18</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>num_sentences <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>ULMFiT <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Generating predictions...'</span>)</span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ULMFiT:</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> [learn_lm.predict(text, words_per_sentence, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sentences)]</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    learn_lm_new <span class="op">=</span> language_model_learner(dls_lm, AWD_LSTM)</span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> [learn_lm_new.predict(text, words_per_sentence, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sentences)]</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, pred <span class="kw">in</span> <span class="bu">enumerate</span>(preds): <span class="bu">print</span>(<span class="ss">f'Sentence </span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>pred<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Generating predictions...
 
-Sentence 1: Normal heart size and mediastinal contours . No focal airspace consolidation , pleural effusion or pneumothorax . Mild degenerative
-Sentence 2: Normal heart size . Left base patchy alveolar infiltrate , no definite pleural effusion seen . No typical findings</code></pre>
+Sentence 1: Normal heart size and mediastinal contours . No focal airspace consolidation . No pleural effusion or pneumothorax .
+Sentence 2: Normal heart size . No pneumothorax or large pleural effusions . No focal airspace consolidation . Visualized osseous</code></pre>
 </div>
 <div class="cell-output cell-output-display">
 
