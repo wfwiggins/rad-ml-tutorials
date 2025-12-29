@@ -50,7 +50,7 @@
 <section id="interactive-participation" class="level2">
 <h2 class="anchored" data-anchor-id="interactive-participation">Interactive Participation</h2>
 <p>This notebook is designed for interactive participation.</p>
-<p>If you are running this notebook on your own machine, you may download the notebook with this link: <a href="../notebooks/RNNs_tutorial.ipynb">Download notebook</a>{download}.</p>
+<p>If you are running this notebook on your own machine, you may download the notebook with this link: <a href="../notebooks/RNNs_tutorial.ipynb" download="RNNs_tutorial.ipynb">Download notebook</a>.</p>
 <p>Please refer to the previous posts on <a href="../posts/install-python.html">installing Python</a> and <a href="../posts/install-pytorch.html">installing PyTorch and fast.ai</a> with <code>uv</code> to ensure your environment is set up properly. You’ll also need to run the following commands to add two additional packages to your <code>uv</code> project.</p>
 <div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
 background-color: null;
