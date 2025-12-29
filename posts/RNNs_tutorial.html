@@ -1143,72 +1143,45 @@ Part 4/4 complete.</code></pre>
 <p>Run the following cell, then hit the refresh button in the top right menu of the Tensorboard iframe that appears.</p>
 <p>Next, look along the left hand menu for <code>T-SNE</code>. Click it and let it run for ~1,000 iterations. Then hit the “stop” button.</p>
 <p>Now, explore the embedding space to see how radiological terms cluster in the embedding space of a language model fine-tuned on CXR reports.</p>
-<div class="cell" data-cellview="form" data-execution_count="15">
-<details>
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load tensorboard extension and packages</span></span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext tensorboard</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch.nn.functional <span class="im">as</span> F</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch.utils.tensorboard <span class="im">import</span> SummaryWriter</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>learn <span class="op">=</span> load_learner(<span class="st">"full-text"</span>)</span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>m <span class="op">=</span> learn.model[<span class="dv">0</span>]</span>
-<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="bu">hasattr</span>(m, <span class="st">"module"</span>):  <span class="co"># DataParallel/DDP</span></span>
-<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>    m <span class="op">=</span> m.module</span>
-<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a><span class="co"># AWD_LSTM encoder weights (token embedding matrix)</span></span>
-<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> m.encoder.weight.detach().cpu()          <span class="co"># shape: [vocab_sz, emb_dim]  [oai_citation:1‡cedrickchee.gitbook.io](https://cedrickchee.gitbook.io/knowledge/courses/fast.ai/deep-learning-part-2-cutting-edge-deep-learning-for-coders/2018-edition/lesson-10-transfer-learning-nlp?utm_source=chatgpt.com)</span></span>
-<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>W <span class="op">=</span> F.normalize(W, dim<span class="op">=</span><span class="dv">1</span>)                       <span class="co"># optional</span></span>
-<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> <span class="bu">list</span>(learn.dls.vocab[<span class="dv">0</span>])                <span class="co"># len == vocab_sz</span></span>
-<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>log_dir <span class="op">=</span> <span class="st">"runs/embeddings_awdlstm"</span></span>
-<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>writer <span class="op">=</span> SummaryWriter(log_dir)</span>
-<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a>writer.add_embedding(W, metadata<span class="op">=</span>vocab, tag<span class="op">=</span><span class="st">"word_embeddings"</span>)</span>
-<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>writer.close()</span>
-<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>tensorboard <span class="op">--</span>logdir runs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>warning: Embedding dir exists, did you set global_step for add_embedding()?</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-
-      <iframe id="tensorboard-frame-dd90e5da680f217e" width="100%" height="800" frameborder="0">
-      </iframe>
-      <script>
-        (function() {
-          const frame = document.getElementById("tensorboard-frame-dd90e5da680f217e");
-          const url = new URL("/", window.location);
-          const port = 6006;
-          if (port) {
-            url.port = port;
-          }
-          frame.src = url;
-        })();
-      </script>
-    
-</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../images/tensorboard.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Tensorboard T-SNE Embedding Visualization</figcaption>
+</figure>
 </div>
 </section>
 <section id="testing-the-model" class="level2">
 <h2 class="anchored" data-anchor-id="testing-the-model">Testing the model</h2>
 <p>Now that our model is trained, let’s test it on our held-out test dataset.</p>
-<p>We will run our report classification model on the held-out test dataset. A report will be generated with the following information: - <strong>precision</strong>: a.k.a. positive predictive value = true_positives / all_predicted_positives - <strong>recall</strong>: a.k.a. sensitivity = true_positives / all_actual_positives - <strong>f1-score</strong>: the harmonic mean of precision and recall - <strong>accuracy</strong>: number_correct / number_reports</p>
-<blockquote class="blockquote">
-<p><em>Note:</em> Support = number of reports used to derive the result in that row</p>
-</blockquote>
+<p>We will run our report classification model on the held-out test dataset.</p>
+<p>A report will be generated with the following information:</p>
+<ul>
+<li><strong>precision</strong>: a.k.a. positive predictive value = true_positives / all_predicted_positives</li>
+<li><strong>recall</strong>: a.k.a. sensitivity = true_positives / all_actual_positives</li>
+<li><strong>f1-score</strong>: the harmonic mean of precision and recall</li>
+<li><strong>accuracy</strong>: number_correct / number_reports</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Support = number of reports used to derive the result in that row</p>
+</div>
+</div>
 <div class="cell" data-cellview="form" data-outputid="f7bd8ab9-ffd4-4ffc-f468-c3a68e51305f" data-execution_count="16">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>test_items <span class="op">=</span> test_df[[training_target, <span class="st">'label'</span>]].copy()</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>test_items.columns <span class="op">=</span> [<span class="st">'text'</span>, <span class="st">'label'</span>]</span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>dl_test <span class="op">=</span> learn_cls.dls.test_dl(test_items, with_labels<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>interp <span class="op">=</span> ClassificationInterpretation.from_learner(learn_cls, dl<span class="op">=</span>dl_test)</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>interp.print_classification_report()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>test_items <span class="op">=</span> test_df[[training_target, <span class="st">'label'</span>]].copy()</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>test_items.columns <span class="op">=</span> [<span class="st">'text'</span>, <span class="st">'label'</span>]</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>dl_test <span class="op">=</span> learn_cls.dls.test_dl(test_items, with_labels<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>interp <span class="op">=</span> ClassificationInterpretation.from_learner(learn_cls, dl<span class="op">=</span>dl_test)</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>interp.print_classification_report()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -1271,7 +1244,7 @@ weighted avg       0.95      0.95      0.95       594
 <div class="cell" data-cellview="form" data-outputid="9ae5005d-53aa-49c9-f834-71c261657971" data-execution_count="17">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>interp.plot_confusion_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>interp.plot_confusion_matrix()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -1295,7 +1268,7 @@ weighted avg       0.95      0.95      0.95       594
 
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="RNNs_tutorial_files/figure-html/cell-18-output-3.png" class="img-fluid"></p>
+<p><img src="RNNs_tutorial_files/figure-html/cell-17-output-3.png" class="img-fluid"></p>
 </div>
 </div>
 </section>
@@ -1306,7 +1279,7 @@ weighted avg       0.95      0.95      0.95       594
 <div class="cell" data-cellview="form" data-outputid="00e93ecb-bde5-4731-fdf6-283c9fa4f4d5" data-execution_count="18">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>interp.plot_top_losses(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>interp.plot_top_losses(<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -1380,19 +1353,19 @@ weighted avg       0.95      0.95      0.95       594
 <div class="cell" data-cellview="form" data-outputid="2341dcd3-29cf-4485-f115-5ddf0a5f2ebe" data-execution_count="19">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">'Normal heart size'</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>words_per_sentence <span class="op">=</span> <span class="dv">18</span></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>num_sentences <span class="op">=</span> <span class="dv">2</span></span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>ULMFiT <span class="op">=</span> <span class="va">True</span></span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Generating predictions...'</span>)</span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ULMFiT:</span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> [learn_lm.predict(text, words_per_sentence, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sentences)]</span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    learn_lm_new <span class="op">=</span> language_model_learner(dls_lm, AWD_LSTM)</span>
-<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> [learn_lm_new.predict(text, words_per_sentence, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sentences)]</span>
-<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
-<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, pred <span class="kw">in</span> <span class="bu">enumerate</span>(preds): <span class="bu">print</span>(<span class="ss">f'Sentence </span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>pred<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> <span class="st">'Normal heart size'</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>words_per_sentence <span class="op">=</span> <span class="dv">18</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>num_sentences <span class="op">=</span> <span class="dv">2</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>ULMFiT <span class="op">=</span> <span class="va">True</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Generating predictions...'</span>)</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> ULMFiT:</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> [learn_lm.predict(text, words_per_sentence, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sentences)]</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>    learn_lm_new <span class="op">=</span> language_model_learner(dls_lm, AWD_LSTM)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> [learn_lm_new.predict(text, words_per_sentence, temperature<span class="op">=</span><span class="fl">0.75</span>) <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_sentences)]</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, pred <span class="kw">in</span> <span class="bu">enumerate</span>(preds): <span class="bu">print</span>(<span class="ss">f'Sentence </span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>pred<span class="sc">}</span><span class="ss">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Generating predictions...
