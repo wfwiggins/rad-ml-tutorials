@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Walter Wiggins">
+<meta name="dcterms.date" content="2026-01-19">
+
+<title>Radiology ML Tutorials - Transformers Tutorial from RSNA 2022 Deep Learning Lab</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../logo.png" rel="icon" type="image/png">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Radiology ML Tutorials</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-local-dev-setup" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Local Dev Setup</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-local-dev-setup">    
+        <li>
+    <a class="dropdown-item" href="../setup.html" rel="" target="">
+ <span class="dropdown-text">Basic Setup Guide</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../advanced-setup.html" rel="" target="">
+ <span class="dropdown-text">Advanced Setup</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../resources.html" rel="" target="">
+ <span class="menu-text">Educational Resources</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../about.html" rel="" target="">
+ <span class="menu-text">Walter Wiggins, MD, PhD</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/wfwiggins" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/walterfwiggins" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../index.xml" rel="" target=""><i class="bi bi-rss" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Transformers Tutorial from RSNA 2022 Deep Learning Lab</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">tutorials</div>
+                <div class="quarto-category">NLP</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Walter Wiggins </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">January 19, 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#rsna-2022-deep-learning-lab" id="toc-rsna-2022-deep-learning-lab" class="nav-link active" data-scroll-target="#rsna-2022-deep-learning-lab"><strong>RSNA 2022: Deep Learning Lab</strong></a>
+  <ul class="collapse">
+  <li><a href="#nlp-text-classification-with-transformers" id="toc-nlp-text-classification-with-transformers" class="nav-link" data-scroll-target="#nlp-text-classification-with-transformers"><strong>NLP: Text Classification with Transformers</strong></a>
+  <ul class="collapse">
+  <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#developer" id="toc-developer" class="nav-link" data-scroll-target="#developer">Developer</a></li>
+  <li><a href="#acknowledgements" id="toc-acknowledgements" class="nav-link" data-scroll-target="#acknowledgements">Acknowledgements</a></li>
+  </ul></li>
+  <li><a href="#interactive-participation" id="toc-interactive-participation" class="nav-link" data-scroll-target="#interactive-participation">Interactive Participation</a></li>
+  </ul></li>
+  <li><a href="#downloading-the-data" id="toc-downloading-the-data" class="nav-link" data-scroll-target="#downloading-the-data">Downloading the Data</a></li>
+  <li><a href="#reformatting-the-data" id="toc-reformatting-the-data" class="nav-link" data-scroll-target="#reformatting-the-data">Reformatting the Data</a></li>
+  <li><a href="#exploring-the-data" id="toc-exploring-the-data" class="nav-link" data-scroll-target="#exploring-the-data">Exploring the data</a></li>
+  <li><a href="#language-modeling" id="toc-language-modeling" class="nav-link" data-scroll-target="#language-modeling">Language Modeling</a>
+  <ul class="collapse">
+  <li><a href="#tokenization" id="toc-tokenization" class="nav-link" data-scroll-target="#tokenization">Tokenization</a></li>
+  <li><a href="#distilbert-tokenization" id="toc-distilbert-tokenization" class="nav-link" data-scroll-target="#distilbert-tokenization">DistilBERT Tokenization</a></li>
+  <li><a href="#embedding" id="toc-embedding" class="nav-link" data-scroll-target="#embedding">Embedding</a></li>
+  </ul></li>
+  <li><a href="#report-classifier-training" id="toc-report-classifier-training" class="nav-link" data-scroll-target="#report-classifier-training">Report Classifier Training</a>
+  <ul class="collapse">
+  <li><a href="#setting-up-the-training-run" id="toc-setting-up-the-training-run" class="nav-link" data-scroll-target="#setting-up-the-training-run">Setting up the Training Run</a></li>
+  <li><a href="#running-the-training-experiment" id="toc-running-the-training-experiment" class="nav-link" data-scroll-target="#running-the-training-experiment">Running the Training Experiment</a></li>
+  <li><a href="#testing-the-model" id="toc-testing-the-model" class="nav-link" data-scroll-target="#testing-the-model">Testing the model</a></li>
+  </ul></li>
+  <li><a href="#creating-a-pipeline-for-inference" id="toc-creating-a-pipeline-for-inference" class="nav-link" data-scroll-target="#creating-a-pipeline-for-inference">Creating a Pipeline for Inference</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<section id="rsna-2022-deep-learning-lab" class="level1">
+<h1><strong>RSNA 2022: Deep Learning Lab</strong></h1>
+<section id="nlp-text-classification-with-transformers" class="level2">
+<h2 class="anchored" data-anchor-id="nlp-text-classification-with-transformers"><strong>NLP: Text Classification with Transformers</strong></h2>
+<p>In this demonstration, we will utilize techniques of <em>natural language processing</em> (NLP) to train a classifier, which will analyze the text of radiology reports for chest radiographs to predict whether a report is <strong>normal</strong> or <strong>abnormal</strong>.</p>
+<section id="code" class="level3">
+<h3 class="anchored" data-anchor-id="code">Code</h3>
+<p>We will utilize four libraries from <strong>HuggingFace</strong>: <a href="https://huggingface.co/transformers/">Transformers</a>, <a href="https://huggingface.co/docs/accelerate/en/index">Accelerate</a>, <a href="https://huggingface.co/datasets">Datasets</a>, and <a href="https://huggingface.co/docs/evaluate/en/package_reference/main_classes">Evaluate</a>. These libraries are written primarily in the <a href="https://www.python.org/">Python programming language</a> and can be used with both the <a href="https://www.pytorch.org/">PyTorch</a> and <a href="https://www.tensorflow.org/">TensorFlow</a> deep learning libraries.</p>
+<p>The demonstration in this notebook relies heavily on examples from the <a href="https://huggingface.co/course/chapter1">HuggingFace Course</a>.</p>
+</section>
+<section id="data" class="level3">
+<h3 class="anchored" data-anchor-id="data">Data</h3>
+<p>The data is obtained from the National Library of Medicine’s Open-i service. We utilize the radiology reports from the <a href="https://openi.nlm.nih.gov/faq#collection">Indiana University Chest X-ray Dataset</a> for this demonstration.</p>
+<blockquote class="blockquote">
+<p><em>Reference:</em> Demner-Fushman D, Kohli MD, Rosenman MB, Shooshan SE, Rodriguez L, Antani S, Thoma GR, McDonald CJ. Preparing a collection of radiology examinations for distribution and retrieval. J Am Med Inform Assoc. 2016 Mar;23(2):304-10. doi: 10.1093/jamia/ocv080. Epub 2015 Jul 1.</p>
+</blockquote>
+</section>
+<section id="developer" class="level3">
+<h3 class="anchored" data-anchor-id="developer">Developer</h3>
+<ul>
+<li>Walter F. Wiggins, MD, PhD - Duke University Hospital, Durham, NC, USA</li>
+</ul>
+</section>
+<section id="acknowledgements" class="level3">
+<h3 class="anchored" data-anchor-id="acknowledgements">Acknowledgements</h3>
+<ul>
+<li>Felipe Kitamura, MD - UNIFESP, Sao Paulo, Brasil</li>
+<li>Igor Santos, MD - UNIFESP, Sao Paulo, Brasil</li>
+<li>Luciano M. Prevedello, MD, MPH - Ohio State University, Columbus, OH, USA</li>
+</ul>
+</section>
+</section>
+<section id="interactive-participation" class="level2">
+<h2 class="anchored" data-anchor-id="interactive-participation">Interactive Participation</h2>
+<p>This notebook is designed for interactive participation.</p>
+<p>If you are following along on your own computer, please download the notebook file from the link below.</p>
+<p><a href="../notebooks/Transformers_tutorial.html">Download the Juypter notebook</a></p>
+<pre class="callout-note"><code>You'll want to download this notebook to the same folder where your `uv` project lives.</code></pre>
+<p>Please refer to the previous posts on <a href="../posts/install-python.html">installing Python</a> and <a href="../posts/install-pytorch.html">installing PyTorch and fast.ai</a> with <code>uv</code> to ensure your environment is set up properly. You’ll also need to run the following commands to add four additional packages to your <code>uv</code> project.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"transformers&gt;=4.57.6"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"accelerate&gt;=1.12.0"</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"datasets&gt;=4.5.0"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"evaluate&gt;=0.4.6"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you haven’t yet done the previous <a href="../posts/rnns_tutorial.qmd">interactive tutorial on RNNs</a>, you’ll also need to run the following command; however, it is highly recommended to do that one first, as some key concepts in NLP are covered within that will help you understand this tutorial.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add xmltodict</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To run Jupyter Lab and open the notebook within your <code>uv</code> project, run the following command in your terminal.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run <span class="at">--with</span> jupyter jupyter lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>You can run the code cells in order, and modify parameters as desired to see how they affect the results.</p>
+<p>If you are using Google Colab, please use the link below to open a compatible version in Colab. You can save a copy of the notebook to your own Google Drive by selecting “File” -&gt; “Save a copy in Drive”.</p>
+<p><a href="https://colab.research.google.com/github/RSNA/AI-Deep-Learning-Lab-2023/blob/main/sessions/nlp-text-classification/RSNA22_NLP_Transformers.ipynb">Open in Colab</a></p>
+</section>
+</section>
+<section id="downloading-the-data" class="level1">
+<h1>Downloading the Data</h1>
+<p>When you run the following cell, the <a href="https://openi.nlm.nih.gov/faq#collection">NLM Open-i “Indiana University Chest X-ray Reports” dataset</a> will be downloaded.</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">"ignore"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Download the data</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="op">!</span>curl <span class="op">-</span>s https:<span class="op">//</span>openi.nlm.nih.gov<span class="op">/</span>imgs<span class="op">/</span>collections<span class="op">/</span>NLMCXR_reports.tgz <span class="op">|</span> tar xvz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="reformatting-the-data" class="level1">
+<h1>Reformatting the Data</h1>
+<p>Each of the reports is stored in <em>extensible markup language</em> (XML) format. In order to work with the report text data more easily, we will extract the data and put it into a <code>pandas.DataFrame</code>, which is a tabular data structure.</p>
+<p>The XML metadata contains <a href="https://www.ncbi.nlm.nih.gov/mesh/">MeSH terms</a> for each report. We will use these to create the <em>label</em> for each report in our dataset. These labels will serve as the targets for training our classifier to predict whether the report is <strong>normal</strong> or <strong>abnormal</strong>.</p>
+<p>After the relevant data is extracted from the XML files, the total number of reports and the first 5 rows of our data table will show up below.</p>
+<div class="cell" data-outputid="f4b648c2-008c-442a-9f17-1cef33f2adc3" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> glob</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> xmltodict</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.foundation <span class="im">import</span> L</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># suppress warnings from the output</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">'ignore'</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> xml_parse(f):</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(f) <span class="im">as</span> xml:</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        report_dict <span class="op">=</span> xmltodict.parse(xml.read())</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    xml.close()</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> report_dict</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_label(report):</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> L(report[<span class="st">'eCitation'</span>][<span class="st">'MeSH'</span>][<span class="st">'major'</span>])</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">'normal'</span> <span class="cf">if</span> label[<span class="dv">0</span>].lower() <span class="op">==</span> <span class="st">'normal'</span> <span class="cf">else</span> <span class="st">'abnormal'</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_text(report):</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    text_dict <span class="op">=</span> {}</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'report_id'</span>] <span class="op">=</span> report[<span class="st">'eCitation'</span>][<span class="st">'IUXRId'</span>][<span class="st">'@id'</span>]</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> report[<span class="st">'eCitation'</span>][<span class="st">'MedlineCitation'</span>][<span class="st">'Article'</span>][<span class="st">'Abstract'</span>][<span class="st">'AbstractText'</span>]</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    findings <span class="op">=</span> text[<span class="dv">2</span>][<span class="st">'#text'</span>] <span class="cf">if</span> <span class="st">'#text'</span> <span class="kw">in</span> text[<span class="dv">2</span>] <span class="cf">else</span> <span class="st">''</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'findings'</span>] <span class="op">=</span> findings</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    impression <span class="op">=</span> text[<span class="dv">3</span>][<span class="st">'#text'</span>] <span class="cf">if</span> <span class="st">'#text'</span> <span class="kw">in</span> text[<span class="dv">3</span>] <span class="cf">else</span> <span class="st">''</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'impression'</span>] <span class="op">=</span> impression</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    text_dict[<span class="st">'full-text'</span>] <span class="op">=</span> <span class="st">' '</span>.join([findings, impression])</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> text_dict</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> process_report(report):</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    label <span class="op">=</span> get_label(report)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    report_dict <span class="op">=</span> get_text(report)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    report_dict[<span class="st">'labels'</span>] <span class="op">=</span> label</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> report_dict</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>fps <span class="op">=</span> L(glob.glob(<span class="st">'./ecgen-radiology/*'</span>))</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>reports <span class="op">=</span> fps.<span class="bu">map</span>(xml_parse)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>reports_df <span class="op">=</span> pd.DataFrame(reports.<span class="bu">map</span>(process_report)).set_index(<span class="st">'report_id'</span>).sort_index()</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'# of reports:'</span>, reports_df.shape[<span class="dv">0</span>])</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>reports_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># of reports: 3955
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">findings</th>
+<th data-quarto-table-cell-role="th">impression</th>
+<th data-quarto-table-cell-role="th">full-text</th>
+<th data-quarto-table-cell-role="th">labels</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">report_id</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1</td>
+<td>The cardiac silhouette and mediastinum size ar...</td>
+<td>Normal chest x-XXXX.</td>
+<td>The cardiac silhouette and mediastinum size ar...</td>
+<td>normal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">10</td>
+<td>The cardiomediastinal silhouette is within nor...</td>
+<td>No acute cardiopulmonary process.</td>
+<td>The cardiomediastinal silhouette is within nor...</td>
+<td>abnormal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">100</td>
+<td>Both lungs are clear and expanded. Heart and m...</td>
+<td>No active disease.</td>
+<td>Both lungs are clear and expanded. Heart and m...</td>
+<td>normal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1000</td>
+<td>There is XXXX increased opacity within the rig...</td>
+<td>1. Increased opacity in the right upper lobe w...</td>
+<td>There is XXXX increased opacity within the rig...</td>
+<td>abnormal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1001</td>
+<td>Interstitial markings are diffusely prominent ...</td>
+<td>Diffuse fibrosis. No visible focal acute disease.</td>
+<td>Interstitial markings are diffusely prominent ...</td>
+<td>abnormal</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="exploring-the-data" class="level1">
+<h1>Exploring the data</h1>
+<p>Let’s look through a little more of the data to get a feel for what we’re working with and how we might want to design the subsequent model training experiments.</p>
+<p>We’ll then take a look at how many normals and abnormals we have to work with.</p>
+<div class="cell" data-outputid="d505b58f-101b-45af-c08f-be59be62775b" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Run this cell several times to view random samples of the data</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>reports_df.sample(<span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">findings</th>
+<th data-quarto-table-cell-role="th">impression</th>
+<th data-quarto-table-cell-role="th">full-text</th>
+<th data-quarto-table-cell-role="th">labels</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">report_id</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3155</td>
+<td>Heart size mildly enlarged with enlarged right...</td>
+<td>Cardiomegaly, no acute pulmonary findings</td>
+<td>Heart size mildly enlarged with enlarged right...</td>
+<td>abnormal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">432</td>
+<td>The cardiomediastinal silhouette is within nor...</td>
+<td>No acute cardiopulmonary process.</td>
+<td>The cardiomediastinal silhouette is within nor...</td>
+<td>normal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">433</td>
+<td></td>
+<td>Heart size normal. Lungs clear.</td>
+<td>Heart size normal. Lungs clear.</td>
+<td>normal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2464</td>
+<td>The lungs appear clear. There are no suspiciou...</td>
+<td>No acute cardiopulmonary disease</td>
+<td>The lungs appear clear. There are no suspiciou...</td>
+<td>normal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1850</td>
+<td>The lungs are clear bilaterally. Specifically,...</td>
+<td>No acute cardiopulmonary abnormality..</td>
+<td>The lungs are clear bilaterally. Specifically,...</td>
+<td>normal</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Here are some of the things you may have noticed about the data, as you reviewed it: - Some reports only have an Impression (i.e.&nbsp;no separate Findings section) - Many reports contain blocks of “XXXX” text. This is due to the fact that these reports were anonymized prior to releasing them as an open data set. These blocks likely represent <em>named entities</em> or dates. - As expected, there is wide variation in the length of these chest radiograph reports.</p>
+<p>Importantly, there are some reports where the “Impression” states something along the lines of “No acute cardiopulmonary abnormality” but the label is “abnormal”. It seems like this is usually due to a chronic incidental finding or artifact that is mentioned in the “Findings”, but isn’t included in the “Impression”.</p>
+<blockquote class="blockquote">
+<p>We’ll revisit this point later when we’re deciding which text from the report we want to use to train our classifier.</p>
+</blockquote>
+<p>Next, let’s count how many of each label we have.</p>
+<div class="cell" data-outputid="578acde6-b008-446a-fb8a-1e1b91bb89c9" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>label_counts <span class="op">=</span> reports_df.labels.value_counts()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Abnormal:'</span>, label_counts[<span class="st">'abnormal'</span>])</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Normal:'</span>, label_counts[<span class="st">'normal'</span>])</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>label_counts.plot.bar()<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Abnormal: 2564
+Normal: 1391
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="Transformers_tutorial_files/figure-html/cell-5-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>As we see in the bar graph above, there are almost twice as many abnormal reports as there are normal reports. This will be important to remember as we partition our data into training, validation, and test sets.</p>
+</section>
+<section id="language-modeling" class="level1">
+<h1>Language Modeling</h1>
+<p>The types of algorithms we use in NLP work with with numbers, not text. Therefore, we need a way to convert text into numbers. We also want a way for those numbers to contain a little more information about the text they represent. Here, we’ll describe the steps in preparing our text for <em>language modeling</em>.</p>
+<section id="tokenization" class="level2">
+<h2 class="anchored" data-anchor-id="tokenization">Tokenization</h2>
+<p><em>Tokenization</em> is the process by which we split text into chunks or <em>tokens</em>. An individual token could be a sentence or phrase, a word, a part of a word, or a single character. Most often, we choose to tokenize at the word or sub-word level.</p>
+<p>Each token is assigned a sequential integer value and the collection of token-integer pairs is called our <em>vocabulary</em>.</p>
+</section>
+<section id="distilbert-tokenization" class="level2">
+<h2 class="anchored" data-anchor-id="distilbert-tokenization">DistilBERT Tokenization</h2>
+<p>In this case, since we’re training a transformer model, we will use a different tokenizer designed specifically for this task from the HuggingFace Transformers library.</p>
+<div class="cell" data-outputid="f79924aa-3e4d-43f8-e002-b7a389b93cdd" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> DistilBertTokenizerFast</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>text <span class="op">=</span> reports_df.sample()[<span class="st">'full-text'</span>].values[<span class="dv">0</span>]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(text)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>tokenizer <span class="op">=</span> DistilBertTokenizerFast.from_pretrained(<span class="st">'distilbert-base-uncased'</span>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Tokenizer vocab size:"</span>, <span class="bu">len</span>(tokenizer))</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>ids <span class="op">=</span> tokenizer.encode(text, padding<span class="op">=</span><span class="va">True</span>, truncation<span class="op">=</span><span class="va">True</span>, return_tensors<span class="op">=</span><span class="st">'pt'</span>)</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ids[<span class="dv">0</span>])</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tokenizer.decode(ids[<span class="dv">0</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>There are low lung volumes. There is bronchovascular crowding. Heart and mediastinal contours within normal limits. No focal infiltrate or effusion. No pneumothorax. Visualized osseous structures intact. No acute abnormality. Low volumes XXXX XXXX for the opportunity to assist in the care of your patient. If there are any questions about this examination please XXXX. XXXX XXXX, XXXX certified radiologist, at XXXX. .
+Tokenizer vocab size: 30522
+tensor([  101,  2045,  2024,  2659, 11192,  6702,  1012,  2045,  2003, 22953,
+        12680,  7103, 28817,  8017,  4306,  2075,  1012,  2540,  1998,  2865,
+        16643, 12032,  9530, 21163,  2015,  2306,  3671,  6537,  1012,  2053,
+        15918, 29543,  2030,  1041,  4246, 14499,  1012,  2053,  1052,  2638,
+         2819, 29288,  2527,  2595,  1012,  5107,  3550,  9808,  3366,  3560,
+         5090, 10109,  1012,  2053, 11325, 19470,  3012,  1012,  2659,  6702,
+        22038, 20348, 22038, 20348,  2005,  1996,  4495,  2000,  6509,  1999,
+         1996,  2729,  1997,  2115,  5776,  1012,  2065,  2045,  2024,  2151,
+         3980,  2055,  2023,  7749,  3531, 22038, 20348,  1012, 22038, 20348,
+        22038, 20348,  1010, 22038, 20348,  7378,  2557, 10727,  1010,  2012,
+        22038, 20348,  1012,  1012,   102])
+[CLS] there are low lung volumes. there is bronchovascular crowding. heart and mediastinal contours within normal limits. no focal infiltrate or effusion. no pneumothorax. visualized osseous structures intact. no acute abnormality. low volumes xxxx xxxx for the opportunity to assist in the care of your patient. if there are any questions about this examination please xxxx. xxxx xxxx, xxxx certified radiologist, at xxxx.. [SEP]</code></pre>
+</div>
+</div>
+</section>
+<section id="embedding" class="level2">
+<h2 class="anchored" data-anchor-id="embedding">Embedding</h2>
+<p>While these integers map one-to-one onto our tokens, their numeric value is otherwise meaningless. To embed more information into the numeric representation of our tokens, we employ a process called <em>language modeling</em>. We can either use a pre-trained language model for this <em>embedding</em> or we can fine-tune a language model to better model our “radiology language”. This latter process is called <em>transfer learning</em>.</p>
+</section>
+</section>
+<section id="report-classifier-training" class="level1">
+<h1>Report Classifier Training</h1>
+<p>In the steps that follow, we will fine-tune a pretrained model as a text classifier, using the embeddings from the model’s pretraining. We will then test the classifier on our held-out test set to see how it performs on data it hasn’t seen yet.</p>
+<p>This is different that how we did this in the RNNs tutorial, where we first fine-tuned a language model on the task of next token prediction to optimize embeddings, and then went on to train the classifier using those fine-tuned embeddings.</p>
+<p>We skip that step to showcase the power and flexibility of Transformer models. We don’t even have to fine-tune the underlying language model to get a very accurate classifier.</p>
+<div class="cell" data-outputid="2d959f8d-7585-40d7-eaee-9d6a8f8e9b7c" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We'll use the Hugging Face datasets library to create our datasets</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datasets <span class="im">import</span> Dataset</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>dset <span class="op">=</span> Dataset.from_pandas(reports_df)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>dset</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>Dataset({
+    features: ['findings', 'impression', 'full-text', 'labels', 'report_id'],
+    num_rows: 3955
+})</code></pre>
+</div>
+</div>
+<p>Here we perform our train-validation-test splits with a built-in method similar to the <code>scikit-learn</code> function</p>
+<div class="cell" data-outputid="7d92d912-8fa4-4ea2-d09d-0e6b7da00e82" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>dsets <span class="op">=</span> dset.train_test_split(test_size<span class="op">=</span><span class="fl">0.15</span>, seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>dsets_clean <span class="op">=</span> dsets[<span class="st">"train"</span>].train_test_split(test_size<span class="op">=</span><span class="fl">0.30</span>, seed<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>dsets_clean[<span class="st">"validation"</span>] <span class="op">=</span> dsets_clean.pop(<span class="st">"test"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>dsets_clean[<span class="st">"test"</span>] <span class="op">=</span> dsets[<span class="st">"test"</span>]</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>dsets_clean</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>DatasetDict({
+    train: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id'],
+        num_rows: 2352
+    })
+    validation: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id'],
+        num_rows: 1009
+    })
+    test: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id'],
+        num_rows: 594
+    })
+})</code></pre>
+</div>
+</div>
+<p>Next, we take our categorical labels and wrap them in a class that easily converts back and forth between numerical representation and text</p>
+<div class="cell" data-outputid="b4c33f34-8fe4-4d0a-bfd1-1db7a1c3784e" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datasets <span class="im">import</span> ClassLabel</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>label_names <span class="op">=</span> [<span class="st">'normal'</span>, <span class="st">'abnormal'</span>]</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>labels <span class="op">=</span> ClassLabel(names<span class="op">=</span>label_names)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>labels</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>ClassLabel(names=['normal', 'abnormal'])</code></pre>
+</div>
+</div>
+<p>Here we define a function to tokenize our dataset in batches.</p>
+<pre class="callout-tip"><code>To see how the model performs with different inputs from the report try replacing `'full-text'` with `'findings'` or `'impression'`.</code></pre>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> preprocess(batch):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    tokens <span class="op">=</span> tokenizer(batch[<span class="st">'full-text'</span>], truncation<span class="op">=</span><span class="va">True</span>, max_length<span class="op">=</span><span class="dv">128</span>)  <span class="co"># try 'full-text', 'impression', or 'findings' here</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    tokens[<span class="st">'labels'</span>] <span class="op">=</span> labels.str2int(batch[<span class="st">'labels'</span>])</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> tokens</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-outputid="264d3274-f093-4b0d-dc71-864d84c2de16" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>tokenized_dsets <span class="op">=</span> dsets_clean.<span class="bu">map</span>(preprocess, batched<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>tokenized_dsets</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Map: 100%|██████████| 2352/2352 [00:00&lt;00:00, 19274.10 examples/s]
+Map: 100%|██████████| 1009/1009 [00:00&lt;00:00, 24387.32 examples/s]
+Map: 100%|██████████| 594/594 [00:00&lt;00:00, 24232.27 examples/s]</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>DatasetDict({
+    train: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id', 'input_ids', 'attention_mask'],
+        num_rows: 2352
+    })
+    validation: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id', 'input_ids', 'attention_mask'],
+        num_rows: 1009
+    })
+    test: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id', 'input_ids', 'attention_mask'],
+        num_rows: 594
+    })
+})</code></pre>
+</div>
+</div>
+<section id="setting-up-the-training-run" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up-the-training-run">Setting up the Training Run</h2>
+<ol type="1">
+<li>We define a metrics function to output accuracy and F1-score during training and validation.</li>
+<li>We then configure our training experiment with a variety of hyperparameters. For more information on the different arguments, please see the <a href="https://huggingface.co/docs/transformers/en/main_classes/trainer#transformers.TrainingArguments">docs</a> for <code>TrainingArguments</code>.</li>
+</ol>
+<pre class="callout-tip"><code>Try editing the hyperparameters with different options for arguments like `num_train_epochs` and `learning_rate` to see the effect these have on training. 
+
+For example, if you set `learning_rate` too low or too high, the model may fail to learn. 
+
+If it looks like your model is overfitting (i.e. validation loss goes up and validation metrics stop improving), then you might try reducing `num_train_epochs`.</code></pre>
+<div class="cell" data-outputid="5397086d-5745-4b41-8140-2778d2688520" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> DistilBertForSequenceClassification, Trainer, TrainingArguments</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> evaluate <span class="im">import</span> load</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># This metrics function will output accuracy and F1-score during training &amp; validation</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>metric <span class="op">=</span> load(<span class="st">"glue"</span>, <span class="st">"mrpc"</span>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> compute_metrics(eval_pred):</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    logits <span class="op">=</span> <span class="bu">getattr</span>(eval_pred, <span class="st">"predictions"</span>, eval_pred[<span class="dv">0</span>])</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    labels <span class="op">=</span> <span class="bu">getattr</span>(eval_pred, <span class="st">"label_ids"</span>, eval_pred[<span class="dv">1</span>])</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> np.argmax(logits, axis<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> metric.compute(predictions<span class="op">=</span>preds, references<span class="op">=</span>labels)</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co"># This step configures our training experiment</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>training_args <span class="op">=</span> TrainingArguments(</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    output_dir<span class="op">=</span><span class="st">'./results'</span>,          <span class="co"># output directory</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    num_train_epochs<span class="op">=</span><span class="dv">5</span>,              <span class="co"># total number of training epochs</span></span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    per_device_train_batch_size<span class="op">=</span><span class="dv">16</span>,  <span class="co"># batch size per device during training</span></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    per_device_eval_batch_size<span class="op">=</span><span class="dv">64</span>,   <span class="co"># batch size for evaluation</span></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    weight_decay<span class="op">=</span><span class="fl">0.01</span>,               <span class="co"># strength of weight decay</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    logging_dir<span class="op">=</span><span class="st">'./logs'</span>,            <span class="co"># directory for storing logs</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>    logging_strategy<span class="op">=</span><span class="st">"steps"</span>,</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    logging_steps<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>    logging_first_step<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>    disable_tqdm<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    eval_strategy<span class="op">=</span><span class="st">'epoch'</span>,</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>    do_train<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>    do_eval<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">2e-5</span>,</span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>    warmup_ratio<span class="op">=</span><span class="fl">0.06</span>,</span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>    logging_nan_inf_filter<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="running-the-training-experiment" class="level2">
+<h2 class="anchored" data-anchor-id="running-the-training-experiment">Running the Training Experiment</h2>
+<p>Now we select our model and run the training experiment. You’ll see a warning printed out telling you that you should “<em>probably TRAIN this model on a down-stream task to be able to use it for predictions and inference</em>”. And that is <strong>exactly</strong> what we’re doing, so we can safely disregard.</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DistilBertForSequenceClassification.from_pretrained(<span class="st">"distilbert-base-uncased"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>trainer <span class="op">=</span> Trainer(</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>model,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    args<span class="op">=</span>training_args,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    train_dataset<span class="op">=</span>tokenized_dsets[<span class="st">'train'</span>],</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    eval_dataset<span class="op">=</span>tokenized_dsets[<span class="st">'validation'</span>],</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    tokenizer<span class="op">=</span>tokenizer,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    compute_metrics<span class="op">=</span>compute_metrics,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>train_output <span class="op">=</span> trainer.train()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Some weights of DistilBertForSequenceClassification were not initialized from the model checkpoint at distilbert-base-uncased and are newly initialized: ['classifier.bias', 'classifier.weight', 'pre_classifier.bias', 'pre_classifier.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+    <div>
+      
+      <progress value="735" max="735" style="width:300px; height:20px; vertical-align: middle;"></progress>
+      [735/735 06:57, Epoch 5/5]
+    </div>
+    
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Epoch</th>
+<th data-quarto-table-cell-role="th">Training Loss</th>
+<th data-quarto-table-cell-role="th">Validation Loss</th>
+<th data-quarto-table-cell-role="th">Accuracy</th>
+<th data-quarto-table-cell-role="th">F1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>0.204000</td>
+<td>0.166343</td>
+<td>0.955401</td>
+<td>0.966493</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>0.184100</td>
+<td>0.134775</td>
+<td>0.964321</td>
+<td>0.973373</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>0.125300</td>
+<td>0.142841</td>
+<td>0.966303</td>
+<td>0.974889</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>0.087000</td>
+<td>0.151876</td>
+<td>0.967294</td>
+<td>0.975646</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>0.006200</td>
+<td>0.154686</td>
+<td>0.967294</td>
+<td>0.975646</td>
+</tr>
+</tbody>
+</table>
+<p>
+</p></div>
+</div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Finally we save our trained model for later use</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>trainer.save_model(<span class="st">'fine-tuned'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="testing-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="testing-the-model">Testing the model</h2>
+<p>Now that our model is trained, let’s test it on our held-out test dataset.</p>
+<div class="cell" data-outputid="d2101741-4655-4a21-d28e-c3e4ce8bc370" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>test_output <span class="op">=</span> trainer.predict(tokenized_dsets[<span class="st">'test'</span>])</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(test_output.metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'test_loss': 0.18446457386016846, 'test_accuracy': 0.9579124579124579, 'test_f1': 0.9654218533886584, 'test_runtime': 2.1735, 'test_samples_per_second': 273.288, 'test_steps_per_second': 4.601}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="creating-a-pipeline-for-inference" class="level1">
+<h1>Creating a Pipeline for Inference</h1>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformers <span class="im">import</span> pipeline</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>classifier <span class="op">=</span> pipeline(<span class="st">"text-classification"</span>, model<span class="op">=</span><span class="st">"fine-tuned"</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>classifier.model.config.id2label <span class="op">=</span> {<span class="dv">0</span>: <span class="st">'normal'</span>, <span class="dv">1</span>: <span class="st">'abnormal'</span>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Device set to use mps:0</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="78605df9-2fdd-4049-c084-6be41526eb81" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> tokenized_dsets[<span class="st">'test'</span>]</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Ground Truth Label:"</span>, labels.int2str(test[<span class="dv">0</span>][<span class="st">'labels'</span>]))</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>()</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Report text:"</span>, test[<span class="dv">0</span>][<span class="st">'full-text'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ground Truth Label: abnormal
+
+Report text: Heart size within normal limits. No focal airspace opacities. No pneumothorax. No effusions. Mild degenerative changes of the thoracic spine. No XXXX deformities. Emphysematous changes. Chronic lung disease, with no acute cardiopulmonary findings.</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="21fd6ae3-4a54-4391-c077-064bff504a17" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>classifier(test[<span class="dv">0</span>][<span class="st">'full-text'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>[{'label': 'abnormal', 'score': 0.9945248365402222}]</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="e7cf1447-7c18-4577-baeb-cad56cd4ac76" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Modify this cell with some sample text of your choosing to test out the model</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>sample_text <span class="op">=</span> <span class="st">"Normal heart size and mediastinal contours. The lungs are well-aerated. No pleural effusion or pneumothorax. No displaced rib fractures."</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>classifier(sample_text)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>[{'label': 'normal', 'score': 0.9968691468238831}]</code></pre>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

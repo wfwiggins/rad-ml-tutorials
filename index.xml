@@ -10,7 +10,1197 @@
 <atom:link href="https://radml.wfwiggins.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>Interactive tutorials for AI applications in radiology</description>
 <generator>quarto-1.3.450</generator>
-<lastBuildDate>Sun, 28 Dec 2025 05:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 19 Jan 2026 05:00:00 GMT</lastBuildDate>
+<item>
+  <title>Transformers Tutorial from RSNA 2022 Deep Learning Lab</title>
+  <dc:creator>Walter Wiggins</dc:creator>
+  <link>https://radml.wfwiggins.com/posts/Transformers_tutorial.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="rsna-2022-deep-learning-lab" class="level1">
+<h1><strong>RSNA 2022: Deep Learning Lab</strong></h1>
+<section id="nlp-text-classification-with-transformers" class="level2">
+<h2 class="anchored" data-anchor-id="nlp-text-classification-with-transformers"><strong>NLP: Text Classification with Transformers</strong></h2>
+<p>In this demonstration, we will utilize techniques of <em>natural language processing</em> (NLP) to train a classifier, which will analyze the text of radiology reports for chest radiographs to predict whether a report is <strong>normal</strong> or <strong>abnormal</strong>.</p>
+<section id="code" class="level3">
+<h3 class="anchored" data-anchor-id="code">Code</h3>
+<p>We will utilize four libraries from <strong>HuggingFace</strong>: <a href="https://huggingface.co/transformers/">Transformers</a>, <a href="https://huggingface.co/docs/accelerate/en/index">Accelerate</a>, <a href="https://huggingface.co/datasets">Datasets</a>, and <a href="https://huggingface.co/docs/evaluate/en/package_reference/main_classes">Evaluate</a>. These libraries are written primarily in the <a href="https://www.python.org/">Python programming language</a> and can be used with both the <a href="https://www.pytorch.org/">PyTorch</a> and <a href="https://www.tensorflow.org/">TensorFlow</a> deep learning libraries.</p>
+<p>The demonstration in this notebook relies heavily on examples from the <a href="https://huggingface.co/course/chapter1">HuggingFace Course</a>.</p>
+</section>
+<section id="data" class="level3">
+<h3 class="anchored" data-anchor-id="data">Data</h3>
+<p>The data is obtained from the National Library of Medicine’s Open-i service. We utilize the radiology reports from the <a href="https://openi.nlm.nih.gov/faq#collection">Indiana University Chest X-ray Dataset</a> for this demonstration.</p>
+<blockquote class="blockquote">
+<p><em>Reference:</em> Demner-Fushman D, Kohli MD, Rosenman MB, Shooshan SE, Rodriguez L, Antani S, Thoma GR, McDonald CJ. Preparing a collection of radiology examinations for distribution and retrieval. J Am Med Inform Assoc. 2016 Mar;23(2):304-10. doi: 10.1093/jamia/ocv080. Epub 2015 Jul 1.</p>
+</blockquote>
+</section>
+<section id="developer" class="level3">
+<h3 class="anchored" data-anchor-id="developer">Developer</h3>
+<ul>
+<li>Walter F. Wiggins, MD, PhD - Duke University Hospital, Durham, NC, USA</li>
+</ul>
+</section>
+<section id="acknowledgements" class="level3">
+<h3 class="anchored" data-anchor-id="acknowledgements">Acknowledgements</h3>
+<ul>
+<li>Felipe Kitamura, MD - UNIFESP, Sao Paulo, Brasil</li>
+<li>Igor Santos, MD - UNIFESP, Sao Paulo, Brasil</li>
+<li>Luciano M. Prevedello, MD, MPH - Ohio State University, Columbus, OH, USA</li>
+</ul>
+</section>
+</section>
+<section id="interactive-participation" class="level2">
+<h2 class="anchored" data-anchor-id="interactive-participation">Interactive Participation</h2>
+<p>This notebook is designed for interactive participation.</p>
+<p>If you are following along on your own computer, please download the notebook file from the link below.</p>
+<p><a href="../notebooks/Transformers_tutorial.html">Download the Juypter notebook</a></p>
+<pre class="callout-note"><code>You'll want to download this notebook to the same folder where your `uv` project lives.</code></pre>
+<p>Please refer to the previous posts on <a href="../posts/install-python.html">installing Python</a> and <a href="../posts/install-pytorch.html">installing PyTorch and fast.ai</a> with <code>uv</code> to ensure your environment is set up properly. You’ll also need to run the following commands to add four additional packages to your <code>uv</code> project.</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> add <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"transformers&gt;=4.57.6"</span></span>
+<span id="cb2-2"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> add <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"accelerate&gt;=1.12.0"</span></span>
+<span id="cb2-3"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> add <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"datasets&gt;=4.5.0"</span></span>
+<span id="cb2-4"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> add <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"evaluate&gt;=0.4.6"</span></span></code></pre></div>
+<p>If you haven’t yet done the previous <a href="../posts/rnns_tutorial.qmd">interactive tutorial on RNNs</a>, you’ll also need to run the following command; however, it is highly recommended to do that one first, as some key concepts in NLP are covered within that will help you understand this tutorial.</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> add xmltodict</span></code></pre></div>
+<p>To run Jupyter Lab and open the notebook within your <code>uv</code> project, run the following command in your terminal.</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> run <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--with</span> jupyter jupyter lab</span></code></pre></div>
+<p>You can run the code cells in order, and modify parameters as desired to see how they affect the results.</p>
+<p>If you are using Google Colab, please use the link below to open a compatible version in Colab. You can save a copy of the notebook to your own Google Drive by selecting “File” -&gt; “Save a copy in Drive”.</p>
+<p><a href="https://colab.research.google.com/github/RSNA/AI-Deep-Learning-Lab-2023/blob/main/sessions/nlp-text-classification/RSNA22_NLP_Transformers.ipynb">Open in Colab</a></p>
+</section>
+</section>
+<section id="downloading-the-data" class="level1">
+<h1>Downloading the Data</h1>
+<p>When you run the following cell, the <a href="https://openi.nlm.nih.gov/faq#collection">NLM Open-i “Indiana University Chest X-ray Reports” dataset</a> will be downloaded.</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%%</span>capture</span>
+<span id="cb5-2"></span>
+<span id="cb5-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> warnings</span>
+<span id="cb5-4">warnings.filterwarnings(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ignore"</span>)</span>
+<span id="cb5-5"></span>
+<span id="cb5-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Download the data</span></span>
+<span id="cb5-7"><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span>curl <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>s https:<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">//</span>openi.nlm.nih.gov<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>imgs<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>collections<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>NLMCXR_reports.tgz <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|</span> tar xvz</span></code></pre></div>
+</div>
+</section>
+<section id="reformatting-the-data" class="level1">
+<h1>Reformatting the Data</h1>
+<p>Each of the reports is stored in <em>extensible markup language</em> (XML) format. In order to work with the report text data more easily, we will extract the data and put it into a <code>pandas.DataFrame</code>, which is a tabular data structure.</p>
+<p>The XML metadata contains <a href="https://www.ncbi.nlm.nih.gov/mesh/">MeSH terms</a> for each report. We will use these to create the <em>label</em> for each report in our dataset. These labels will serve as the targets for training our classifier to predict whether the report is <strong>normal</strong> or <strong>abnormal</strong>.</p>
+<p>After the relevant data is extracted from the XML files, the total number of reports and the first 5 rows of our data table will show up below.</p>
+<div class="cell" data-outputid="f4b648c2-008c-442a-9f17-1cef33f2adc3" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> glob</span>
+<span id="cb6-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> xmltodict</span>
+<span id="cb6-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pandas <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> pd</span>
+<span id="cb6-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> fastcore.foundation <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> L</span>
+<span id="cb6-5"></span>
+<span id="cb6-6"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># suppress warnings from the output</span></span>
+<span id="cb6-7"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> warnings</span>
+<span id="cb6-8">warnings.filterwarnings(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ignore'</span>)</span>
+<span id="cb6-9"></span>
+<span id="cb6-10"></span>
+<span id="cb6-11"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> xml_parse(f):</span>
+<span id="cb6-12">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">with</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">open</span>(f) <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> xml:</span>
+<span id="cb6-13">        report_dict <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> xmltodict.parse(xml.read())</span>
+<span id="cb6-14">    xml.close()</span>
+<span id="cb6-15">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> report_dict</span>
+<span id="cb6-16"></span>
+<span id="cb6-17"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> get_label(report):</span>
+<span id="cb6-18">    label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> L(report[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'eCitation'</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'MeSH'</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'major'</span>])</span>
+<span id="cb6-19">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'normal'</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> label[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>].lower() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'normal'</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'abnormal'</span></span>
+<span id="cb6-20"></span>
+<span id="cb6-21"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> get_text(report):</span>
+<span id="cb6-22">    text_dict <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {}</span>
+<span id="cb6-23">    text_dict[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'report_id'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> report[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'eCitation'</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'IUXRId'</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'@id'</span>]</span>
+<span id="cb6-24">    text <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> report[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'eCitation'</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'MedlineCitation'</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Article'</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Abstract'</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'AbstractText'</span>]</span>
+<span id="cb6-25">    findings <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> text[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#text'</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#text'</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> text[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span></span>
+<span id="cb6-26">    text_dict[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'findings'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> findings</span>
+<span id="cb6-27">    impression <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> text[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#text'</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">if</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'#text'</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">in</span> text[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">else</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span></span>
+<span id="cb6-28">    text_dict[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'impression'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> impression</span>
+<span id="cb6-29">    text_dict[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'full-text'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">' '</span>.join([findings, impression])</span>
+<span id="cb6-30">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> text_dict</span>
+<span id="cb6-31"></span>
+<span id="cb6-32"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> process_report(report):</span>
+<span id="cb6-33">    label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> get_label(report)</span>
+<span id="cb6-34">    report_dict <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> get_text(report)</span>
+<span id="cb6-35">    report_dict[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'labels'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> label</span>
+<span id="cb6-36">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> report_dict</span>
+<span id="cb6-37"></span>
+<span id="cb6-38">fps <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> L(glob.glob(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'./ecgen-radiology/*'</span>))</span>
+<span id="cb6-39">reports <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> fps.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">map</span>(xml_parse)</span>
+<span id="cb6-40">reports_df <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pd.DataFrame(reports.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">map</span>(process_report)).set_index(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'report_id'</span>).sort_index()</span>
+<span id="cb6-41"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'# of reports:'</span>, reports_df.shape[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>])</span>
+<span id="cb6-42"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>()</span>
+<span id="cb6-43">reports_df.head()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># of reports: 3955
+</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="2">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">findings</th>
+<th data-quarto-table-cell-role="th">impression</th>
+<th data-quarto-table-cell-role="th">full-text</th>
+<th data-quarto-table-cell-role="th">labels</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">report_id</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1</td>
+<td>The cardiac silhouette and mediastinum size ar...</td>
+<td>Normal chest x-XXXX.</td>
+<td>The cardiac silhouette and mediastinum size ar...</td>
+<td>normal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">10</td>
+<td>The cardiomediastinal silhouette is within nor...</td>
+<td>No acute cardiopulmonary process.</td>
+<td>The cardiomediastinal silhouette is within nor...</td>
+<td>abnormal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">100</td>
+<td>Both lungs are clear and expanded. Heart and m...</td>
+<td>No active disease.</td>
+<td>Both lungs are clear and expanded. Heart and m...</td>
+<td>normal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1000</td>
+<td>There is XXXX increased opacity within the rig...</td>
+<td>1. Increased opacity in the right upper lobe w...</td>
+<td>There is XXXX increased opacity within the rig...</td>
+<td>abnormal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1001</td>
+<td>Interstitial markings are diffusely prominent ...</td>
+<td>Diffuse fibrosis. No visible focal acute disease.</td>
+<td>Interstitial markings are diffusely prominent ...</td>
+<td>abnormal</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="exploring-the-data" class="level1">
+<h1>Exploring the data</h1>
+<p>Let’s look through a little more of the data to get a feel for what we’re working with and how we might want to design the subsequent model training experiments.</p>
+<p>We’ll then take a look at how many normals and abnormals we have to work with.</p>
+<div class="cell" data-outputid="d505b58f-101b-45af-c08f-be59be62775b" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Run this cell several times to view random samples of the data</span></span>
+<span id="cb8-2"></span>
+<span id="cb8-3">reports_df.sample(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">findings</th>
+<th data-quarto-table-cell-role="th">impression</th>
+<th data-quarto-table-cell-role="th">full-text</th>
+<th data-quarto-table-cell-role="th">labels</th>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">report_id</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">3155</td>
+<td>Heart size mildly enlarged with enlarged right...</td>
+<td>Cardiomegaly, no acute pulmonary findings</td>
+<td>Heart size mildly enlarged with enlarged right...</td>
+<td>abnormal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">432</td>
+<td>The cardiomediastinal silhouette is within nor...</td>
+<td>No acute cardiopulmonary process.</td>
+<td>The cardiomediastinal silhouette is within nor...</td>
+<td>normal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">433</td>
+<td></td>
+<td>Heart size normal. Lungs clear.</td>
+<td>Heart size normal. Lungs clear.</td>
+<td>normal</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">2464</td>
+<td>The lungs appear clear. There are no suspiciou...</td>
+<td>No acute cardiopulmonary disease</td>
+<td>The lungs appear clear. There are no suspiciou...</td>
+<td>normal</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">1850</td>
+<td>The lungs are clear bilaterally. Specifically,...</td>
+<td>No acute cardiopulmonary abnormality..</td>
+<td>The lungs are clear bilaterally. Specifically,...</td>
+<td>normal</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Here are some of the things you may have noticed about the data, as you reviewed it: - Some reports only have an Impression (i.e.&nbsp;no separate Findings section) - Many reports contain blocks of “XXXX” text. This is due to the fact that these reports were anonymized prior to releasing them as an open data set. These blocks likely represent <em>named entities</em> or dates. - As expected, there is wide variation in the length of these chest radiograph reports.</p>
+<p>Importantly, there are some reports where the “Impression” states something along the lines of “No acute cardiopulmonary abnormality” but the label is “abnormal”. It seems like this is usually due to a chronic incidental finding or artifact that is mentioned in the “Findings”, but isn’t included in the “Impression”.</p>
+<blockquote class="blockquote">
+<p>We’ll revisit this point later when we’re deciding which text from the report we want to use to train our classifier.</p>
+</blockquote>
+<p>Next, let’s count how many of each label we have.</p>
+<div class="cell" data-outputid="578acde6-b008-446a-fb8a-1e1b91bb89c9" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">label_counts <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> reports_df.labels.value_counts()</span>
+<span id="cb9-2"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Abnormal:'</span>, label_counts[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'abnormal'</span>])</span>
+<span id="cb9-3"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Normal:'</span>, label_counts[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'normal'</span>])</span>
+<span id="cb9-4"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>()</span>
+<span id="cb9-5">label_counts.plot.bar()<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Abnormal: 2564
+Normal: 1391
+</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="https://radml.wfwiggins.com/posts/Transformers_tutorial_files/figure-html/cell-5-output-2.png" class="img-fluid"></p>
+</div>
+</div>
+<p>As we see in the bar graph above, there are almost twice as many abnormal reports as there are normal reports. This will be important to remember as we partition our data into training, validation, and test sets.</p>
+</section>
+<section id="language-modeling" class="level1">
+<h1>Language Modeling</h1>
+<p>The types of algorithms we use in NLP work with with numbers, not text. Therefore, we need a way to convert text into numbers. We also want a way for those numbers to contain a little more information about the text they represent. Here, we’ll describe the steps in preparing our text for <em>language modeling</em>.</p>
+<section id="tokenization" class="level2">
+<h2 class="anchored" data-anchor-id="tokenization">Tokenization</h2>
+<p><em>Tokenization</em> is the process by which we split text into chunks or <em>tokens</em>. An individual token could be a sentence or phrase, a word, a part of a word, or a single character. Most often, we choose to tokenize at the word or sub-word level.</p>
+<p>Each token is assigned a sequential integer value and the collection of token-integer pairs is called our <em>vocabulary</em>.</p>
+</section>
+<section id="distilbert-tokenization" class="level2">
+<h2 class="anchored" data-anchor-id="distilbert-tokenization">DistilBERT Tokenization</h2>
+<p>In this case, since we’re training a transformer model, we will use a different tokenizer designed specifically for this task from the HuggingFace Transformers library.</p>
+<div class="cell" data-outputid="f79924aa-3e4d-43f8-e002-b7a389b93cdd" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb11" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> transformers <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> DistilBertTokenizerFast</span>
+<span id="cb11-2"></span>
+<span id="cb11-3">text <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> reports_df.sample()[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'full-text'</span>].values[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]</span>
+<span id="cb11-4"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(text)</span>
+<span id="cb11-5"></span>
+<span id="cb11-6">tokenizer <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> DistilBertTokenizerFast.from_pretrained(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'distilbert-base-uncased'</span>)</span>
+<span id="cb11-7"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Tokenizer vocab size:"</span>, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(tokenizer))</span>
+<span id="cb11-8">ids <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> tokenizer.encode(text, padding<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, truncation<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, return_tensors<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pt'</span>)</span>
+<span id="cb11-9"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(ids[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>])</span>
+<span id="cb11-10"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(tokenizer.decode(ids[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>There are low lung volumes. There is bronchovascular crowding. Heart and mediastinal contours within normal limits. No focal infiltrate or effusion. No pneumothorax. Visualized osseous structures intact. No acute abnormality. Low volumes XXXX XXXX for the opportunity to assist in the care of your patient. If there are any questions about this examination please XXXX. XXXX XXXX, XXXX certified radiologist, at XXXX. .
+Tokenizer vocab size: 30522
+tensor([  101,  2045,  2024,  2659, 11192,  6702,  1012,  2045,  2003, 22953,
+        12680,  7103, 28817,  8017,  4306,  2075,  1012,  2540,  1998,  2865,
+        16643, 12032,  9530, 21163,  2015,  2306,  3671,  6537,  1012,  2053,
+        15918, 29543,  2030,  1041,  4246, 14499,  1012,  2053,  1052,  2638,
+         2819, 29288,  2527,  2595,  1012,  5107,  3550,  9808,  3366,  3560,
+         5090, 10109,  1012,  2053, 11325, 19470,  3012,  1012,  2659,  6702,
+        22038, 20348, 22038, 20348,  2005,  1996,  4495,  2000,  6509,  1999,
+         1996,  2729,  1997,  2115,  5776,  1012,  2065,  2045,  2024,  2151,
+         3980,  2055,  2023,  7749,  3531, 22038, 20348,  1012, 22038, 20348,
+        22038, 20348,  1010, 22038, 20348,  7378,  2557, 10727,  1010,  2012,
+        22038, 20348,  1012,  1012,   102])
+[CLS] there are low lung volumes. there is bronchovascular crowding. heart and mediastinal contours within normal limits. no focal infiltrate or effusion. no pneumothorax. visualized osseous structures intact. no acute abnormality. low volumes xxxx xxxx for the opportunity to assist in the care of your patient. if there are any questions about this examination please xxxx. xxxx xxxx, xxxx certified radiologist, at xxxx.. [SEP]</code></pre>
+</div>
+</div>
+</section>
+<section id="embedding" class="level2">
+<h2 class="anchored" data-anchor-id="embedding">Embedding</h2>
+<p>While these integers map one-to-one onto our tokens, their numeric value is otherwise meaningless. To embed more information into the numeric representation of our tokens, we employ a process called <em>language modeling</em>. We can either use a pre-trained language model for this <em>embedding</em> or we can fine-tune a language model to better model our “radiology language”. This latter process is called <em>transfer learning</em>.</p>
+</section>
+</section>
+<section id="report-classifier-training" class="level1">
+<h1>Report Classifier Training</h1>
+<p>In the steps that follow, we will fine-tune a pretrained model as a text classifier, using the embeddings from the model’s pretraining. We will then test the classifier on our held-out test set to see how it performs on data it hasn’t seen yet.</p>
+<p>This is different that how we did this in the RNNs tutorial, where we first fine-tuned a language model on the task of next token prediction to optimize embeddings, and then went on to train the classifier using those fine-tuned embeddings.</p>
+<p>We skip that step to showcase the power and flexibility of Transformer models. We don’t even have to fine-tune the underlying language model to get a very accurate classifier.</p>
+<div class="cell" data-outputid="2d959f8d-7585-40d7-eaee-9d6a8f8e9b7c" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb13" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># We'll use the Hugging Face datasets library to create our datasets</span></span>
+<span id="cb13-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> datasets <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Dataset</span>
+<span id="cb13-3"></span>
+<span id="cb13-4">dset <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Dataset.from_pandas(reports_df)</span>
+<span id="cb13-5">dset</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>Dataset({
+    features: ['findings', 'impression', 'full-text', 'labels', 'report_id'],
+    num_rows: 3955
+})</code></pre>
+</div>
+</div>
+<p>Here we perform our train-validation-test splits with a built-in method similar to the <code>scikit-learn</code> function</p>
+<div class="cell" data-outputid="7d92d912-8fa4-4ea2-d09d-0e6b7da00e82" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1">dsets <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dset.train_test_split(test_size<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.15</span>, seed<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>)</span>
+<span id="cb15-2">dsets_clean <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dsets[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"train"</span>].train_test_split(test_size<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.30</span>, seed<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">42</span>)</span>
+<span id="cb15-3">dsets_clean[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"validation"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dsets_clean.pop(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"test"</span>)</span>
+<span id="cb15-4">dsets_clean[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"test"</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dsets[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"test"</span>]</span>
+<span id="cb15-5">dsets_clean</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>DatasetDict({
+    train: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id'],
+        num_rows: 2352
+    })
+    validation: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id'],
+        num_rows: 1009
+    })
+    test: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id'],
+        num_rows: 594
+    })
+})</code></pre>
+</div>
+</div>
+<p>Next, we take our categorical labels and wrap them in a class that easily converts back and forth between numerical representation and text</p>
+<div class="cell" data-outputid="b4c33f34-8fe4-4d0a-bfd1-1db7a1c3784e" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> datasets <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> ClassLabel</span>
+<span id="cb17-2"></span>
+<span id="cb17-3">label_names <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'normal'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'abnormal'</span>]</span>
+<span id="cb17-4">labels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> ClassLabel(names<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>label_names)</span>
+<span id="cb17-5">labels</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>ClassLabel(names=['normal', 'abnormal'])</code></pre>
+</div>
+</div>
+<p>Here we define a function to tokenize our dataset in batches.</p>
+<pre class="callout-tip"><code>To see how the model performs with different inputs from the report try replacing `'full-text'` with `'findings'` or `'impression'`.</code></pre>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> preprocess(batch):</span>
+<span id="cb20-2">    tokens <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> tokenizer(batch[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'full-text'</span>], truncation<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>, max_length<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">128</span>)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># try 'full-text', 'impression', or 'findings' here</span></span>
+<span id="cb20-3">    tokens[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'labels'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> labels.str2int(batch[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'labels'</span>])</span>
+<span id="cb20-4">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> tokens</span></code></pre></div>
+</div>
+<div class="cell" data-outputid="264d3274-f093-4b0d-dc71-864d84c2de16" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb21" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1">tokenized_dsets <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dsets_clean.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">map</span>(preprocess, batched<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>)</span>
+<span id="cb21-2">tokenized_dsets</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Map: 100%|██████████| 2352/2352 [00:00&lt;00:00, 19274.10 examples/s]
+Map: 100%|██████████| 1009/1009 [00:00&lt;00:00, 24387.32 examples/s]
+Map: 100%|██████████| 594/594 [00:00&lt;00:00, 24232.27 examples/s]</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>DatasetDict({
+    train: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id', 'input_ids', 'attention_mask'],
+        num_rows: 2352
+    })
+    validation: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id', 'input_ids', 'attention_mask'],
+        num_rows: 1009
+    })
+    test: Dataset({
+        features: ['findings', 'impression', 'full-text', 'labels', 'report_id', 'input_ids', 'attention_mask'],
+        num_rows: 594
+    })
+})</code></pre>
+</div>
+</div>
+<section id="setting-up-the-training-run" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up-the-training-run">Setting up the Training Run</h2>
+<ol type="1">
+<li>We define a metrics function to output accuracy and F1-score during training and validation.</li>
+<li>We then configure our training experiment with a variety of hyperparameters. For more information on the different arguments, please see the <a href="https://huggingface.co/docs/transformers/en/main_classes/trainer#transformers.TrainingArguments">docs</a> for <code>TrainingArguments</code>.</li>
+</ol>
+<pre class="callout-tip"><code>Try editing the hyperparameters with different options for arguments like `num_train_epochs` and `learning_rate` to see the effect these have on training. 
+
+For example, if you set `learning_rate` too low or too high, the model may fail to learn. 
+
+If it looks like your model is overfitting (i.e. validation loss goes up and validation metrics stop improving), then you might try reducing `num_train_epochs`.</code></pre>
+<div class="cell" data-outputid="5397086d-5745-4b41-8140-2778d2688520" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb25-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> transformers <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> DistilBertForSequenceClassification, Trainer, TrainingArguments</span>
+<span id="cb25-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> evaluate <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> load</span>
+<span id="cb25-4"></span>
+<span id="cb25-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This metrics function will output accuracy and F1-score during training &amp; validation</span></span>
+<span id="cb25-6">metric <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> load(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"glue"</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"mrpc"</span>)</span>
+<span id="cb25-7"></span>
+<span id="cb25-8"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> compute_metrics(eval_pred):</span>
+<span id="cb25-9">    logits <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">getattr</span>(eval_pred, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"predictions"</span>, eval_pred[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>])</span>
+<span id="cb25-10">    labels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">getattr</span>(eval_pred, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"label_ids"</span>, eval_pred[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>])</span>
+<span id="cb25-11">    preds <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.argmax(logits, axis<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb25-12">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> metric.compute(predictions<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>preds, references<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>labels)</span>
+<span id="cb25-13"></span>
+<span id="cb25-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># This step configures our training experiment</span></span>
+<span id="cb25-15">training_args <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> TrainingArguments(</span>
+<span id="cb25-16">    output_dir<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'./results'</span>,          <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># output directory</span></span>
+<span id="cb25-17">    num_train_epochs<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>,              <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># total number of training epochs</span></span>
+<span id="cb25-18">    per_device_train_batch_size<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>,  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># batch size per device during training</span></span>
+<span id="cb25-19">    per_device_eval_batch_size<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">64</span>,   <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># batch size for evaluation</span></span>
+<span id="cb25-20">    weight_decay<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>,               <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># strength of weight decay</span></span>
+<span id="cb25-21">    logging_dir<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'./logs'</span>,            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># directory for storing logs</span></span>
+<span id="cb25-22">    logging_strategy<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"steps"</span>,</span>
+<span id="cb25-23">    logging_steps<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>,</span>
+<span id="cb25-24">    logging_first_step<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>,</span>
+<span id="cb25-25">    disable_tqdm<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>,</span>
+<span id="cb25-26">    eval_strategy<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'epoch'</span>,</span>
+<span id="cb25-27">    do_train<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>,</span>
+<span id="cb25-28">    do_eval<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">True</span>,</span>
+<span id="cb25-29">    learning_rate<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2e-5</span>,</span>
+<span id="cb25-30">    warmup_ratio<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.06</span>,</span>
+<span id="cb25-31">    logging_nan_inf_filter<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>,</span>
+<span id="cb25-32">)</span></code></pre></div>
+</div>
+</section>
+<section id="running-the-training-experiment" class="level2">
+<h2 class="anchored" data-anchor-id="running-the-training-experiment">Running the Training Experiment</h2>
+<p>Now we select our model and run the training experiment. You’ll see a warning printed out telling you that you should “<em>probably TRAIN this model on a down-stream task to be able to use it for predictions and inference</em>”. And that is <strong>exactly</strong> what we’re doing, so we can safely disregard.</p>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1">model <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> DistilBertForSequenceClassification.from_pretrained(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"distilbert-base-uncased"</span>)</span>
+<span id="cb26-2">trainer <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Trainer(</span>
+<span id="cb26-3">    model<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>model,</span>
+<span id="cb26-4">    args<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>training_args,</span>
+<span id="cb26-5">    train_dataset<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>tokenized_dsets[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'train'</span>],</span>
+<span id="cb26-6">    eval_dataset<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>tokenized_dsets[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'validation'</span>],</span>
+<span id="cb26-7">    tokenizer<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>tokenizer,</span>
+<span id="cb26-8">    compute_metrics<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>compute_metrics,</span>
+<span id="cb26-9">)</span>
+<span id="cb26-10"></span>
+<span id="cb26-11">train_output <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> trainer.train()</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Some weights of DistilBertForSequenceClassification were not initialized from the model checkpoint at distilbert-base-uncased and are newly initialized: ['classifier.bias', 'classifier.weight', 'pre_classifier.bias', 'pre_classifier.weight']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+
+    <div>
+      
+      <progress value="735" max="735" style="width:300px; height:20px; vertical-align: middle;"></progress>
+      [735/735 06:57, Epoch 5/5]
+    </div>
+    
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Epoch</th>
+<th data-quarto-table-cell-role="th">Training Loss</th>
+<th data-quarto-table-cell-role="th">Validation Loss</th>
+<th data-quarto-table-cell-role="th">Accuracy</th>
+<th data-quarto-table-cell-role="th">F1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>0.204000</td>
+<td>0.166343</td>
+<td>0.955401</td>
+<td>0.966493</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>0.184100</td>
+<td>0.134775</td>
+<td>0.964321</td>
+<td>0.973373</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>0.125300</td>
+<td>0.142841</td>
+<td>0.966303</td>
+<td>0.974889</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>0.087000</td>
+<td>0.151876</td>
+<td>0.967294</td>
+<td>0.975646</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>0.006200</td>
+<td>0.154686</td>
+<td>0.967294</td>
+<td>0.975646</td>
+</tr>
+</tbody>
+</table>
+<p>
+</p></div>
+</div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Finally we save our trained model for later use</span></span>
+<span id="cb28-2">trainer.save_model(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'fine-tuned'</span>)</span></code></pre></div>
+</div>
+</section>
+<section id="testing-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="testing-the-model">Testing the model</h2>
+<p>Now that our model is trained, let’s test it on our held-out test dataset.</p>
+<div class="cell" data-outputid="d2101741-4655-4a21-d28e-c3e4ce8bc370" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1">test_output <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> trainer.predict(tokenized_dsets[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'test'</span>])</span>
+<span id="cb29-2"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(test_output.metrics)</span></code></pre></div>
+<div class="cell-output cell-output-display">
+
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'test_loss': 0.18446457386016846, 'test_accuracy': 0.9579124579124579, 'test_f1': 0.9654218533886584, 'test_runtime': 2.1735, 'test_samples_per_second': 273.288, 'test_steps_per_second': 4.601}</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="creating-a-pipeline-for-inference" class="level1">
+<h1>Creating a Pipeline for Inference</h1>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> transformers <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> pipeline</span>
+<span id="cb31-2"></span>
+<span id="cb31-3">classifier <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> pipeline(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"text-classification"</span>, model<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"fine-tuned"</span>)</span>
+<span id="cb31-4">classifier.model.config.id2label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'normal'</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>: <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'abnormal'</span>}</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Device set to use mps:0</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="78605df9-2fdd-4049-c084-6be41526eb81" data-execution_count="16">
+<div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1">test <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> tokenized_dsets[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'test'</span>]</span>
+<span id="cb33-2"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Ground Truth Label:"</span>, labels.int2str(test[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'labels'</span>]))</span>
+<span id="cb33-3"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>()</span>
+<span id="cb33-4"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Report text:"</span>, test[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'full-text'</span>])</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ground Truth Label: abnormal
+
+Report text: Heart size within normal limits. No focal airspace opacities. No pneumothorax. No effusions. Mild degenerative changes of the thoracic spine. No XXXX deformities. Emphysematous changes. Chronic lung disease, with no acute cardiopulmonary findings.</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="21fd6ae3-4a54-4391-c077-064bff504a17" data-execution_count="17">
+<div class="sourceCode cell-code" id="cb35" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1">classifier(test[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>][<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'full-text'</span>])</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="17">
+<pre><code>[{'label': 'abnormal', 'score': 0.9945248365402222}]</code></pre>
+</div>
+</div>
+<div class="cell" data-outputid="e7cf1447-7c18-4577-baeb-cad56cd4ac76" data-execution_count="18">
+<div class="sourceCode cell-code" id="cb37" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Modify this cell with some sample text of your choosing to test out the model</span></span>
+<span id="cb37-2">sample_text <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Normal heart size and mediastinal contours. The lungs are well-aerated. No pleural effusion or pneumothorax. No displaced rib fractures."</span></span>
+<span id="cb37-3">classifier(sample_text)</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="18">
+<pre><code>[{'label': 'normal', 'score': 0.9968691468238831}]</code></pre>
+</div>
+</div>
+
+
+</section>
+
+ ]]></description>
+  <category>tutorials</category>
+  <category>NLP</category>
+  <guid>https://radml.wfwiggins.com/posts/Transformers_tutorial.html</guid>
+  <pubDate>Mon, 19 Jan 2026 05:00:00 GMT</pubDate>
+</item>
 <item>
   <title>RNNs Tutorial from RSNA 2021 Deep Learning Lab</title>
   <dc:creator>Walter Wiggins</dc:creator>
@@ -51,13 +1241,20 @@
 <h2 class="anchored" data-anchor-id="interactive-participation">Interactive Participation</h2>
 <p>This notebook is designed for interactive participation.</p>
 <p>If you are running this notebook on your own machine, you may download the notebook with this link: <a href="../notebooks/RNNs_tutorial.ipynb" download="RNNs_tutorial.ipynb">Download notebook</a>.</p>
+<pre class="callout-note"><code>You'll want to download this notebook to the same folder where your `uv` project lives.</code></pre>
 <p>Please refer to the previous posts on <a href="../posts/install-python.html">installing Python</a> and <a href="../posts/install-pytorch.html">installing PyTorch and fast.ai</a> with <code>uv</code> to ensure your environment is set up properly. You’ll also need to run the following commands to add two additional packages to your <code>uv</code> project.</p>
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><span class="ex" style="color: null;
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">uv</span> add xmltodict</span>
-<span id="cb1-2"><span class="ex" style="color: null;
+<span id="cb2-2"><span class="ex" style="color: null;
 background-color: null;
 font-style: inherit;">uv</span> add tensorboard</span></code></pre></div>
+<p>To run Jupyter Lab and open this notebook within your <code>uv</code> project, use the following command:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><span class="ex" style="color: null;
+background-color: null;
+font-style: inherit;">uv</span> run <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">--with</span> jupyter jupyter lab</span></code></pre></div>
 <p>You can run the code cells in order, and modify parameters as desired to see how they affect the results.</p>
 <p>If you are using Google Colab, please use the link below to open a compatible version in Colab. You can save a copy of the notebook to your own Google Drive by selecting “File” -&gt; “Save a copy in Drive”.</p>
 <p><a href="https://colab.research.google.com/github/RSNA/AI-Deep-Learning-Lab-2023/blob/main/sessions/nlp-text-classification/RSNA21_RNNs_with_Tensorboard.ipynb">Open in Colab</a></p>
@@ -69,18 +1266,18 @@ font-style: inherit;">uv</span> add tensorboard</span></code></pre></div>
 <div class="cell" data-cellview="form" data-execution_count="1">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">%%</span>capture</span>
-<span id="cb2-2"></span>
-<span id="cb2-3"><span class="im" style="color: #00769E;
+<span id="cb4-2"></span>
+<span id="cb4-3"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> warnings</span>
-<span id="cb2-4">warnings.filterwarnings(<span class="st" style="color: #20794D;
+<span id="cb4-4">warnings.filterwarnings(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"ignore"</span>)</span>
-<span id="cb2-5"></span>
-<span id="cb2-6"><span class="op" style="color: #5E5E5E;
+<span id="cb4-5"></span>
+<span id="cb4-6"><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">!</span>curl <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -105,20 +1302,20 @@ font-style: inherit;">|</span> tar xvz</span></code></pre></div>
 <div class="cell" data-cellview="form" data-outputid="488d6a30-ca87-43af-9736-b913582c47a8" data-execution_count="2">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><span class="im" style="color: #00769E;
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> glob</span>
-<span id="cb3-2"><span class="im" style="color: #00769E;
+<span id="cb5-2"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> xmltodict</span>
-<span id="cb3-3"><span class="im" style="color: #00769E;
+<span id="cb5-3"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> fastai.basics <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span></span>
-<span id="cb3-4"><span class="im" style="color: #00769E;
+<span id="cb5-4"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> fastai.text.<span class="bu" style="color: null;
 background-color: null;
@@ -127,29 +1324,29 @@ background-color: null;
 font-style: inherit;">import</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span></span>
-<span id="cb3-5"></span>
-<span id="cb3-6"><span class="kw" style="color: #003B4F;
+<span id="cb5-5"></span>
+<span id="cb5-6"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> xml_parse(f):</span>
-<span id="cb3-7">    <span class="cf" style="color: #003B4F;
+<span id="cb5-7">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">with</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">open</span>(f) <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">as</span> xml:</span>
-<span id="cb3-8">        report_dict <span class="op" style="color: #5E5E5E;
+<span id="cb5-8">        report_dict <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> xmltodict.parse(xml.read())</span>
-<span id="cb3-9">    xml.close()</span>
-<span id="cb3-10">    <span class="cf" style="color: #003B4F;
+<span id="cb5-9">    xml.close()</span>
+<span id="cb5-10">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">return</span> report_dict</span>
-<span id="cb3-11"></span>
-<span id="cb3-12"><span class="kw" style="color: #003B4F;
+<span id="cb5-11"></span>
+<span id="cb5-12"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> get_label(report):</span>
-<span id="cb3-13">    label <span class="op" style="color: #5E5E5E;
+<span id="cb5-13">    label <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> L(report[<span class="st" style="color: #20794D;
 background-color: null;
@@ -158,7 +1355,7 @@ background-color: null;
 font-style: inherit;">'MeSH'</span>][<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'major'</span>])</span>
-<span id="cb3-14">    <span class="cf" style="color: #003B4F;
+<span id="cb5-14">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">return</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -175,14 +1372,14 @@ background-color: null;
 font-style: inherit;">else</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'abnormal'</span></span>
-<span id="cb3-15"></span>
-<span id="cb3-16"><span class="kw" style="color: #003B4F;
+<span id="cb5-15"></span>
+<span id="cb5-16"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> get_text(report):</span>
-<span id="cb3-17">    text_dict <span class="op" style="color: #5E5E5E;
+<span id="cb5-17">    text_dict <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> {}</span>
-<span id="cb3-18">    text_dict[<span class="st" style="color: #20794D;
+<span id="cb5-18">    text_dict[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'id'</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -193,7 +1390,7 @@ background-color: null;
 font-style: inherit;">'IUXRId'</span>][<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'@id'</span>]</span>
-<span id="cb3-19">    text <span class="op" style="color: #5E5E5E;
+<span id="cb5-19">    text <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> report[<span class="st" style="color: #20794D;
 background-color: null;
@@ -206,7 +1403,7 @@ background-color: null;
 font-style: inherit;">'Abstract'</span>][<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'AbstractText'</span>]</span>
-<span id="cb3-20">    findings <span class="op" style="color: #5E5E5E;
+<span id="cb5-20">    findings <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> text[<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -225,12 +1422,12 @@ background-color: null;
 font-style: inherit;">else</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">''</span></span>
-<span id="cb3-21">    text_dict[<span class="st" style="color: #20794D;
+<span id="cb5-21">    text_dict[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'findings'</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> findings</span>
-<span id="cb3-22">    impression <span class="op" style="color: #5E5E5E;
+<span id="cb5-22">    impression <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> text[<span class="dv" style="color: #AD0000;
 background-color: null;
@@ -249,68 +1446,68 @@ background-color: null;
 font-style: inherit;">else</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">''</span></span>
-<span id="cb3-23">    text_dict[<span class="st" style="color: #20794D;
+<span id="cb5-23">    text_dict[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'impression'</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> impression</span>
-<span id="cb3-24">    text_dict[<span class="st" style="color: #20794D;
+<span id="cb5-24">    text_dict[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'full-text'</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">' '</span>.join([findings, impression])</span>
-<span id="cb3-25">    <span class="cf" style="color: #003B4F;
+<span id="cb5-25">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">return</span> text_dict</span>
-<span id="cb3-26"></span>
-<span id="cb3-27"><span class="kw" style="color: #003B4F;
+<span id="cb5-26"></span>
+<span id="cb5-27"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">def</span> process_report(report):</span>
-<span id="cb3-28">    label <span class="op" style="color: #5E5E5E;
+<span id="cb5-28">    label <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> get_label(report)</span>
-<span id="cb3-29">    report_dict <span class="op" style="color: #5E5E5E;
+<span id="cb5-29">    report_dict <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> get_text(report)</span>
-<span id="cb3-30">    report_dict[<span class="st" style="color: #20794D;
+<span id="cb5-30">    report_dict[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'label'</span>] <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> label</span>
-<span id="cb3-31">    <span class="cf" style="color: #003B4F;
+<span id="cb5-31">    <span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">return</span> report_dict</span>
-<span id="cb3-32"></span>
-<span id="cb3-33">fps <span class="op" style="color: #5E5E5E;
+<span id="cb5-32"></span>
+<span id="cb5-33">fps <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> L(glob.glob(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'./ecgen-radiology/*'</span>))</span>
-<span id="cb3-34">reports <span class="op" style="color: #5E5E5E;
+<span id="cb5-34">reports <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> fps.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">map</span>(xml_parse)</span>
-<span id="cb3-35">reports_df <span class="op" style="color: #5E5E5E;
+<span id="cb5-35">reports_df <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> pd.DataFrame(reports.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">map</span>(process_report)).set_index(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'id'</span>).sort_index()</span>
-<span id="cb3-36"><span class="bu" style="color: null;
+<span id="cb5-36"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'# of reports:'</span>, reports_df.shape[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>])</span>
-<span id="cb3-37"><span class="bu" style="color: null;
+<span id="cb5-37"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>()</span>
-<span id="cb3-38">reports_df.head()</span></code></pre></div>
+<span id="cb5-38">reports_df.head()</span></code></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code># of reports: 3955
@@ -387,11 +1584,11 @@ font-style: inherit;">print</span>()</span>
 <div class="cell" data-cellview="form" data-outputid="aa1dd305-8069-4c86-a341-36bd50c5c6e5" data-execution_count="3">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Run this cell several times to view random samples of the data</span></span>
-<span id="cb5-2"></span>
-<span id="cb5-3">reports_df.sample(<span class="dv" style="color: #AD0000;
+<span id="cb7-2"></span>
+<span id="cb7-3">reports_df.sample(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5</span>)</span></code></pre></div>
 </details>
@@ -467,27 +1664,27 @@ font-style: inherit;">5</span>)</span></code></pre></div>
 <div class="cell" data-cellview="form" data-outputid="9d36aec1-0a46-405f-8b33-4fb7e074d1c9" data-execution_count="4">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1">label_counts <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">label_counts <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> reports_df.label.value_counts()</span>
-<span id="cb6-2"><span class="bu" style="color: null;
+<span id="cb8-2"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Abnormal:'</span>, label_counts[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'abnormal'</span>])</span>
-<span id="cb6-3"><span class="bu" style="color: null;
+<span id="cb8-3"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Normal:'</span>, label_counts[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'normal'</span>])</span>
-<span id="cb6-4"><span class="bu" style="color: null;
+<span id="cb8-4"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>()</span>
-<span id="cb6-5">label_counts.plot.bar()<span class="op" style="color: #5E5E5E;
+<span id="cb8-5">label_counts.plot.bar()<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">;</span></span></code></pre></div>
 </details>
@@ -506,17 +1703,17 @@ Normal: 1391
 <div class="cell" data-cellview="form" data-outputid="04ee5863-2362-450a-a36a-676f0a715190" data-execution_count="5">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><span class="im" style="color: #00769E;
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">from</span> sklearn.model_selection <span class="im" style="color: #00769E;
 background-color: null;
 font-style: inherit;">import</span> train_test_split</span>
-<span id="cb8-2"></span>
-<span id="cb8-3">np.random.seed(<span class="dv" style="color: #AD0000;
+<span id="cb10-2"></span>
+<span id="cb10-3">np.random.seed(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">42</span>)</span>
-<span id="cb8-4"></span>
-<span id="cb8-5">train_val, test_df <span class="op" style="color: #5E5E5E;
+<span id="cb10-4"></span>
+<span id="cb10-5">train_val, test_df <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> train_test_split(reports_df, test_size<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -525,34 +1722,34 @@ background-color: null;
 font-style: inherit;">0.15</span>, stratify<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>reports_df.label.values)</span>
-<span id="cb8-6"><span class="bu" style="color: null;
+<span id="cb10-6"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Test set size:'</span>, test_df.shape[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>])</span>
-<span id="cb8-7">test_counts <span class="op" style="color: #5E5E5E;
+<span id="cb10-7">test_counts <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> test_df.label.value_counts()</span>
-<span id="cb8-8"><span class="bu" style="color: null;
+<span id="cb10-8"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Abnormal:'</span>, test_counts[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'abnormal'</span>])</span>
-<span id="cb8-9"><span class="bu" style="color: null;
+<span id="cb10-9"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Normal:'</span>, test_counts[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'normal'</span>])</span>
-<span id="cb8-10"><span class="bu" style="color: null;
+<span id="cb10-10"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>()</span>
-<span id="cb8-11">test_counts.plot.bar()<span class="op" style="color: #5E5E5E;
+<span id="cb10-11">test_counts.plot.bar()<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">;</span></span></code></pre></div>
 </details>
@@ -577,40 +1774,40 @@ Normal: 209
 <div class="cell" data-cellview="form" data-outputid="e9e03007-fe26-42ff-c1ca-faf564bb5553" data-execution_count="6">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#@title **Word Tokenization**</span></span>
-<span id="cb10-2"></span>
-<span id="cb10-3">spacy <span class="op" style="color: #5E5E5E;
+<span id="cb12-2"></span>
+<span id="cb12-3">spacy <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> WordTokenizer()</span>
-<span id="cb10-4">text <span class="op" style="color: #5E5E5E;
+<span id="cb12-4">text <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> train_val.iloc[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>][<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'full-text'</span>]</span>
-<span id="cb10-5"><span class="bu" style="color: null;
+<span id="cb12-5"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Original text:'</span>)</span>
-<span id="cb10-6"><span class="bu" style="color: null;
+<span id="cb12-6"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(text)</span>
-<span id="cb10-7"><span class="bu" style="color: null;
+<span id="cb12-7"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>()</span>
-<span id="cb10-8">tkns <span class="op" style="color: #5E5E5E;
+<span id="cb12-8">tkns <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> first(spacy([text]))</span>
-<span id="cb10-9"><span class="bu" style="color: null;
+<span id="cb12-9"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'After word tokenization:'</span>)</span>
-<span id="cb10-10"><span class="bu" style="color: null;
+<span id="cb12-10"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(coll_repr(tkns))</span></code></pre></div>
 </details>
@@ -630,17 +1827,17 @@ After word tokenization:
 <div class="cell" data-cellview="form" data-outputid="893d97ff-b934-4e20-f50f-3a0b1449e16b" data-execution_count="7">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">#@title **fast.ai Tokenization**</span></span>
-<span id="cb12-2"></span>
-<span id="cb12-3">tkn <span class="op" style="color: #5E5E5E;
+<span id="cb14-2"></span>
+<span id="cb14-3">tkn <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Tokenizer(spacy)</span>
-<span id="cb12-4">toks <span class="op" style="color: #5E5E5E;
+<span id="cb14-4">toks <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> tkn(text)</span>
-<span id="cb12-5"><span class="bu" style="color: null;
+<span id="cb14-5"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(coll_repr(toks, <span class="dv" style="color: #AD0000;
 background-color: null;
@@ -658,21 +1855,21 @@ font-style: inherit;">15</span>))</span></code></pre></div>
 <div class="cell" data-cellview="form" data-outputid="e22315ca-7819-451b-b03e-72a295ca7cdf" data-execution_count="8">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1">txts <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1">txts <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> L(train_val[<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'full-text'</span>].to_list())</span>
-<span id="cb14-2">toks <span class="op" style="color: #5E5E5E;
+<span id="cb16-2">toks <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> txts.<span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">map</span>(tkn)</span>
-<span id="cb14-3">num <span class="op" style="color: #5E5E5E;
+<span id="cb16-3">num <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> Numericalize()</span>
-<span id="cb14-4">num.setup(toks)</span>
-<span id="cb14-5">coll_repr(num.vocab, <span class="dv" style="color: #AD0000;
+<span id="cb16-4">num.setup(toks)</span>
+<span id="cb16-5">coll_repr(num.vocab, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">20</span>)</span></code></pre></div>
 </details>
@@ -684,17 +1881,17 @@ font-style: inherit;">20</span>)</span></code></pre></div>
 <div class="cell" data-cellview="form" data-outputid="a79d4c2d-fe68-4a9f-f26a-748d262b19e8" data-execution_count="9">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1">nums <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">nums <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> num(toks[<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0</span>][:<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">14</span>])</span>
-<span id="cb16-2"><span class="bu" style="color: null;
+<span id="cb18-2"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(nums)</span>
-<span id="cb16-3"><span class="bu" style="color: null;
+<span id="cb18-3"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -740,7 +1937,7 @@ Note
 <div class="cell" data-cellview="form" data-outputid="3f1943d6-a83a-4a5a-b4e2-fdf4ff5c52f6" data-execution_count="10">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1">dls_lm <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1">dls_lm <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> TextDataLoaders.from_df(train_val, valid_pct<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -759,21 +1956,21 @@ background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb18-2">learn_lm <span class="op" style="color: #5E5E5E;
+<span id="cb20-2">learn_lm <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> language_model_learner(dls_lm, AWD_LSTM, metrics<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>[accuracy, Perplexity()]).to_fp16()</span>
-<span id="cb18-3"></span>
-<span id="cb18-4"><span class="co" style="color: #5E5E5E;
+<span id="cb20-3"></span>
+<span id="cb20-4"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Train the final layers of the network</span></span>
-<span id="cb18-5">learn_lm.fit_one_cycle(<span class="dv" style="color: #AD0000;
+<span id="cb20-5">learn_lm.fit_one_cycle(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2e-2</span>)</span>
-<span id="cb18-6"><span class="bu" style="color: null;
+<span id="cb20-6"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -786,17 +1983,17 @@ background-color: null;
 font-style: inherit;">\n</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb18-7"></span>
-<span id="cb18-8"><span class="co" style="color: #5E5E5E;
+<span id="cb20-7"></span>
+<span id="cb20-8"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Unfreeze and train some more</span></span>
-<span id="cb18-9">learn_lm.unfreeze()</span>
-<span id="cb18-10">learn_lm.fit_one_cycle(<span class="dv" style="color: #AD0000;
+<span id="cb20-9">learn_lm.unfreeze()</span>
+<span id="cb20-10">learn_lm.fit_one_cycle(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">10</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2e-3</span>)</span>
-<span id="cb18-11"><span class="bu" style="color: null;
+<span id="cb20-11"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -1001,13 +2198,13 @@ Part 2/2 complete.
 <div class="cell" data-cellview="form" data-outputid="2774029b-79d1-4ceb-a480-af2311244017" data-execution_count="11">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1">torch.save(learn_lm.dls.vocab, <span class="st" style="color: #20794D;
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1">torch.save(learn_lm.dls.vocab, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'vocab.pkl'</span>)</span>
-<span id="cb20-2">learn_lm.save_encoder(<span class="st" style="color: #20794D;
+<span id="cb22-2">learn_lm.save_encoder(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'fine-tuned-enc'</span>)</span>
-<span id="cb20-3"><span class="bu" style="color: null;
+<span id="cb22-3"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -1026,28 +2223,28 @@ font-style: inherit;">'Saved.'</span>)</span></code></pre></div>
 <div class="cell" data-cellview="form" data-outputid="38079908-a8ea-41f3-eb2d-db2a2e2aab82" data-execution_count="12">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1">training_target <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1">training_target <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'full-text'</span></span>
-<span id="cb22-2">validation_pct <span class="op" style="color: #5E5E5E;
+<span id="cb24-2">validation_pct <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.3</span></span>
-<span id="cb22-3">fine_tuned_LM <span class="op" style="color: #5E5E5E;
+<span id="cb24-3">fine_tuned_LM <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span></span>
-<span id="cb22-4"></span>
-<span id="cb22-5">lm_vocab <span class="op" style="color: #5E5E5E;
+<span id="cb24-4"></span>
+<span id="cb24-5">lm_vocab <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> torch.load(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'vocab.pkl'</span>)</span>
-<span id="cb22-6">dls_cls <span class="op" style="color: #5E5E5E;
+<span id="cb24-6">dls_cls <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> TextDataLoaders.from_df(train_val, valid_pct<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1064,7 +2261,7 @@ background-color: null;
 font-style: inherit;">'label'</span>, text_vocab<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>lm_vocab)</span>
-<span id="cb22-7">dls_cls.show_batch(max_n<span class="op" style="color: #5E5E5E;
+<span id="cb24-7">dls_cls.show_batch(max_n<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
 background-color: null;
@@ -1126,7 +2323,7 @@ font-style: inherit;">3</span>)</span></code></pre></div>
 <div class="cell" data-cellview="form" data-outputid="f6462390-0801-45df-b020-b447c6046f45" data-execution_count="13">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1">learn_cls <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1">learn_cls <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> text_classifier_learner(dls_cls, AWD_LSTM, drop_mult<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1135,17 +2332,17 @@ background-color: null;
 font-style: inherit;">0.5</span>, metrics<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>accuracy).to_fp16()</span>
-<span id="cb23-2"><span class="cf" style="color: #003B4F;
+<span id="cb25-2"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">if</span> fine_tuned_LM: learn_cls.load_encoder(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'fine-tuned-enc'</span>)</span>
-<span id="cb23-3">learn_cls.fit_one_cycle(<span class="dv" style="color: #AD0000;
+<span id="cb25-3">learn_cls.fit_one_cycle(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2e-2</span>)</span>
-<span id="cb23-4"><span class="bu" style="color: null;
+<span id="cb25-4"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -1158,16 +2355,16 @@ background-color: null;
 font-style: inherit;">\n</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb23-5"></span>
-<span id="cb23-6"><span class="co" style="color: #5E5E5E;
+<span id="cb25-5"></span>
+<span id="cb25-6"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Unfreezing and training a little more...</span></span>
-<span id="cb23-7">learn_cls.freeze_to(<span class="op" style="color: #5E5E5E;
+<span id="cb25-7">learn_cls.freeze_to(<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>)</span>
-<span id="cb23-8">learn_cls.fit_one_cycle(<span class="dv" style="color: #AD0000;
+<span id="cb25-8">learn_cls.fit_one_cycle(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>, <span class="bu" style="color: null;
 background-color: null;
@@ -1184,7 +2381,7 @@ background-color: null;
 font-style: inherit;">4</span>),<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1e-2</span>))</span>
-<span id="cb23-9"><span class="bu" style="color: null;
+<span id="cb25-9"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -1197,16 +2394,16 @@ background-color: null;
 font-style: inherit;">\n</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb23-10"></span>
-<span id="cb23-11"><span class="co" style="color: #5E5E5E;
+<span id="cb25-10"></span>
+<span id="cb25-11"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Unfreezing and training a little more, again...</span></span>
-<span id="cb23-12">learn_cls.freeze_to(<span class="op" style="color: #5E5E5E;
+<span id="cb25-12">learn_cls.freeze_to(<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3</span>)</span>
-<span id="cb23-13">learn_cls.fit_one_cycle(<span class="dv" style="color: #AD0000;
+<span id="cb25-13">learn_cls.fit_one_cycle(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>, <span class="bu" style="color: null;
 background-color: null;
@@ -1223,7 +2420,7 @@ background-color: null;
 font-style: inherit;">4</span>),<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">5e-3</span>))</span>
-<span id="cb23-14"><span class="bu" style="color: null;
+<span id="cb25-14"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -1236,12 +2433,12 @@ background-color: null;
 font-style: inherit;">\n</span><span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"</span>)</span>
-<span id="cb23-15"></span>
-<span id="cb23-16"><span class="co" style="color: #5E5E5E;
+<span id="cb25-15"></span>
+<span id="cb25-16"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Now let's unfreeze the whole model and finish training.</span></span>
-<span id="cb23-17">learn_cls.unfreeze()</span>
-<span id="cb23-18">learn_cls.fit_one_cycle(<span class="dv" style="color: #AD0000;
+<span id="cb25-17">learn_cls.unfreeze()</span>
+<span id="cb25-18">learn_cls.fit_one_cycle(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1</span>, <span class="bu" style="color: null;
 background-color: null;
@@ -1258,7 +2455,7 @@ background-color: null;
 font-style: inherit;">4</span>),<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">1e-3</span>))</span>
-<span id="cb23-19"><span class="bu" style="color: null;
+<span id="cb25-19"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
@@ -1445,11 +2642,11 @@ Part 4/4 complete.</code></pre>
 <div class="cell" data-cellview="form" data-execution_count="14">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Export fine-tuned classifier model</span></span>
-<span id="cb25-2"></span>
-<span id="cb25-3">learn_cls.export(<span class="st" style="color: #20794D;
+<span id="cb27-2"></span>
+<span id="cb27-3">learn_cls.export(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'full-text'</span>)</span></code></pre></div>
 </details>
@@ -1494,31 +2691,31 @@ Note
 <div class="cell" data-cellview="form" data-outputid="f7bd8ab9-ffd4-4ffc-f468-c3a68e51305f" data-execution_count="16">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1">test_items <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1">test_items <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> test_df[[training_target, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'label'</span>]].copy()</span>
-<span id="cb26-2">test_items.columns <span class="op" style="color: #5E5E5E;
+<span id="cb28-2">test_items.columns <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'text'</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'label'</span>]</span>
-<span id="cb26-3">dl_test <span class="op" style="color: #5E5E5E;
+<span id="cb28-3">dl_test <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> learn_cls.dls.test_dl(test_items, with_labels<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span>)</span>
-<span id="cb26-4">interp <span class="op" style="color: #5E5E5E;
+<span id="cb28-4">interp <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> ClassificationInterpretation.from_learner(learn_cls, dl<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>dl_test)</span>
-<span id="cb26-5">interp.print_classification_report()</span></code></pre></div>
+<span id="cb28-5">interp.print_classification_report()</span></code></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -1581,7 +2778,7 @@ weighted avg       0.95      0.95      0.95       594
 <div class="cell" data-cellview="form" data-outputid="9ae5005d-53aa-49c9-f834-71c261657971" data-execution_count="17">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1">interp.plot_confusion_matrix()</span></code></pre></div>
+<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1">interp.plot_confusion_matrix()</span></code></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -1616,7 +2813,7 @@ weighted avg       0.95      0.95      0.95       594
 <div class="cell" data-cellview="form" data-outputid="00e93ecb-bde5-4731-fdf6-283c9fa4f4d5" data-execution_count="18">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1">interp.plot_top_losses(<span class="dv" style="color: #AD0000;
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1">interp.plot_top_losses(<span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3</span>)</span></code></pre></div>
 </details>
@@ -1692,36 +2889,36 @@ font-style: inherit;">3</span>)</span></code></pre></div>
 <div class="cell" data-cellview="form" data-outputid="2341dcd3-29cf-4485-f115-5ddf0a5f2ebe" data-execution_count="19">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1">text <span class="op" style="color: #5E5E5E;
+<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1">text <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Normal heart size'</span></span>
-<span id="cb30-2">words_per_sentence <span class="op" style="color: #5E5E5E;
+<span id="cb32-2">words_per_sentence <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">18</span></span>
-<span id="cb30-3">num_sentences <span class="op" style="color: #5E5E5E;
+<span id="cb32-3">num_sentences <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span></span>
-<span id="cb30-4">ULMFiT <span class="op" style="color: #5E5E5E;
+<span id="cb32-4">ULMFiT <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">True</span></span>
-<span id="cb30-5"></span>
-<span id="cb30-6"><span class="bu" style="color: null;
+<span id="cb32-5"></span>
+<span id="cb32-6"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Generating predictions...'</span>)</span>
-<span id="cb30-7"><span class="cf" style="color: #003B4F;
+<span id="cb32-7"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">if</span> ULMFiT:</span>
-<span id="cb30-8">    preds <span class="op" style="color: #5E5E5E;
+<span id="cb32-8">    preds <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [learn_lm.predict(text, words_per_sentence, temperature<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1734,13 +2931,13 @@ background-color: null;
 font-style: inherit;">in</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">range</span>(num_sentences)]</span>
-<span id="cb30-9"><span class="cf" style="color: #003B4F;
+<span id="cb32-9"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">else</span>:</span>
-<span id="cb30-10">    learn_lm_new <span class="op" style="color: #5E5E5E;
+<span id="cb32-10">    learn_lm_new <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> language_model_learner(dls_lm, AWD_LSTM)</span>
-<span id="cb30-11">    preds <span class="op" style="color: #5E5E5E;
+<span id="cb32-11">    preds <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> [learn_lm_new.predict(text, words_per_sentence, temperature<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1753,10 +2950,10 @@ background-color: null;
 font-style: inherit;">in</span> <span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">range</span>(num_sentences)]</span>
-<span id="cb30-12"><span class="bu" style="color: null;
+<span id="cb32-12"><span class="bu" style="color: null;
 background-color: null;
 font-style: inherit;">print</span>()</span>
-<span id="cb30-13"><span class="cf" style="color: #003B4F;
+<span id="cb32-13"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-style: inherit;">for</span> i, pred <span class="kw" style="color: #003B4F;
 background-color: null;
@@ -1839,6 +3036,8 @@ Sentence 2: Normal heart size . No pneumothorax or large pleural effusions . No 
 </section>
 
  ]]></description>
+  <category>tutorials</category>
+  <category>NLP</category>
   <guid>https://radml.wfwiggins.com/posts/RNNs_tutorial.html</guid>
   <pubDate>Sun, 28 Dec 2025 05:00:00 GMT</pubDate>
 </item>

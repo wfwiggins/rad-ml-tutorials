@@ -5,7 +5,8 @@
       "/posts/intro_cli.html",
       "/posts/install-python.html",
       "/posts/install-pytorch.html",
-      "/posts/RNNs_tutorial.html"
+      "/posts/RNNs_tutorial.html",
+      "/posts/Transformers_tutorial.html"
     ]
   }
 ]
