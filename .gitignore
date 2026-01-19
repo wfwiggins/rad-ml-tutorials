@@ -2,6 +2,12 @@
 .*
 .DS_Store
 
+# Project related ignores
+ecgen-radiology/
+logs/
+fine-tuned/
+results/
+
 /.quarto/
 # Byte-compiled / optimized / DLL files
 __pycache__/

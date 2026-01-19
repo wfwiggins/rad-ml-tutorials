@@ -5,9 +5,13 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "accelerate>=1.12.0",
+    "datasets>=4.5.0",
+    "evaluate>=0.4.6",
     "fastai>=2.8.6",
     "jupyterlab>=4.5.1",
     "tensorboard>=2.20.0",
     "torch>=2.9.1",
+    "transformers>=4.57.6",
     "xmltodict>=1.0.2",
 ]

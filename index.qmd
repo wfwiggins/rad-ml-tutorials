@@ -15,7 +15,7 @@ title-block-banner: true
 # Welcome!
 I set up this website to complement the interactive artificial intelligence (AI), deep learning (DL), and machine learning (ML) tutorials I've conducted over the years with RSNA, SIIM, ASNR, and other radiology organizations. Over time, I'm hoping this will evolve into a regular resource for individuals looking to learn more about radiology AI with an emphasis on hands-on learning with (some) code.
 
-For those just beginning their journey into radiology AI and/or coding with Python, I have included some recommended articles, courses, and tutorials in the [Resources](/resources.qmd) tab above.
+For those just beginning their journey into radiology AI and/or coding with Python, I have included some recommended articles, courses, and tutorials in the [Educational Resources](/resources.qmd) tab above.
 
 Many of the posts below will be interactive tutorials. For the best experience, you should have a Google account, so you can open the notebooks in Google Colab and run/interact with the demonstrations.
 
