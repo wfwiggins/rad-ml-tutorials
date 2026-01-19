@@ -284,14 +284,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="interactive-participation">Interactive Participation</h2>
 <p>This notebook is designed for interactive participation.</p>
 <p>If you are following along on your own computer, please download the notebook file from the link below.</p>
-<p><a href="../notebooks/Transformers_tutorial.html">Download the Juypter notebook</a></p>
+<p><a href="../notebooks/Transformers_tutorial.html" download="Transformers_tutorial.ipynb">Download the Juypter notebook</a></p>
 <pre class="callout-note"><code>You'll want to download this notebook to the same folder where your `uv` project lives.</code></pre>
 <p>Please refer to the previous posts on <a href="../posts/install-python.html">installing Python</a> and <a href="../posts/install-pytorch.html">installing PyTorch and fast.ai</a> with <code>uv</code> to ensure your environment is set up properly. You’ll also need to run the following commands to add four additional packages to your <code>uv</code> project.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"transformers&gt;=4.57.6"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"accelerate&gt;=1.12.0"</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"datasets&gt;=4.5.0"</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add <span class="st">"evaluate&gt;=0.4.6"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>If you haven’t yet done the previous <a href="../posts/rnns_tutorial.qmd">interactive tutorial on RNNs</a>, you’ll also need to run the following command; however, it is highly recommended to do that one first, as some key concepts in NLP are covered within that will help you understand this tutorial.</p>
+<p>If you haven’t yet done the previous <a href="../posts/rnns_tutorial.ipynb">interactive tutorial on RNNs</a>, you’ll also need to run the following command; however, it is highly recommended to do that one first, as some key concepts in NLP are covered within that will help you understand this tutorial.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add xmltodict</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>To run Jupyter Lab and open the notebook within your <code>uv</code> project, run the following command in your terminal.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run <span class="at">--with</span> jupyter jupyter lab</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
