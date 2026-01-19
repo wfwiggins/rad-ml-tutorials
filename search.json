@@ -28,69 +28,6 @@
     "text": "fast.ai Practical Deep Learning for Coders\n\n\n\n“Code first, theory later” series of tutorials in deep learning\n\n\nCovers computer vision, natural language processing and tabular learning\n\n\nAdvanced course follows, delving deeper into fundamentals and theory of deep learning\n\n\n\nUC-Irvine CS190 Course: Deep Learning for Medical Imaging by Dr. Peter Chang (link to GitHub repository)\n\n\n\nComprehensive introductory course with focus on medical imaging utilizing Python notebooks in Google Colab with the TensorFlow 2.0/Keras API.\n\n\nLinks to tutorial videos and slides included in README.md file.\n\n\nCourse notebooks can be downloaded from notebooks folder and uploaded to Google Colab.\n\n\n\nMore to come…"
   },
   {
-    "objectID": "notebooks/Transformers_tutorial.html",
-    "href": "notebooks/Transformers_tutorial.html",
-    "title": "RSNA 2022: Deep Learning Lab",
-    "section": "",
-    "text": "In this demonstration, we will utilize techniques of natural language processing (NLP) to train a classifier, which will analyze the text of radiology reports for chest radiographs to predict whether a report is normal or abnormal.\n\n\nWe will utilize four libraries from HuggingFace: Transformers, Accelerate, Datasets, and Evaluate. These libraries are written primarily in the Python programming language and can be used with both the PyTorch and TensorFlow deep learning libraries.\nThe demonstration in this notebook relies heavily on examples from the HuggingFace Course.\n\n\n\nThe data is obtained from the National Library of Medicine’s Open-i service. We utilize the radiology reports from the Indiana University Chest X-ray Dataset for this demonstration.\n\nReference: Demner-Fushman D, Kohli MD, Rosenman MB, Shooshan SE, Rodriguez L, Antani S, Thoma GR, McDonald CJ. Preparing a collection of radiology examinations for distribution and retrieval. J Am Med Inform Assoc. 2016 Mar;23(2):304-10. doi: 10.1093/jamia/ocv080. Epub 2015 Jul 1.\n\n\n\n\n\nWalter F. Wiggins, MD, PhD - Duke University Hospital, Durham, NC, USA\n\n\n\n\n\nFelipe Kitamura, MD - UNIFESP, Sao Paulo, Brasil\nIgor Santos, MD - UNIFESP, Sao Paulo, Brasil\nLuciano M. Prevedello, MD, MPH - Ohio State University, Columbus, OH, USA"
-  },
-  {
-    "objectID": "notebooks/Transformers_tutorial.html#nlp-text-classification-with-transformers",
-    "href": "notebooks/Transformers_tutorial.html#nlp-text-classification-with-transformers",
-    "title": "RSNA 2022: Deep Learning Lab",
-    "section": "",
-    "text": "In this demonstration, we will utilize techniques of natural language processing (NLP) to train a classifier, which will analyze the text of radiology reports for chest radiographs to predict whether a report is normal or abnormal.\n\n\nWe will utilize four libraries from HuggingFace: Transformers, Accelerate, Datasets, and Evaluate. These libraries are written primarily in the Python programming language and can be used with both the PyTorch and TensorFlow deep learning libraries.\nThe demonstration in this notebook relies heavily on examples from the HuggingFace Course.\n\n\n\nThe data is obtained from the National Library of Medicine’s Open-i service. We utilize the radiology reports from the Indiana University Chest X-ray Dataset for this demonstration.\n\nReference: Demner-Fushman D, Kohli MD, Rosenman MB, Shooshan SE, Rodriguez L, Antani S, Thoma GR, McDonald CJ. Preparing a collection of radiology examinations for distribution and retrieval. J Am Med Inform Assoc. 2016 Mar;23(2):304-10. doi: 10.1093/jamia/ocv080. Epub 2015 Jul 1.\n\n\n\n\n\nWalter F. Wiggins, MD, PhD - Duke University Hospital, Durham, NC, USA\n\n\n\n\n\nFelipe Kitamura, MD - UNIFESP, Sao Paulo, Brasil\nIgor Santos, MD - UNIFESP, Sao Paulo, Brasil\nLuciano M. Prevedello, MD, MPH - Ohio State University, Columbus, OH, USA"
-  },
-  {
-    "objectID": "notebooks/Transformers_tutorial.html#interactive-participation",
-    "href": "notebooks/Transformers_tutorial.html#interactive-participation",
-    "title": "RSNA 2022: Deep Learning Lab",
-    "section": "Interactive Participation",
-    "text": "Interactive Participation\nThis notebook is designed for interactive participation.\nPlease refer to the previous posts on installing Python and installing PyTorch and fast.ai with uv to ensure your environment is set up properly. You’ll also need to run the following commands to add four additional packages to your uv project.\nuv add \"transformers&gt;=4.57.6\"\nuv add \"accelerate&gt;=1.12.0\"\nuv add \"datasets&gt;=4.5.0\"\nuv add \"evaluate&gt;=0.4.6\"\nIf you haven’t yet done the previous interactive tutorial on RNNs, you’ll also need to run the following command; however, it is highly recommended to do that one first, as some key concepts in NLP are covered within that will help you understand this tutorial.\nuv add xmltodict\nNote: You’ll want to download this notebook to the same folder where your uv project lives.\nTo run Jupyter Lab and open the notebook within your uv project, run the following command in your terminal.\nuv run --with jupyter jupyter lab\nYou can run the code cells in order, and modify parameters as desired to see how they affect the results.\nIf you are using Google Colab, please use the link below to open a compatible version in Colab. You can save a copy of the notebook to your own Google Drive by selecting “File” -&gt; “Save a copy in Drive”.\nOpen in Colab"
-  },
-  {
-    "objectID": "notebooks/Transformers_tutorial.html#tokenization",
-    "href": "notebooks/Transformers_tutorial.html#tokenization",
-    "title": "RSNA 2022: Deep Learning Lab",
-    "section": "Tokenization",
-    "text": "Tokenization\nTokenization is the process by which we split text into chunks or tokens. An individual token could be a sentence or phrase, a word, a part of a word, or a single character. Most often, we choose to tokenize at the word or sub-word level.\nEach token is assigned a sequential integer value and the collection of token-integer pairs is called our vocabulary."
-  },
-  {
-    "objectID": "notebooks/Transformers_tutorial.html#distilbert-tokenization",
-    "href": "notebooks/Transformers_tutorial.html#distilbert-tokenization",
-    "title": "RSNA 2022: Deep Learning Lab",
-    "section": "DistilBERT Tokenization",
-    "text": "DistilBERT Tokenization\nIn this case, since we’re training a transformer model, we will use a different tokenizer designed specifically for this task from the HuggingFace Transformers library.\n\nfrom transformers import DistilBertTokenizerFast\n\ntext = reports_df.sample()['full-text'].values[0]\nprint(text)\n\ntokenizer = DistilBertTokenizerFast.from_pretrained('distilbert-base-uncased')\nprint(\"Tokenizer vocab size:\", len(tokenizer))\nids = tokenizer.encode(text, padding=True, truncation=True, return_tensors='pt')\nprint(ids[0])\nprint(tokenizer.decode(ids[0]))\n\nStable cardiomegaly with left-sided implanted ICD. Hilar pulmonary venous vasculature stable compared to prior examination. No focal consolidation, pneumothorax, or large pleural effusions identified. No acute osseous abnormality is identified. Stable cardiomegaly without evidence of overt heart failure/pulmonary edema.\nTokenizer vocab size: 30522\ntensor([  101,  6540,  4003, 18994, 29107,  2135,  2007,  2187,  1011, 11536,\n        27159,  2098, 24582,  2094,  1012,  7632,  8017, 21908,  2310, 18674,\n        12436, 28817, 20051,  5397,  6540,  4102,  2000,  3188,  7749,  1012,\n         2053, 15918, 17439,  1010,  1052,  2638,  2819, 29288,  2527,  2595,\n         1010,  2030,  2312, 20228, 11236,  2389,  1041,  4246, 22016,  4453,\n         1012,  2053, 11325,  9808,  3366,  3560, 19470,  3012,  2003,  4453,\n         1012,  6540,  4003, 18994, 29107,  2135,  2302,  3350,  1997,  2058,\n         2102,  2540,  4945,  1013, 21908,  3968, 14545,  1012,   102])\n[CLS] stable cardiomegaly with left - sided implanted icd. hilar pulmonary venous vasculature stable compared to prior examination. no focal consolidation, pneumothorax, or large pleural effusions identified. no acute osseous abnormality is identified. stable cardiomegaly without evidence of overt heart failure / pulmonary edema. [SEP]"
-  },
-  {
-    "objectID": "notebooks/Transformers_tutorial.html#embedding",
-    "href": "notebooks/Transformers_tutorial.html#embedding",
-    "title": "RSNA 2022: Deep Learning Lab",
-    "section": "Embedding",
-    "text": "Embedding\nWhile these integers map one-to-one onto our tokens, their numeric value is otherwise meaningless. To embed more information into the numeric representation of our tokens, we employ a process called language modeling. We can either use a pre-trained language model for this embedding or we can fine-tune a language model to better model our “radiology language”. This latter process is called transfer learning."
-  },
-  {
-    "objectID": "notebooks/Transformers_tutorial.html#setting-up-the-training-run",
-    "href": "notebooks/Transformers_tutorial.html#setting-up-the-training-run",
-    "title": "RSNA 2022: Deep Learning Lab",
-    "section": "Setting up the Training Run",
-    "text": "Setting up the Training Run\n\nWe define a metrics function to output accuracy and F1-score during training and validation.\nWe then configure our training experiment with a variety of hyperparameters. For more information on the different arguments, please see the docs for TrainingArguments.\n\nTry editing the hyperparameters with different options for arguments like `num_train_epochs` and `learning_rate` to see the effect these have on training. \n\nFor example, if you set `learning_rate` too low or too high, the model may fail to learn. \n\nIf it looks like your model is overfitting (i.e. validation loss goes up and validation metrics stop improving), then you might try reducing `num_train_epochs`.\n\nimport numpy as np\nfrom transformers import DistilBertForSequenceClassification, Trainer, TrainingArguments\nfrom evaluate import load\n\n# This metrics function will output accuracy and F1-score during training & validation\nmetric = load(\"glue\", \"mrpc\")\n\ndef compute_metrics(eval_pred):\n    logits = getattr(eval_pred, \"predictions\", eval_pred[0])\n    labels = getattr(eval_pred, \"label_ids\", eval_pred[1])\n    preds = np.argmax(logits, axis=-1)\n    return metric.compute(predictions=preds, references=labels)\n\n# This step configures our training experiment\ntraining_args = TrainingArguments(\n    output_dir='./results',          # output directory\n    num_train_epochs=5,              # total number of training epochs\n    per_device_train_batch_size=16,  # batch size per device during training\n    per_device_eval_batch_size=64,   # batch size for evaluation\n    weight_decay=0.01,               # strength of weight decay\n    logging_dir='./logs',            # directory for storing logs\n    logging_strategy=\"steps\",\n    logging_steps=10,\n    logging_first_step=True,\n    disable_tqdm=False,\n    eval_strategy='epoch',\n    do_train=True,\n    do_eval=True,\n    learning_rate=2e-5,\n    warmup_ratio=0.06,\n    logging_nan_inf_filter=False,\n)"
-  },
-  {
-    "objectID": "notebooks/Transformers_tutorial.html#running-the-training-experiment",
-    "href": "notebooks/Transformers_tutorial.html#running-the-training-experiment",
-    "title": "RSNA 2022: Deep Learning Lab",
-    "section": "Running the Training Experiment",
-    "text": "Running the Training Experiment\nNow we select our model and run the training experiment. You’ll see a warning printed out telling you that you should “probably TRAIN this model on a down-stream task to be able to use it for predictions and inference”. And that is exactly what we’re doing, so we can safely disregard.\n\nmodel = DistilBertForSequenceClassification.from_pretrained(\"distilbert-base-uncased\")\ntrainer = Trainer(\n    model=model,\n    args=training_args,\n    train_dataset=tokenized_dsets['train'],\n    eval_dataset=tokenized_dsets['validation'],\n    tokenizer=tokenizer,\n    compute_metrics=compute_metrics,\n)\n\ntrain_output = trainer.train()\n\nSome weights of DistilBertForSequenceClassification were not initialized from the model checkpoint at distilbert-base-uncased and are newly initialized: ['classifier.bias', 'classifier.weight', 'pre_classifier.bias', 'pre_classifier.weight']\nYou should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.\n\n\n\n    \n      \n      \n      [735/735 01:48, Epoch 5/5]\n    \n    \n\n\n\nEpoch\nTraining Loss\nValidation Loss\nAccuracy\nF1\n\n\n\n\n1\n0.462000\n0.448001\n0.734390\n0.767764\n\n\n2\n0.414100\n0.434165\n0.738355\n0.771231\n\n\n3\n0.436300\n0.408059\n0.757185\n0.796003\n\n\n4\n0.372300\n0.424927\n0.748266\n0.809595\n\n\n5\n0.377000\n0.430650\n0.758176\n0.805732\n\n\n\n\n\n\n\n# Finally we save our trained model for later use\ntrainer.save_model('fine-tuned')"
-  },
-  {
-    "objectID": "notebooks/Transformers_tutorial.html#testing-the-model",
-    "href": "notebooks/Transformers_tutorial.html#testing-the-model",
-    "title": "RSNA 2022: Deep Learning Lab",
-    "section": "Testing the model",
-    "text": "Testing the model\nNow that our model is trained, let’s test it on our held-out test dataset.\n\ntest_output = trainer.predict(tokenized_dsets['test'])\nprint(test_output.metrics)\n\n\n\n\n{'test_loss': 0.460722953081131, 'test_accuracy': 0.7373737373737373, 'test_f1': 0.7671641791044777, 'test_runtime': 1.4694, 'test_samples_per_second': 404.253, 'test_steps_per_second': 6.806}"
-  },
-  {
     "objectID": "advanced-setup.html",
     "href": "advanced-setup.html",
     "title": "Advanced Setup",
