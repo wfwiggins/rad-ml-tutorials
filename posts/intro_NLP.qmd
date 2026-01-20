@@ -1,0 +1,54 @@
+---
+title: "Introduction to the NLP Tutorials"
+author: "Walter Wiggins"
+date: "2026-01-20"
+categories:
+    - NLP
+draft: true
+---
+
+Natural language processing (NLP) or natural language understanding (NLU) in machine learning takes text as input and performs any numbers of tasks, such as classification, information extraction, summarization, translation, or question answering.
+
+In the context of radiology, we might use NLP tools to classify radiology reports as _normal_ or _abnormal_, or _positive_ or _negative_ for a specific finding such as pneumothorax or intracranial hemorrhage. We might also desire to use an NLP model to summarize a report in lay terms or generate an impression. Using advanced techniques, such as **retrieval-augmented generation (RAG)**, we might create a chat interface to answer questions about a long document or collection of documents, such as the American College of Radiology's Contrast Manual.
+
+The first series of tutorials I'll post are selected from the sessions I've presented at the Radiological Society of North America (RSNA) Annual Meeting's Deep Learning Lab, for which I served as the course director from 2021-2025. The series takes you through a progression of topics that touch on the rapid progress we've seen in NLP over the last 8-10 years.
+
+# Interactive Tutorials
+
+Each of these tutorials is designed to be interactive. Within the post, I'll have links to download a version of the notebook that you can run on your local machine. Please refer to the [Basic](/setup.qmd) and (optionally) [Advanced](/advanced-setup.qmd) Setup Guides, as well as the posts on Installing [Python](/posts/install-python.qmd) and [Pytorch](/posts/install-pytorch.qmd), to ensure your local machine is set up appropriately. If you're not ready to set up your local machine for this type of work but still want to follow along with your own copy of the notebook, there is also a link to a compatible version of the notebook in Google's Collaboratory (a.k.a. Colab) platform.
+
+:::{.callout-important}
+While I have taken measures to "future-proof" these notebooks by either prescribing specific versions of the code libraries ("packages") used, over time things may break. Part of the challenge and fun of coding/programming is figuring out how to fix things when they break. If this happens to you, I suggest you start by pasting the various error messages you might encounter into your favorite search engine and AI chatbot along with questions about how to resolve specific errors. The more info you can provide about the platform and versions you're using, the better.
+:::
+
+# Tutorials Overview
+
+## 1. CXR Report Classification with Recurrent Neural Networks (RNNs)
+
+In the first tutorial, I walk you through preparing data for and training a recurrent neural network (RNN) model to predict whether chest x-ray (CXR) reports are _normal_ or _abnormal_. To do this, we utilize the universal language model fine-tuning (ULM-FiT) approach developed by Jeremy Howard and Sebastian Ruder, which was a pivotal innovation in the modern history of NLP. ULM-FiT is two-step process that allows you to take a language model pre-trained on a large, general corpus of text and "fine-tune" it for a more specific task. The steps of ULM-FiT are as follows:
+
+1. Fine-tune a language model on next **token** prediction. ("Tokens" can be sentences, words, word-parts, or characters - more on this later.)
+2. Use the **embeddings** from the fine-tuned language model to train another language model on a downstream task, like text classification. ("Embeddings" are numerical representations of tokens that "embed" semantic information about the token into a vector.)
+
+However, before we even get to the exciting part about ULM-FiT, we also talk about the process of taking text and getting into a numerical format that an ML model can process. A brief overview of the basic steps of **preprocessing text** for NLP follows, though "classical" NLP techniques may employ a number of additional steps that we won't cover in any detail.
+
+### Preprocessing Text for NLP
+- **Tokenization**: Breaking up text into chunks. Each token is a chunk of text. It may be a sentence, word, word-part, or character. The full set of unique tokens is referred to as a **vocabulary**.
+- **Numericalization**: Converting tokens into numbers. Each number corresponds to a unique token.
+- **Embedding**: Converting token ID numbers into a high-dimensional vector of numbers that can represent the semantic relationships between tokens in a vocabulary. The full set of embedding vectors is referred to as the **embedding space**.
+
+You can use pretrained embeddings from an existing model or fine-tune those embeddings to better represent the semantic relationships between words in your specific vocabulary. Think about how we use the word "opacity" is chest radiography versus how it might be used in a general knowledge article on Wikipedia (most language models are pretrained on portions of the Internet). The meaning of the word is likely very different between the two contexts. Thus, by fine-tuning your language model and its embeddings, you can get a better vector representation of the word's use in the context of your target corpus (e.g. collection of CXR reports). And that's why we do the first step of the ULM-FiT process with RNNs.
+
+The second step of the ULM-FiT process is to train a classifier "head" on top of our fine-tuned language model. This takes a model designed for next token prediction and allows you to leverage the information contained in the model's computations for another task - report classification, in this case.
+
+In this tutorial, we'll see that the combination of these two steps produces a very accurate model for our specific task. You can even experiment with a few parameters to see how the model performance is much worse when we _don't_ first fine-tune the language model, or when we elect to train on just a portion of the report instead of the full report.
+
+## 2. CXR Report Classification with Transformers
+
+In the second tutorial, we jump ahead to perhaps the most significant innovation in NLP in the last decade - the Transformer model. Transformers are the underlying architecture for most of the major AI models you see in general use today: ChatGPT, Claude, Gemini, Grok, etc. The **attention** mechanism is thought to be one of the major advances in this model architecture - as suggested by the title of the initial paper: _Attention is All You Need_ - though others suggest that it is the ability to scale the architecture and training up by orders of magnitude beyond what was feasible with RNNs. Regardless, this is the dominant architecture used in NLP today, and this tutorial highlights its power by skipping the first step in ULM-FiT and going straight to fine-tuning a classifier model using the pretrained embeddings from the DistilBERT model.
+
+# More to come...
+
+:::{.callout-note}
+I'll come back and update this post with summaries of the other tutorials as I am able to update them and post them to the website. Stay tuned...
+:::
